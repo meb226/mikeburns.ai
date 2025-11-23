@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mike Burns</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #FAFAFA;
+            color: #000000;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* Fixed top navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #FAFAFA;
+            border-bottom: 1px solid #E0E0E0;
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        nav h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 16px;
+            font-weight: 300;
+            transition: opacity 0.2s;
+        }
+
+        nav a:hover {
+            opacity: 0.6;
+        }
+
+        /* Layout split: 1/4 sidebar + 3/4 main */
+        .content-layout {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 100px;
+            gap: 60px;
+        }
+
+        /* Left sidebar - 1/4 */
+        .sidebar {
+            width: 25%;
+            padding: 48px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        .sidebar-photo {
+            width: 100%;
+            max-width: 240px;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        .sidebar-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        .sidebar-section p {
+            font-size: 15px;
+            font-weight: 300;
+            color: #333333;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sidebar-links a {
+            font-size: 15px;
+            font-weight: 300;
+            color: #000000;
+            text-decoration: none;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 2px;
+            transition: opacity 0.2s;
+            align-self: flex-start;
+        }
+
+        .sidebar-links a:hover {
+            opacity: 0.6;
+        }
+
+        .resources-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .resource-link {
+            font-size: 15px;
+            font-weight: 300;
+            color: #000000;
+            text-decoration: none;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 2px;
+            transition: opacity 0.2s;
+            align-self: flex-start;
+        }
+
+        .resource-link:hover {
+            opacity: 0.6;
+        }
+
+        /* Right main area - 3/4 */
+        .main-area {
+            width: 75%;
+            padding: 48px 48px 80px 0;
+        }
+
+        .hero {
+            margin-bottom: 80px;
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 20px;
+            font-weight: 300;
+            color: #333333;
+            line-height: 1.7;
+        }
+
+        /* Projects section */
+        .projects-section h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            letter-spacing: -0.02em;
+        }
+
+        .project-item {
+            max-width: 600px;
+            padding: 32px;
+            border: 1px solid #DC143C;
+            margin-bottom: 24px;
+            background: #DC143C;
+        }
+
+        .project-item h4 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+            color: white;
+        }
+
+        .project-item p {
+            font-size: 16px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        /* Button complements the muted scheme */
+        .project-btn {
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 400;
+            color: #000000;
+            text-decoration: none;
+            border: 1px solid white;
+            padding: 8px 16px;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .project-btn:hover {
+            background: #0039A6;
+            border-color: #0039A6;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 48px;
+            font-size: 14px;
+            font-weight: 300;
+            color: #666666;
+        }
+
+        @media (max-width: 968px) {
+            nav {
+                flex-direction: column;
+                gap: 16px;
+                padding: 20px 24px;
+            }
+
+            nav ul {
+                gap: 24px;
+            }
+
+            .content-layout {
+                flex-direction: column;
+                padding-top: 140px;
+                gap: 40px;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 24px;
+            }
+
+            .main-area {
+                width: 100%;
+                padding: 24px;
+            }
+
+            .hero h2 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Mike Burns</h1>
+        <ul>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="content-layout">
+        <!-- Left sidebar - 1/4 -->
+        <aside class="sidebar">
+            <img src="profile-photo.jpg" alt="Mike Burns" class="sidebar-photo">
+            
+            <div class="sidebar-section">
+                <h3>About Me</h3>
+                <p>I build tools that bridge regulatory expertise and modern product development, focusing on AI-powered solutions for compliance and political intelligence.</p>
+                <div class="sidebar-links">
+                    <a href="https://www.linkedin.com/in/michaeleburns/" target="_blank">LinkedIn</a>
+                    <a href="https://github.com/meb226" target="_blank">GitHub</a>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Resources</h3>
+                <div class="resources-list">
+                    <a href="resume.pdf" class="resource-link" download>Resume</a>
+                    <a href="cliftonstrengths.pdf" class="resource-link" download>CliftonStrengths</a>
+                    <a href="highlands.pdf" class="resource-link" download>Highlands Assessment</a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right main area - 3/4 -->
+        <main class="main-area">
+            <section class="hero">
+                <h2>Building AI-powered compliance and political intelligence tools</h2>
+                <p>Exploring the intersection of regulatory expertise and product development</p>
+            </section>
+
+            <section class="projects-section">
+                <h3>Projects</h3>
+                <div class="project-item">
+                    <h4>Compliance Workflow Optimizer</h4>
+                    <p>AI-powered tool that analyzes compliance workflows and identifies automation opportunities. Features intelligent workflow analysis, time-savings calculations, and actionable recommendations.</p>
+                    <a href="compliance-optimizer/index.html" class="project-btn">Open Tool</a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>© Mike Burns</p>
+    </footer>
+</body>
+</html>
