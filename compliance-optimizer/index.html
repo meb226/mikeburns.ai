@@ -854,28 +854,25 @@
             submitButton.disabled = true;
             
             try {
-                let fullPrompt = workflow;
-                if (workflowName) {
-                    fullPrompt = `Workflow: ${workflowName}\n\n${fullPrompt}`;
-                }
-                if (timeAmount && timeAmount > 0) {
-                    fullPrompt += `\n\nTime required: ${timeAmount} ${timeUnit} per ${timePeriod}.`;
-                }
-                
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ workflowDescription: fullPrompt })
+                    body: JSON.stringify({ 
+                        workflowName: workflowName || "Workflow",
+                        workflowDescription: workflow,
+                        hoursRequired: timeAmount || 0,
+                        timePeriod: timePeriod || "occurrence"
+                    })
                 });
                 
                 if (!response.ok) {
                     throw new Error('Failed to analyze workflow');
                 }
                 
-                const data = await response.json();
-                displayResults(workflowName || "Your Workflow", workflow, data.analysis, timeAmount, timeUnit, timePeriod);
+                const analysis = await response.json();
+                displayResults(workflowName || "Your Workflow", workflow, analysis, timeAmount, timeUnit, timePeriod);
                 exportCard.style.display = 'block';
                 
             } catch (error) {
