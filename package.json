@@ -1,0 +1,11 @@
+{
+  "name": "mikeburns-ai",
+  "version": "1.0.0",
+  "description": "Personal portfolio and AI-powered compliance tools",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
