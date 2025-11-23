@@ -73,20 +73,20 @@
         
         .main-layout {
             display: grid;
-            grid-template-columns: 480px 1fr;
+            grid-template-columns: 450px 1fr;
             gap: 0;
             min-height: calc(100vh - 100px);
         }
         
         .input-panel {
-            padding: 48px 32px;
+            padding: 48px 24px;
             border-right: 1px solid #E0E0E0;
             background: #FAFAFA;
             overflow-y: auto;
         }
         
         .results-panel {
-            padding: 48px 32px;
+            padding: 48px 40px;
             background: white;
             overflow-y: auto;
         }
@@ -353,15 +353,15 @@
         }
         
         .metric-value {
-            font-size: 48px;
+            font-size: 64px;
             font-weight: 700;
             color: #DC143C;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             letter-spacing: -0.03em;
         }
         
         .metric-subtitle {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 300;
             color: #666666;
         }
@@ -378,6 +378,7 @@
             position: relative;
             overflow: hidden;
             margin-bottom: 24px;
+            min-height: 280px;
         }
         
         .carousel-track {
@@ -388,10 +389,14 @@
         
         .opportunity-card {
             min-width: calc(50% - 12px);
+            max-width: calc(50% - 12px);
             background: white;
             border: 1px solid #000000;
             padding: 32px;
             flex-shrink: 0;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
         }
         
         .opportunity-card.immediate-impact {
@@ -630,14 +635,22 @@
                 padding: 0;
             }
             
+            .carousel-container {
+                overflow: visible !important;
+            }
+            
             .carousel-track {
-                display: block !important;
+                display: grid !important;
+                grid-template-columns: 1fr;
+                gap: 16px;
+                transform: none !important;
             }
             
             .opportunity-card {
-                min-width: 100%;
+                min-width: 100% !important;
+                max-width: 100% !important;
                 page-break-inside: avoid;
-                margin-bottom: 24px;
+                margin-bottom: 16px;
             }
         }
     </style>
@@ -707,9 +720,9 @@
                 <div class="export-card" id="exportCard" style="display: none;">
                     <h3>Export Analysis</h3>
                     <div class="export-buttons">
-                        <button type="button" onclick="exportToPDF()">Save as PDF</button>
-                        <button type="button" onclick="copyToClipboard()">Copy to Clipboard</button>
-                        <button type="button" onclick="emailAnalysis()">Email Analysis</button>
+                        <button type="button" onclick="exportToPDF()">PDF</button>
+                        <button type="button" onclick="copyToClipboard()">Clipboard</button>
+                        <button type="button" onclick="emailAnalysis()">Email</button>
                     </div>
                 </div>
             </div>
@@ -903,7 +916,9 @@
                 timeSavings = analysis.timeSavings;
             }
             
-            const riskReduction = analysis.riskReduction || '30-50%';
+            const riskReduction = analysis.riskReduction ? 
+                (analysis.riskReduction.match(/\d+%/) || [analysis.riskReduction])[0] : 
+                '30-50%';
             
             let stepsHTML = '';
             if (steps.length > 0) {
