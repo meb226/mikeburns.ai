@@ -419,6 +419,11 @@
             color: white;
         }
         
+        .opportunity-card.strategic-value {
+            background: #87CEEB;
+            color: white;
+        }
+        
         .opportunity-header {
             display: flex;
             gap: 16px;
@@ -678,6 +683,11 @@
                 background: #000000 !important;
                 color: white !important;
             }
+            
+            .opportunity-card.strategic-value {
+                background: #87CEEB !important;
+                color: white !important;
+            }
         }
     </style>
 </head>
@@ -747,7 +757,7 @@
                     <h3>Export Analysis</h3>
                     <div class="export-buttons">
                         <button type="button" onclick="exportToPDF()">PDF</button>
-                        <button type="button" onclick="copyToClipboard()">Clipboard</button>
+                        <button type="button" onclick="copyToClipboard()">Copy to Clipboard</button>
                         <button type="button" onclick="emailAnalysis()">Email</button>
                     </div>
                 </div>
@@ -974,15 +984,16 @@
                 { title: 'Automated Data Collection', description: 'Implement automated systems to gather compliance data from multiple sources, eliminating manual email collection and data entry tasks.', class: 'immediate-impact', category: 'Immediate Impact', complexity: 'Low' },
                 { title: 'Real-Time Compliance Checking', description: 'Integrate with regulatory databases for instant validation against current rules, limits, and restrictions, reducing manual lookups.', class: 'efficiency-gains', category: 'Efficiency Gains', complexity: 'Medium' },
                 { title: 'Intelligent Workflow Routing', description: 'Automatically route requests to appropriate reviewers based on complexity, risk level, and expertise requirements.', class: 'process-improvement', category: 'Process Improvement', complexity: 'Medium' },
-                { title: 'Automated Documentation & Audit Trails', description: 'Generate audit trails, reports, and filing documents automatically based on structured data inputs, ensuring compliance.', class: 'data-quality', category: 'Data Quality', complexity: 'Low' }
+                { title: 'Automated Documentation & Audit Trails', description: 'Generate audit trails, reports, and filing documents automatically based on structured data inputs, ensuring compliance.', class: 'data-quality', category: 'Data Quality', complexity: 'Low' },
+                { title: 'Strategic Decision Support', description: 'Leverage AI-powered analytics to identify compliance trends, predict risks, and provide strategic insights for proactive risk management.', class: 'strategic-value', category: 'Strategic Value', complexity: 'High' }
             ];
             
             if (opportunities.length > 0 && !opportunities[0].class) {
-                const classes = ['immediate-impact', 'efficiency-gains', 'process-improvement', 'data-quality'];
-                const categories = ['Immediate Impact', 'Efficiency Gains', 'Process Improvement', 'Data Quality'];
+                const classes = ['immediate-impact', 'efficiency-gains', 'process-improvement', 'data-quality', 'strategic-value'];
+                const categories = ['Immediate Impact', 'Efficiency Gains', 'Process Improvement', 'Data Quality', 'Strategic Value'];
                 opportunities.forEach((opp, idx) => {
-                    opp.class = classes[idx % 4];
-                    opp.category = opp.category || categories[idx % 4];
+                    opp.class = classes[idx % 5];
+                    opp.category = opp.category || categories[idx % 5];
                     opp.complexity = opp.complexity || 'Medium';
                 });
             }
