@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Mike Burns</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #FAFAFA;
+            color: #000000;
+            line-height: 1.6;
+        }
+
+        nav {
+            background-color: white;
+            padding: 24px 48px;
+            border-bottom: 1px solid #E0E0E0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        nav h1 a {
+            color: #000000;
+            text-decoration: none;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 32px;
+        }
+
+        nav a {
+            color: #000000;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 400;
+            transition: opacity 0.2s;
+        }
+
+        nav a:hover {
+            opacity: 0.6;
+        }
+
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 200px);
+            padding: 48px;
+        }
+
+        .placeholder-text {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-align: left;
+            max-width: 800px;
+        }
+
+        .attribution {
+            font-size: 20px;
+            font-weight: 400;
+            text-align: left;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1><a href="index.html">Mike Burns</a></h1>
+        <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <div>
+            <p class="placeholder-text">Nature does not hurry, yet everything is accomplished.</p>
+            <p class="attribution">Lao Tzu</p>
+        </div>
+    </div>
+</body>
+</html>
