@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Mike Burns</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #FAFAFA;
+            color: #000000;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* Fixed top navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #FAFAFA;
+            border-bottom: 1px solid #E0E0E0;
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        nav h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        nav h1 a {
+            text-decoration: none;
+            color: #000000;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 16px;
+            font-weight: 300;
+            transition: opacity 0.2s;
+        }
+
+        nav a:hover {
+            opacity: 0.6;
+        }
+
+        /* Centered content */
+        .content-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 140px 48px 80px 48px;
+            text-align: center;
+            min-height: calc(100vh - 200px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .page-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            font-weight: 300;
+            color: #333333;
+            margin-bottom: 48px;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: block;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            background: #DC143C;
+            border: 1px solid #DC143C;
+            padding: 16px 40px;
+            transition: all 0.2s;
+            width: 200px;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .cta-button:hover {
+            background: #0039A6;
+            border-color: #0039A6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 48px;
+            font-size: 14px;
+            font-weight: 300;
+            color: #666666;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 16px;
+                padding: 20px 24px;
+            }
+
+            nav ul {
+                gap: 24px;
+            }
+
+            .content-wrapper {
+                padding: 160px 24px 60px 24px;
+            }
+
+            .page-title {
+                font-size: 36px;
+            }
+
+            .subtitle {
+                font-size: 18px;
+            }
+
+            .cta-button {
+                font-size: 15px;
+                padding: 14px 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1><a href="index.html">Mike Burns</a></h1>
+        <ul>
+            <li><a href="index.html">Work</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="content-wrapper">
+        <h1 class="page-title">Contact</h1>
+        <p class="subtitle">Let's connect.</p>
+        <a href="mailto:your.email@example.com" class="cta-button">Send e-mail</a>
+    </div>
+
+    <footer>
+        <p>© 2025 Mike Burns</p>
+    </footer>
+</body>
+</html>

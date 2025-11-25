@@ -38,9 +38,14 @@
         }
 
         nav h1 {
-            font-size: 20px;
+            font-size: 28px;
             font-weight: 700;
             letter-spacing: -0.02em;
+        }
+
+        nav h1 a {
+            text-decoration: none;
+            color: #000000;
         }
 
         nav ul {
@@ -76,7 +81,7 @@
             padding: 48px 24px;
             display: flex;
             flex-direction: column;
-            gap: 48px;
+            gap: 18px;
         }
 
         .sidebar-photo {
@@ -84,13 +89,15 @@
             max-width: 240px;
             aspect-ratio: 1;
             object-fit: cover;
+            border-radius: 4px;
         }
 
         .sidebar-section h3 {
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 700;
-            margin-bottom: 16px;
-            letter-spacing: -0.01em;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+            margin-top: -6px;
         }
 
         .sidebar-section p {
@@ -159,6 +166,7 @@
             margin-bottom: 24px;
             letter-spacing: -0.03em;
             line-height: 1.2;
+            margin-top: -10px;
         }
 
         .hero p {
@@ -176,15 +184,29 @@
             letter-spacing: -0.02em;
         }
 
-        .project-item {
-            max-width: 600px;
-            padding: 32px;
-            border: 1px solid #DC143C;
-            margin-bottom: 24px;
-            background: #DC143C;
+        /* 2x2 Project Grid */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            max-width: 800px;
         }
 
-        .project-item h4 {
+        .project-box {
+            aspect-ratio: 1;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Red project box - completed project */
+        .project-box.red {
+            background: #DC143C;
+            border: 1px solid #DC143C;
+        }
+
+        .project-box.red h4 {
             font-size: 20px;
             font-weight: 700;
             margin-bottom: 12px;
@@ -192,7 +214,7 @@
             color: white;
         }
 
-        .project-item p {
+        .project-box.red p {
             font-size: 16px;
             font-weight: 300;
             color: rgba(255, 255, 255, 0.95);
@@ -200,17 +222,39 @@
             margin-bottom: 20px;
         }
 
-        /* Button complements the muted scheme */
+        /* Navy project box - coming soon */
+        .project-box.navy {
+            background: #0039A6;
+            border: 1px solid #0039A6;
+        }
+
+        .project-box.navy h4 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+            color: white;
+        }
+
+        .project-box.navy p {
+            font-size: 16px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
+        }
+
+        /* Updated button styling - 18px font */
         .project-btn {
             display: inline-block;
-            font-size: 14px;
+            font-size: 18px;
             font-weight: 400;
             color: #000000;
             text-decoration: none;
             border: 1px solid white;
-            padding: 8px 16px;
+            padding: 12px 24px;
             transition: all 0.2s;
             background: white;
+            align-self: flex-start;
         }
 
         .project-btn:hover {
@@ -257,39 +301,33 @@
             .hero h2 {
                 font-size: 36px;
             }
+
+            .project-grid {
+                grid-template-columns: 1fr;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <nav>
-        <h1>Mike Burns</h1>
+        <h1><a href="index.html">Mike Burns</a></h1>
         <ul>
-            <li><a href="#work">Work</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
         </ul>
     </nav>
 
     <div class="content-layout">
         <!-- Left sidebar - 1/4 -->
         <aside class="sidebar">
-            <img src="profile-photo.jpg" alt="Mike Burns" class="sidebar-photo">
+            <img src="profile-photo.PNG" alt="Mike Burns" class="sidebar-photo">
             
             <div class="sidebar-section">
-                <h3>About Me</h3>
-                <p>I build tools that bridge regulatory expertise and modern product development, focusing on AI-powered solutions for compliance and political intelligence.</p>
+                <h3>Connect</h3>
                 <div class="sidebar-links">
                     <a href="https://www.linkedin.com/in/michaeleburns/" target="_blank">LinkedIn</a>
                     <a href="https://github.com/meb226" target="_blank">GitHub</a>
-                </div>
-            </div>
-
-            <div class="sidebar-section">
-                <h3>Resources</h3>
-                <div class="resources-list">
-                    <a href="resume.pdf" class="resource-link" download>Resume</a>
-                    <a href="cliftonstrengths.pdf" class="resource-link" download>CliftonStrengths</a>
-                    <a href="highlands.pdf" class="resource-link" download>Highlands Assessment</a>
                 </div>
             </div>
         </aside>
@@ -298,22 +336,35 @@
         <main class="main-area">
             <section class="hero">
                 <h2>Building AI-powered compliance and political intelligence tools</h2>
-                <p>Exploring the intersection of regulatory expertise and product development</p>
+                <p>Exploring the intersection of regulatory expertise and product development.</p>
             </section>
 
             <section class="projects-section">
                 <h3>Projects</h3>
-                <div class="project-item">
-                    <h4>Compliance Workflow Optimizer</h4>
-                    <p>AI-powered tool that analyzes compliance workflows and identifies automation opportunities. Features intelligent workflow analysis, time-savings calculations, and actionable recommendations.</p>
-                    <a href="compliance-optimizer/index.html" class="project-btn">Open Tool</a>
+                <div class="project-grid">
+                    <!-- Top left: Red - Completed project -->
+                    <div class="project-box red">
+                        <div>
+                            <h4>Compliance Workflow Optimizer</h4>
+                            <p>Tool that analyzes compliance workflows and identifies automation opportunities.</p>
+                        </div>
+                        <a href="compliance-optimizer/index.html" class="project-btn">Open Tool</a>
+                    </div>
+
+                    <!-- Top right: Navy - Coming soon -->
+                    <div class="project-box navy">
+                        <div>
+                            <h4>Coming Soon</h4>
+                            <p>Training platform for testing political messaging and refining advocacy.</p>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
     </div>
 
     <footer>
-        <p>© Mike Burns</p>
+        <p>© 2025 Mike Burns</p>
     </footer>
 </body>
 </html>
