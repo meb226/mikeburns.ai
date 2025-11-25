@@ -73,20 +73,20 @@
         
         .main-layout {
             display: grid;
-            grid-template-columns: 480px 1fr;
+            grid-template-columns: 450px 1fr;
             gap: 0;
             min-height: calc(100vh - 100px);
         }
         
         .input-panel {
-            padding: 48px 32px;
+            padding: 48px 24px;
             border-right: 1px solid #E0E0E0;
             background: #FAFAFA;
             overflow-y: auto;
         }
         
         .results-panel {
-            padding: 48px 32px;
+            padding: 48px 40px;
             background: white;
             overflow-y: auto;
         }
@@ -310,7 +310,7 @@
         }
         
         .step-number {
-            background: #000000;
+            background: #0039A6;
             color: white;
             width: 28px;
             height: 28px;
@@ -344,24 +344,24 @@
         }
         
         .metric-card h3 {
-            font-size: 14px;
+            font-size: 24px;
             font-weight: 700;
             color: #000000;
             margin-bottom: 16px;
-            letter-spacing: -0.01em;
+            letter-spacing: -0.02em;
             text-transform: uppercase;
         }
         
         .metric-value {
-            font-size: 48px;
+            font-size: 64px;
             font-weight: 700;
             color: #DC143C;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             letter-spacing: -0.03em;
         }
         
         .metric-subtitle {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 300;
             color: #666666;
         }
@@ -378,6 +378,7 @@
             position: relative;
             overflow: hidden;
             margin-bottom: 24px;
+            min-height: 280px;
         }
         
         .carousel-track {
@@ -388,10 +389,14 @@
         
         .opportunity-card {
             min-width: calc(50% - 12px);
+            max-width: calc(50% - 12px);
             background: white;
             border: 1px solid #000000;
             padding: 32px;
             flex-shrink: 0;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
         }
         
         .opportunity-card.immediate-impact {
@@ -411,6 +416,11 @@
         
         .opportunity-card.data-quality {
             background: #000000;
+            color: white;
+        }
+        
+        .opportunity-card.strategic-value {
+            background: #87CEEB;
             color: white;
         }
         
@@ -630,14 +640,53 @@
                 padding: 0;
             }
             
+            .metric-value {
+                font-size: 32px !important;
+            }
+            
+            .carousel-container {
+                overflow: visible !important;
+            }
+            
             .carousel-track {
-                display: block !important;
+                display: grid !important;
+                grid-template-columns: 1fr;
+                gap: 16px;
+                transform: none !important;
             }
             
             .opportunity-card {
-                min-width: 100%;
+                min-width: 100% !important;
+                max-width: 100% !important;
                 page-break-inside: avoid;
-                margin-bottom: 24px;
+                margin-bottom: 16px;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            .opportunity-card.immediate-impact {
+                background: #DC143C !important;
+                color: white !important;
+            }
+            
+            .opportunity-card.efficiency-gains {
+                background: #00A651 !important;
+                color: white !important;
+            }
+            
+            .opportunity-card.process-improvement {
+                background: #FF6319 !important;
+                color: white !important;
+            }
+            
+            .opportunity-card.data-quality {
+                background: #000000 !important;
+                color: white !important;
+            }
+            
+            .opportunity-card.strategic-value {
+                background: #87CEEB !important;
+                color: white !important;
             }
         }
     </style>
@@ -707,9 +756,9 @@
                 <div class="export-card" id="exportCard" style="display: none;">
                     <h3>Export Analysis</h3>
                     <div class="export-buttons">
-                        <button type="button" onclick="exportToPDF()">Save as PDF</button>
+                        <button type="button" onclick="exportToPDF()">PDF</button>
                         <button type="button" onclick="copyToClipboard()">Copy to Clipboard</button>
-                        <button type="button" onclick="emailAnalysis()">Email Analysis</button>
+                        <button type="button" onclick="emailAnalysis()">Email</button>
                     </div>
                 </div>
             </div>
@@ -895,15 +944,25 @@
             const steps = workflow.split('\n').filter(line => line.trim().startsWith('-')).map(line => line.trim().substring(1).trim());
             
             let timeSavings = '40-60%';
+            let timeSavingsUnit = '';
             if (timeAmount && timeAmount > 0) {
                 const savedLow = Math.round(timeAmount * 0.4 * 10) / 10;
                 const savedHigh = Math.round(timeAmount * 0.6 * 10) / 10;
-                timeSavings = `${savedLow}-${savedHigh} ${timeUnit}`;
+                timeSavings = `${savedLow}-${savedHigh}`;
+                timeSavingsUnit = timeUnit;
             } else if (analysis.timeSavings) {
-                timeSavings = analysis.timeSavings;
+                const match = analysis.timeSavings.match(/^([\d\-\.]+)\s*(.*)$/);
+                if (match) {
+                    timeSavings = match[1];
+                    timeSavingsUnit = match[2];
+                } else {
+                    timeSavings = analysis.timeSavings;
+                }
             }
             
-            const riskReduction = analysis.riskReduction || '30-50%';
+            const riskReduction = analysis.riskReduction ? 
+                (analysis.riskReduction.match(/\d+%/) || [analysis.riskReduction])[0] : 
+                '30-50%';
             
             let stepsHTML = '';
             if (steps.length > 0) {
@@ -925,15 +984,16 @@
                 { title: 'Automated Data Collection', description: 'Implement automated systems to gather compliance data from multiple sources, eliminating manual email collection and data entry tasks.', class: 'immediate-impact', category: 'Immediate Impact', complexity: 'Low' },
                 { title: 'Real-Time Compliance Checking', description: 'Integrate with regulatory databases for instant validation against current rules, limits, and restrictions, reducing manual lookups.', class: 'efficiency-gains', category: 'Efficiency Gains', complexity: 'Medium' },
                 { title: 'Intelligent Workflow Routing', description: 'Automatically route requests to appropriate reviewers based on complexity, risk level, and expertise requirements.', class: 'process-improvement', category: 'Process Improvement', complexity: 'Medium' },
-                { title: 'Automated Documentation & Audit Trails', description: 'Generate audit trails, reports, and filing documents automatically based on structured data inputs, ensuring compliance.', class: 'data-quality', category: 'Data Quality', complexity: 'Low' }
+                { title: 'Automated Documentation & Audit Trails', description: 'Generate audit trails, reports, and filing documents automatically based on structured data inputs, ensuring compliance.', class: 'data-quality', category: 'Data Quality', complexity: 'Low' },
+                { title: 'Strategic Decision Support', description: 'Leverage AI-powered analytics to identify compliance trends, predict risks, and provide strategic insights for proactive risk management.', class: 'strategic-value', category: 'Strategic Value', complexity: 'High' }
             ];
             
             if (opportunities.length > 0 && !opportunities[0].class) {
-                const classes = ['immediate-impact', 'efficiency-gains', 'process-improvement', 'data-quality'];
-                const categories = ['Immediate Impact', 'Efficiency Gains', 'Process Improvement', 'Data Quality'];
+                const classes = ['immediate-impact', 'efficiency-gains', 'process-improvement', 'data-quality', 'strategic-value'];
+                const categories = ['Immediate Impact', 'Efficiency Gains', 'Process Improvement', 'Data Quality', 'Strategic Value'];
                 opportunities.forEach((opp, idx) => {
-                    opp.class = classes[idx % 4];
-                    opp.category = opp.category || categories[idx % 4];
+                    opp.class = classes[idx % 5];
+                    opp.category = opp.category || categories[idx % 5];
                     opp.complexity = opp.complexity || 'Medium';
                 });
             }
@@ -972,7 +1032,7 @@
                     <div class="metric-card">
                         <h3>Time Savings</h3>
                         <div class="metric-value">${timeSavings}</div>
-                        <div class="metric-subtitle">saved per ${timePeriod}</div>
+                        <div class="metric-subtitle">${timeSavingsUnit ? timeSavingsUnit + ' ' : ''}saved per ${timePeriod}</div>
                     </div>
                     <div class="metric-card">
                         <h3>Risk Reduction</h3>
