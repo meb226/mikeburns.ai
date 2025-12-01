@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About - Mike Burns</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,19 +15,26 @@
         }
 
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: #FAFAFA;
+            font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #FAFAFA;
             color: #000000;
             line-height: 1.6;
+            font-weight: 300;
         }
 
+        /* Fixed top navigation */
         nav {
-            background-color: white;
-            padding: 24px 48px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #FAFAFA;
             border-bottom: 1px solid #E0E0E0;
+            padding: 24px 48px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 1000;
         }
 
         nav h1 {
@@ -34,24 +44,23 @@
         }
 
         nav h1 a {
+            text-decoration: none;
+            color: #000000;
             font-size: 28px;
             font-weight: 700;
-            letter-spacing: -0.02em;
-            color: #000000;
-            text-decoration: none;
         }
 
         nav ul {
             list-style: none;
             display: flex;
-            gap: 32px;
+            gap: 40px;
         }
 
         nav a {
-            color: #000000;
             text-decoration: none;
+            color: #000000;
             font-size: 16px;
-            font-weight: 400;
+            font-weight: 300;
             transition: opacity 0.2s;
         }
 
@@ -59,27 +68,120 @@
             opacity: 0.6;
         }
 
-        .content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 200px);
-            padding: 48px;
+        /* Quote section */
+        .quote-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 140px 48px 32px 48px;
         }
 
-        .placeholder-text {
-            font-size: 48px;
+        .quote-text {
+            font-size: 32px;
             font-weight: 700;
             letter-spacing: -0.02em;
             text-align: left;
-            max-width: 800px;
+            line-height: 1.2;
+            white-space: nowrap;
         }
 
-        .attribution {
-            font-size: 20px;
+        .quote-attribution {
+            font-size: 18px;
             font-weight: 400;
             text-align: left;
-            margin-top: 16px;
+            margin-top: 12px;
+        }
+
+        /* Q&A content */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 48px 80px 48px;
+        }
+
+        /* Q&A Section */
+        .qa-item {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 40px;
+            margin-bottom: 48px;
+        }
+
+        .question {
+            font-size: 20px;
+            font-weight: 700;
+            color: #DC143C;
+            letter-spacing: -0.01em;
+            padding-top: 2px;
+        }
+
+        .answer {
+            font-size: 18px;
+            font-weight: 300;
+            color: #000000;
+            line-height: 1.7;
+        }
+
+        .answer p {
+            margin-bottom: 16px;
+        }
+
+        .answer p:last-child {
+            margin-bottom: 0;
+        }
+
+        .answer strong {
+            font-weight: 700;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 48px;
+            font-size: 14px;
+            font-weight: 300;
+            color: #666666;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 16px;
+                padding: 20px 24px;
+            }
+
+            nav ul {
+                gap: 24px;
+            }
+
+            .quote-section {
+                padding: 160px 24px 24px 24px;
+            }
+
+            .quote-text {
+                font-size: 24px;
+                white-space: normal;
+            }
+
+            .quote-attribution {
+                font-size: 16px;
+            }
+
+            .content {
+                padding: 24px 24px 60px 24px;
+            }
+
+            .qa-item {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                margin-bottom: 40px;
+            }
+
+            .question {
+                font-size: 18px;
+            }
+
+            .answer {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -92,11 +194,50 @@
         </ul>
     </nav>
 
+    <div class="quote-section">
+        <p class="quote-text">The best way to complain is to make things.</p>
+        <p class="quote-attribution">James Murphy</p>
+    </div>
+
     <div class="content">
-        <div>
-            <p class="placeholder-text">Nature does not hurry, yet everything is accomplished.</p>
-            <p class="attribution">Lao Tzu</p>
+        <div class="qa-item">
+            <div class="question">Who am I?</div>
+            <div class="answer">
+                <p>I'm a compliance attorney turned product builder. I spent 15 years translating complex rules into workable processes at banks and public affairs firms. Lobbying disclosure, insider trading, pay-to-play restrictions, foreign client due diligence. I've filed the forms, built the tracking systems, and explained the rules to executives who didn't want to hear them.</p>
+                <p>Now I'm building the tools I wish I'd had.</p>
+            </div>
+        </div>
+
+        <div class="qa-item">
+            <div class="question">What am I building?</div>
+            <div class="answer">
+                <p><strong>Workflow Insights</strong> analyzes compliance workflows and identifies automation opportunities. Users describe their process; AI returns time savings estimates and prioritized recommendations. It's a demonstration that domain expertise makes AI tools better.</p>
+                <p><strong>LobbyMatch</strong> helps organizations find the right lobbying firm. Decades of public Lobbying Disclosure Act filings sit in government databases, but nobody has turned that data into a professional tool for the people who actually need it. OpenSecrets and similar sites are great for journalists and citizen watchdogs. They're not built for a VP of Government Affairs trying to hire a firm in a new issue area. LobbyMatch is.</p>
+            </div>
+        </div>
+
+        <div class="qa-item">
+            <div class="question">Why this path?</div>
+            <div class="answer">
+                <p>Because compliance and political advocacy don't have to be this hard.</p>
+                <p>My colleagues and I have spent hours on processes that should take minutes. We have seen disclosure data that could inform real decisions sit unused because the interfaces are needlessly complex. The expertise exists. The data exists. The tools professionals need don't exist—yet.</p>
+                <p>I'm changing how I work on these problems, not which problems I work on. The difference is I'm adding product and technical skills to domain expertise that most builders don't have.</p>
+            </div>
+        </div>
+
+        <div class="qa-item">
+            <div class="question">How do I work?</div>
+            <div class="answer">
+                <p>I ship first and refine after. Analysis paralysis is real (for me), so I'd rather launch something imperfect and iterate based on feedback than wait for certainty that never comes.</p>
+                <p>I constrain scope deliberately to avoid "rabbit holes." New ideas come easily, which is a strength and a risk. Seven-day build challenges keep me finishing, not just starting.</p>
+                <p>I learn fastest with a real problem in front of me. That's how I'm picking up JavaScript, Node.js, and the Claude API—by building tools that solve problems I actually understand.</p>
+                <p>I think about UX as wayfinding. Massimo Vignelli's New York subway maps and Lance Wyman's DC Metro maps showed that good design—clean Helvetica, purposeful color, no clutter—helps people navigate intuitively. That's the standard I'm trying to meet.</p>
+            </div>
         </div>
     </div>
+
+    <footer>
+        <p>© 2025 Mike Burns</p>
+    </footer>
 </body>
 </html>
