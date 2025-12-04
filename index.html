@@ -171,7 +171,6 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 24px;
-            max-width: 800px;
         }
 
         .project-box {
@@ -242,6 +241,12 @@
         .project-btn:hover {
             background: #0039A6;
             border-color: #0039A6;
+            color: white;
+        }
+
+        .project-box.navy .project-btn:hover {
+            background: #DC143C;
+            border-color: #DC143C;
             color: white;
         }
 
@@ -339,6 +344,7 @@
                             <h4>LobbyMatch (in development)</h4>
                             <p>Matches organizations with lobbying firms with AI-powered insights derived from Lobbying Disclosure Act data.</p>
                         </div>
+                        <a href="#" class="project-btn">Open Tool</a>
                     </div>
                 </div>
             </section>
