@@ -177,10 +177,10 @@ app.post('/api/match', async (req, res) => {
       firmProfiles: { firms: slimmedFirms }
     });
 
-    // Call Claude API
+    // Call Claude API - Using Haiku for faster response times
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 6144,
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 4096,
       messages: [
         { role: 'user', content: matchingPrompt }
       ],
@@ -207,7 +207,6 @@ Important disclaimers to include:
     // Try to parse as JSON
     let analysisData;
     try {
-      // Clean up any markdown code fences if present
       const cleanedText = analysisText
         .replace(/```json\n?/g, '')
         .replace(/```\n?/g, '')
@@ -215,7 +214,6 @@ Important disclaimers to include:
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('JSON parse error:', parseError);
-      // Fall back to raw text if JSON parsing fails
       analysisData = { raw: analysisText };
     }
     
