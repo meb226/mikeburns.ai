@@ -144,7 +144,7 @@ ${firmData}
 You MUST respond with valid JSON only. No markdown, no explanation outside the JSON structure.
 
 {
-  "executiveSummary": "Write in a warm, conversational tone — as if briefing a colleague over coffee. Lead with the key insight: which firm stands out and why. Reference **firm names** and **specific strengths** (e.g., 'Mehlman Consulting brings unmatched tech policy depth through Bruce Mehlman's Commerce Department experience'). Where relevant, mention lobbyists whose prior committee or agency roles directly connect to the client's issue. Include a note about the firm's Capitol Hill relationships — use phrases like 'established relationships with [Committee] members' or 'direct connections to key [policy area] policymakers'. Avoid generic phrases. Keep it to 3-4 sentences that feel like expert advice, not a report.",
+  "executiveSummary": "Write in a warm, conversational tone — as if briefing a colleague over coffee. Lead with the key insight: which firm stands out and why. Use **bold** markers ONLY around firm names (e.g., '**Mehlman Consulting** brings unmatched tech policy depth'). Do NOT bold any other text. Use fuzzy, approximate language for all numbers (e.g., 'more than 900 filings' instead of '967 filings', 'close to 1,000 engagements' instead of '1,171 engagements'). Where relevant, mention lobbyists whose prior committee or agency roles directly connect to the client's issue. Include a note about the firm's Capitol Hill relationships — use phrases like 'established relationships with [Committee] members' or 'direct connections to key [policy area] policymakers'. Avoid generic phrases. Keep it to 3-4 sentences that feel like expert advice, not a report.",
   "matches": [
     {
       "rank": 1,
