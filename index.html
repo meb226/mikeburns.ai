@@ -171,6 +171,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 24px;
+            max-width: 800px;
         }
 
         .project-box {
@@ -181,7 +182,7 @@
             justify-content: space-between;
         }
 
-        /* Red project box - completed project */
+        /* Red project box - completed compliance tools */
         .project-box.red {
             background: #DC143C;
             border: 1px solid #DC143C;
@@ -203,7 +204,7 @@
             margin-bottom: 20px;
         }
 
-        /* Navy project box - coming soon */
+        /* Navy project box - completed political intelligence tools */
         .project-box.navy {
             background: #0039A6;
             border: 1px solid #0039A6;
@@ -218,6 +219,48 @@
         }
 
         .project-box.navy p {
+            font-size: 16px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
+        }
+
+        /* Pink project box - in-development compliance tools */
+        .project-box.pink {
+            background: #D81B60;
+            border: 1px solid #D81B60;
+        }
+
+        .project-box.pink h4 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+            color: white;
+        }
+
+        .project-box.pink p {
+            font-size: 16px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
+        }
+
+        /* Sky blue project box - in-development political intelligence tools */
+        .project-box.skyblue {
+            background: #4DA8DA;
+            border: 1px solid #4DA8DA;
+        }
+
+        .project-box.skyblue h4 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+            color: white;
+        }
+
+        .project-box.skyblue p {
             font-size: 16px;
             font-weight: 300;
             color: rgba(255, 255, 255, 0.9);
@@ -329,7 +372,7 @@
             <section class="projects-section">
                 <h3>Projects</h3>
                 <div class="project-grid">
-                    <!-- Top left: Red - Completed project -->
+                    <!-- Top left: Red - Completed compliance tool -->
                     <div class="project-box red">
                         <div>
                             <h4>Workflow Insights</h4>
@@ -338,13 +381,29 @@
                         <a href="compliance-optimizer/index.html" class="project-btn">Open Tool</a>
                     </div>
 
-                    <!-- Top right: Navy - Coming soon -->
+                    <!-- Top right: Navy - Completed political intelligence tool -->
                     <div class="project-box navy">
                         <div>
-                            <h4>LobbyMatch (in development)</h4>
+                            <h4>LobbyMatch</h4>
                             <p>Matches organizations with lobbying firms with AI-powered insights derived from Lobbying Disclosure Act data.</p>
                         </div>
-                        <a href="#" class="project-btn">Open Tool</a>
+                        <a href="https://lobbymatch.vercel.app" class="project-btn">Open Tool</a>
+                    </div>
+
+                    <!-- Bottom left: Pink - In-development compliance tool -->
+                    <div class="project-box pink">
+                        <div>
+                            <h4>Policy Lens (in development)</h4>
+                            <p>Scans internal policies against regulatory frameworks and provides risk gap analysis.</p>
+                        </div>
+                    </div>
+
+                    <!-- Bottom right: Sky blue - In-development political intelligence tool -->
+                    <div class="project-box skyblue">
+                        <div>
+                            <h4>Pitch Craft (in development)</h4>
+                            <p>Builds competitive positioning memos using comprehensive lobbying disclosure analysis.</p>
+                        </div>
                     </div>
                 </div>
             </section>
