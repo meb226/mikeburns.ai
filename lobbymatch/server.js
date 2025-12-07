@@ -7,31 +7,26 @@ const Anthropic = require('@anthropic-ai/sdk');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Initialize Anthropic client
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// Load firm data and committee mapping
 let firmProfiles = { firms: [] };
 let issueCommitteeMap = {};
-let committeeRoster = {};
 
 try {
   firmProfiles = require('./data/firm-profiles.json');
   issueCommitteeMap = require('./data/issue-committee-map.json');
-  committeeRoster = require('./data/committee-roster.json');
 } catch (e) {
   console.log('Data files not fully loaded:', e.message);
 }
 
 // =============================================================================
-// ANALYTICS ENGINE - All scoring/filtering happens here, not in Claude
+// ANALYTICS ENGINE
 // =============================================================================
 
 function parseBudgetToMonthly(budget) {
@@ -46,33 +41,21 @@ function parseBudgetToMonthly(budget) {
 function getRelevantCommittees(issueArea, additionalIssues) {
   const allIssues = [issueArea, ...(additionalIssues || [])].filter(Boolean);
   const committees = [];
-  
   allIssues.forEach(issue => {
     const mapping = issueCommitteeMap.mappings?.[issue];
     if (mapping?.committees) {
       mapping.committees.forEach(c => {
-        committees.push({
-          name: c.committee,
-          chamber: c.chamber,
-          fullName: `${c.chamber} ${c.committee}`,
-          issueCode: issue
-        });
+        committees.push({ name: c.committee, chamber: c.chamber, fullName: `${c.chamber} ${c.committee}` });
       });
     }
   });
-  
   const seen = new Set();
-  return committees.filter(c => {
-    if (seen.has(c.fullName)) return false;
-    seen.add(c.fullName);
-    return true;
-  });
+  return committees.filter(c => { if (seen.has(c.fullName)) return false; seen.add(c.fullName); return true; });
 }
 
 function calcIssueAlignmentScore(firm, issueArea, additionalIssues) {
   const firmIssues = (firm.issueAreas || []).map(i => i.code || i);
   let score = 0;
-  
   if (firmIssues.includes(issueArea)) {
     const position = firmIssues.indexOf(issueArea);
     if (position === 0) score += 60;
@@ -80,54 +63,37 @@ function calcIssueAlignmentScore(firm, issueArea, additionalIssues) {
     else if (position <= 5) score += 40;
     else score += 30;
   }
-  
   const additionalMatches = (additionalIssues || []).filter(i => firmIssues.includes(i)).length;
   const additionalTotal = (additionalIssues || []).length;
-  if (additionalTotal > 0) {
-    score += Math.round((additionalMatches / additionalTotal) * 40);
-  } else {
-    score += 20;
-  }
-  
+  if (additionalTotal > 0) score += Math.round((additionalMatches / additionalTotal) * 40);
+  else score += 20;
   return Math.min(100, score);
 }
 
 function calcExperienceDepthScore(firm, relevantCommittees) {
   let score = 0;
-  
-  const coveredLobbyists = (firm.verifiedLobbyists || [])
-    .filter(l => l.coveredPosition && l.coveredPosition !== 'None listed');
+  const coveredLobbyists = (firm.verifiedLobbyists || []).filter(l => l.coveredPosition && l.coveredPosition !== 'None listed');
   score += Math.min(coveredLobbyists.length * 10, 40);
-  
-  const firmCommittees = (firm.committeeRelationships?.topCommittees || [])
-    .map(c => c.committee?.toLowerCase() || '');
-  const relevantCommitteeNames = relevantCommittees.map(c => c.name?.toLowerCase() || '');
-  
-  const committeeOverlap = firmCommittees.filter(fc => 
-    relevantCommitteeNames.some(rc => fc.includes(rc) || rc.includes(fc))
-  ).length;
-  
-  if (committeeOverlap >= 3) score += 40;
-  else if (committeeOverlap >= 2) score += 30;
-  else if (committeeOverlap >= 1) score += 20;
+  const firmCommittees = (firm.committeeRelationships?.topCommittees || []).map(c => c.committee?.toLowerCase() || '');
+  const relevantNames = relevantCommittees.map(c => c.name?.toLowerCase() || '');
+  const overlap = firmCommittees.filter(fc => relevantNames.some(rc => fc.includes(rc) || rc.includes(fc))).length;
+  if (overlap >= 3) score += 40;
+  else if (overlap >= 2) score += 30;
+  else if (overlap >= 1) score += 20;
   else if (firmCommittees.length > 0) score += 10;
-  
   const clientCount = (firm.recentClients || []).length;
   if (clientCount >= 20) score += 20;
   else if (clientCount >= 10) score += 15;
   else if (clientCount >= 5) score += 10;
   else score += 5;
-  
   return Math.min(100, score);
 }
 
 function calcCostFitScore(firm, budget) {
   if (!budget || !firm.billingRange) return 50;
-  
   const budgetNum = parseBudgetToMonthly(budget);
   const firmMin = firm.billingRange.minMonthly || 0;
   const firmMax = firm.billingRange.maxMonthly || Infinity;
-  
   if (budgetNum >= firmMin && budgetNum <= firmMax) return 90;
   if (budgetNum >= firmMin * 0.5 && budgetNum <= firmMax * 1.5) return 70;
   if (budgetNum >= firmMin * 0.25 && budgetNum <= firmMax * 2) return 50;
@@ -135,56 +101,10 @@ function calcCostFitScore(firm, budget) {
 }
 
 function calcOverallMatchScore(issueScore, experienceScore, costScore) {
-  return Math.round(
-    (issueScore * 0.45) + 
-    (experienceScore * 0.35) + 
-    (costScore * 0.20)
-  );
+  return Math.round((issueScore * 0.45) + (experienceScore * 0.35) + (costScore * 0.20));
 }
 
-function filterRelevantPersonnel(firm, relevantCommittees) {
-  const lobbyists = firm.verifiedLobbyists || [];
-  const relevantCommitteeNames = relevantCommittees.map(c => c.name?.toLowerCase() || '');
-  
-  return lobbyists
-    .map(l => {
-      const position = (l.coveredPosition || '').toLowerCase();
-      const hasCoveredPosition = position && position !== 'none listed';
-      
-      const isRelevant = relevantCommitteeNames.some(rc => position.includes(rc)) ||
-        position.includes('senate') || position.includes('house') ||
-        position.includes('committee') || position.includes('secretary') ||
-        position.includes('director') || position.includes('counsel');
-      
-      return {
-        name: l.name,
-        coveredPosition: l.coveredPosition,
-        hasCoveredPosition,
-        isRelevant: hasCoveredPosition && isRelevant,
-        relevanceScore: hasCoveredPosition ? (isRelevant ? 2 : 1) : 0
-      };
-    })
-    .sort((a, b) => b.relevanceScore - a.relevanceScore)
-    .slice(0, 4);
-}
-
-function findCommitteeOverlap(firm, relevantCommittees) {
-  const firmCommittees = firm.committeeRelationships?.topCommittees || [];
-  const relevantNames = relevantCommittees.map(c => c.name?.toLowerCase() || '');
-  
-  return firmCommittees
-    .filter(fc => {
-      const fcName = (fc.committee || '').toLowerCase();
-      return relevantNames.some(rc => fcName.includes(rc) || rc.includes(fcName));
-    })
-    .slice(0, 4)
-    .map(fc => ({
-      committee: fc.committee,
-      chamber: fc.chamber
-    }));
-}
-
-function analyzeAndRankFirms(firms, { issueArea, additionalIssues, budget, organizationType }) {
+function analyzeAndRankFirms(firms, { issueArea, additionalIssues, budget }) {
   const relevantCommittees = getRelevantCommittees(issueArea, additionalIssues);
   
   const analyzed = firms.map(firm => {
@@ -193,37 +113,18 @@ function analyzeAndRankFirms(firms, { issueArea, additionalIssues, budget, organ
     const costFitScore = calcCostFitScore(firm, budget);
     const overallMatchScore = calcOverallMatchScore(issueAlignmentScore, experienceDepthScore, costFitScore);
     
-    const relevantPersonnel = filterRelevantPersonnel(firm, relevantCommittees);
-    const committeeOverlap = findCommitteeOverlap(firm, relevantCommittees);
-    
     return {
       name: firm.name,
-      registrantId: firm.registrantId,
       website: firm.website,
-      scores: {
-        issueAlignment: issueAlignmentScore,
-        experienceDepth: experienceDepthScore,
-        costFit: costFitScore,
-        overallMatch: overallMatchScore
-      },
-      issueAreas: (firm.issueAreas || []).slice(0, 6),
-      relevantPersonnel,
-      relevantCommittees: committeeOverlap,
-      recentClients: (firm.recentClients || []).slice(0, 8).map(c =>
-        typeof c === 'string' ? { name: c } : { name: c.name, description: (c.description || '').slice(0, 80) }
-      ),
-      billingRange: firm.billingRange ? {
-        minMonthly: firm.billingRange.minMonthly,
-        maxMonthly: firm.billingRange.maxMonthly,
-        avgQuarterly: firm.billingRange.avgQuarterly
-      } : null
+      scores: { issueAlignment: issueAlignmentScore, experienceDepth: experienceDepthScore, costFit: costFitScore, overallMatch: overallMatchScore },
+      issueAreas: (firm.issueAreas || []).slice(0, 5),
+      lobbyists: (firm.verifiedLobbyists || []).slice(0, 3).map(l => ({ name: l.name, position: l.coveredPosition })),
+      clients: (firm.recentClients || []).slice(0, 5).map(c => typeof c === 'string' ? c : c.name),
     };
   });
   
   return {
-    topFirms: analyzed
-      .sort((a, b) => b.scores.overallMatch - a.scores.overallMatch)
-      .slice(0, 5),
+    topFirms: analyzed.sort((a, b) => b.scores.overallMatch - a.scores.overallMatch).slice(0, 5),
     relevantCommittees: relevantCommittees.map(c => c.fullName)
   };
 }
@@ -233,239 +134,120 @@ function analyzeAndRankFirms(firms, { issueArea, additionalIssues, budget, organ
 // =============================================================================
 
 app.get('/api/issues', (req, res) => {
-  const issueCodes = require('./data/issue-codes.json');
-  res.json(issueCodes);
+  res.json(require('./data/issue-codes.json'));
 });
 
 app.get('/api/scenarios', (req, res) => {
-  const scenarios = require('./data/example-scenarios.json');
-  res.json(scenarios);
+  res.json(require('./data/example-scenarios.json'));
 });
 
-// =============================================================================
-// STREAMING MATCH ENDPOINT
-// =============================================================================
-
+// Main endpoint - NON-STREAMING for simplicity and speed
 app.post('/api/match', async (req, res) => {
+  const startTime = Date.now();
+  
   try {
-    const {
-      organizationType,
-      issueArea,
-      additionalIssues,
-      budget,
-      priorities,
-      orgDescription,
-      policyGoals,
-      timeline
-    } = req.body;
+    const { organizationType, issueArea, additionalIssues, budget, priorities, orgDescription, policyGoals, timeline } = req.body;
 
     if (!organizationType || !issueArea || !orgDescription) {
-      return res.status(400).json({ 
-        error: 'Missing required fields: organizationType, issueArea, orgDescription' 
-      });
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Run analytics engine
+    // Analytics
     const allFirms = firmProfiles.firms || firmProfiles;
-    const { topFirms, relevantCommittees } = analyzeAndRankFirms(allFirms, {
-      issueArea,
-      additionalIssues,
-      budget,
-      organizationType
-    });
+    const { topFirms, relevantCommittees } = analyzeAndRankFirms(allFirms, { issueArea, additionalIssues, budget });
     
-    console.log(`Analytics complete: Top 5 from ${allFirms.length} firms`);
+    console.log(`Analytics: ${Date.now() - startTime}ms - Top 5 from ${allFirms.length} firms`);
 
-    // Set up streaming response
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.setHeader('X-Accel-Buffering', 'no');
+    // Compact prompt - only essential data
+    const firmData = topFirms.map((f, i) => 
+      `${i+1}. ${f.name} (Score: ${f.scores.overallMatch}) | Lobbyists: ${f.lobbyists.map(l => `${l.name}${l.position && l.position !== 'None listed' ? ` (${l.position})` : ''}`).join(', ')} | Clients: ${f.clients.join(', ')}`
+    ).join('\n');
 
-    // PHASE 1: Send pre-computed data immediately (instant feedback)
-    res.write(`data: ${JSON.stringify({ 
-      type: 'preview', 
-      topFirms: topFirms.map(f => ({
-        name: f.name,
-        website: f.website,
-        scores: f.scores,
-        relevantPersonnel: f.relevantPersonnel.slice(0, 2),
-        recentClients: f.recentClients.slice(0, 3).map(c => c.name)
-      }))
-    })}\n\n`);
+    const prompt = `Write brief analysis for these 5 lobbying firm matches for a ${organizationType} focused on ${issueArea}.
 
-    // Build prompt
-    const matchingPrompt = buildMatchingPrompt({
-      organizationType,
-      issueArea,
-      additionalIssues,
-      budget,
-      priorities,
-      orgDescription,
-      policyGoals,
-      timeline,
-      topFirms,
-      relevantCommittees
-    });
+Client: ${orgDescription}
+${policyGoals ? `Goals: ${policyGoals}` : ''}
 
-    // PHASE 2: Stream Claude's narrative
-    let fullText = '';
-    
-    const stream = await anthropic.messages.stream({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 4096,
-      messages: [
-        { role: 'user', content: matchingPrompt }
-      ],
-      system: `You are a seasoned Washington, DC political insider with deep expertise in federal lobbying. You understand how congressional and executive branch advocacy works, and you can translate between an ordinary citizen's needs and the specialized knowledge of a federal lobbyist.
+TOP 5 MATCHES:
+${firmData}
 
-Your role is to write compelling, insightful narratives about lobbying firm matches. The analytical ranking and scoring has already been done - your job is to bring the data to life with expert context and nuanced explanation.
-
-Write in a warm, authoritative voice - like a trusted colleague who knows the Hill inside and out. Be specific with names, committees, and policy areas. Avoid generic language.
-
-Important: This analysis is based on public LDA filings and is for informational purposes only. It does not constitute legal, business, or professional advice.`
-    });
-
-    for await (const event of stream) {
-      if (event.type === 'content_block_delta' && event.delta?.text) {
-        const chunk = event.delta.text;
-        fullText += chunk;
-        res.write(`data: ${JSON.stringify({ type: 'chunk', text: chunk })}\n\n`);
-      }
+Respond with JSON only:
+{
+  "executiveSummary": "2-3 sentences recommending the top firm and why it fits.",
+  "matches": [
+    {
+      "rank": 1,
+      "firmName": "Name",
+      "firmWebsite": "url or null",
+      "rationale": "2-3 sentences on why this firm fits the client's needs.",
+      "keyPersonnel": [{"name": "Name", "background": "Former role if any"}],
+      "representativeClients": ["Client1", "Client2"],
+      "keyStrengths": ["Strength 1", "Strength 2", "Strength 3"],
+      "considerations": ["One consideration"]
     }
+  ],
+  "methodology": "Brief explanation of matching approach."
+}
 
-    // Parse final result
-    let analysisData;
+Rules: Never say "access" (use "relationships with"). Be specific. JSON only.`;
+
+    // Call Claude - HAIKU for speed
+    const message = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2500,
+      messages: [{ role: 'user', content: prompt }],
+      system: 'You are a DC lobbying expert. Write concise, specific recommendations. Respond with valid JSON only.'
+    });
+
+    console.log(`Claude API: ${Date.now() - startTime}ms`);
+
+    // Parse response
+    const text = message.content[0].text;
+    let analysis;
     try {
-      const cleanedText = fullText
-        .replace(/```json\n?/g, '')
-        .replace(/```\n?/g, '')
-        .trim();
-      analysisData = JSON.parse(cleanedText);
-    } catch (parseError) {
-      console.error('JSON parse error:', parseError);
-      analysisData = { raw: fullText };
+      const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      analysis = JSON.parse(cleaned);
+    } catch (e) {
+      console.error('JSON parse error:', e);
+      analysis = { raw: text };
     }
 
-    // Merge with pre-computed scores
-    if (analysisData.matches) {
-      analysisData.matches = analysisData.matches.map((match, idx) => ({
+    // Merge pre-computed scores
+    if (analysis.matches) {
+      analysis.matches = analysis.matches.map((match, idx) => ({
         ...match,
         scores: topFirms[idx]?.scores || match.scores,
+        firmWebsite: topFirms[idx]?.website || match.firmWebsite,
         rank: idx + 1
       }));
     }
 
-    // Send final parsed result
-    const finalMessage = await stream.finalMessage();
-    res.write(`data: ${JSON.stringify({ 
-      type: 'complete', 
-      analysis: analysisData,
-      metadata: {
-        model: finalMessage.model,
-        inputTokens: finalMessage.usage.input_tokens,
-        outputTokens: finalMessage.usage.output_tokens,
-        firmsAnalyzed: allFirms.length,
-        firmsReturned: 5
-      }
-    })}\n\n`);
+    console.log(`Total: ${Date.now() - startTime}ms`);
 
-    res.end();
+    res.json({
+      success: true,
+      analysis,
+      metadata: {
+        model: message.model,
+        inputTokens: message.usage.input_tokens,
+        outputTokens: message.usage.output_tokens,
+        timeMs: Date.now() - startTime
+      }
+    });
 
   } catch (error) {
     console.error('Match error:', error);
-    res.write(`data: ${JSON.stringify({ type: 'error', error: error.message })}\n\n`);
-    res.end();
+    res.status(500).json({ error: 'Failed to generate matches', details: error.message });
   }
 });
 
-// =============================================================================
-// PROMPT BUILDER
-// =============================================================================
-
-function buildMatchingPrompt({ organizationType, issueArea, additionalIssues, budget, priorities, orgDescription, policyGoals, timeline, topFirms, relevantCommittees }) {
-  
-  const firmData = JSON.stringify(topFirms, null, 2);
-  
-  return `Write expert narratives for the TOP 5 lobbying firm matches below. Scores and ranking are pre-computed - focus on explaining WHY each firm fits.
-
-## Client Profile
-
-**Organization Type:** ${organizationType}
-**Primary Issue Area:** ${issueArea}
-**Additional Issues:** ${additionalIssues?.length ? additionalIssues.join(', ') : 'None specified'}
-**Budget Range:** ${budget || 'Not specified'}
-**Key Priorities:** ${priorities || 'Not specified'}
-**Organization Description:** ${orgDescription}
-**Policy Goals:** ${policyGoals || 'Not specified'}
-**Timeline & Context:** ${timeline || 'Not specified'}
-
-## Relevant Congressional Committees
-
-${relevantCommittees.length ? relevantCommittees.join('\n') : 'General government affairs'}
-
-## Pre-Ranked Firms (Top 5 by Match Score)
-
-${firmData}
-
-## Required Output Format
-
-Respond with valid JSON only. The scores are ALREADY COMPUTED - do not change them. Write narratives that explain the pre-computed rankings.
-
-{
-  "executiveSummary": "3-4 sentences in a warm, conversational tone. Lead with the top firm and why it stands out. Reference specific lobbyist names and their government experience. Mention relevant committee relationships using phrases like 'established relationships with [Committee] members'. Make it feel like advice from a trusted colleague, not a report.",
-  "matches": [
-    {
-      "rank": 1,
-      "firmName": "[Use firm name from data]",
-      "firmWebsite": "[Use website from data]",
-      "rationale": "Two substantial paragraphs with **bold** markers on 2-3 key phrases per paragraph. First paragraph: WHY this firm understands the client's issue - cite policy work, legislation, client types. Mention committee relationships naturally. Second paragraph: highlight 1-2 specific lobbyists by name with their government background, explain fee alignment.",
-      "keyPersonnel": [
-        {
-          "name": "[Real name from relevantPersonnel]",
-          "background": "[Use coveredPosition - write out fully, e.g., 'Former Chief Counsel, Senate Finance Committee (2015-2019)']"
-        }
-      ],
-      "representativeClients": ["[From recentClients array]", "[Specific names]", "[3-4 total]"],
-      "subjectsLobbied": ["[Specific legislation relevant to client]", "[Policy areas]", "[3 total]"],
-      "keyStrengths": ["[Specific strength with data]", "[Second strength]", "[Third strength - exactly 3]"],
-      "considerations": ["[Honest consideration with context]"]
-    }
-  ],
-  "methodology": "One paragraph: matches determined by analyzing LDA filing history, issue code frequency, lobbyist credentials, client portfolio similarity, Capitol Hill relationships, and budget alignment. Lobbyist verification based on Q3-Q4 2024 and Q1 2025 LD-2 filings. Scores are algorithmically computed for consistency."
-}
-
-CRITICAL RULES:
-
-1. NEVER use the word "access" - use "relationships with", "engagement with", "connections to", "experience working with".
-
-2. Use FUZZY NUMBERS: "more than 50 filings" not "57 filings", "dozens of engagements" not "38 engagements".
-
-3. NO COMMITTEE MEMBER COUNTS: Say "established relationships with Senate Finance Committee members" not "relationships with 12 members".
-
-4. "keyPersonnel" must use ONLY names from the "relevantPersonnel" array. Minimum 2 people per firm.
-
-5. "representativeClients" must use ONLY clients from "recentClients" array.
-
-6. "keyStrengths" must have EXACTLY 3 items per firm.
-
-7. DO NOT include or modify the "scores" object - it will be added from pre-computed values.
-
-8. Maintain the EXACT ORDER of firms as provided (they are pre-ranked).
-
-9. Respond with ONLY the JSON object.`;
-}
-
-// Serve the main app
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start server
 app.listen(PORT, () => {
-  console.log(`LobbyMatch server running on http://localhost:${PORT}`);
-  console.log(`Firm profiles loaded: ${firmProfiles.firms?.length || 0}`);
-  console.log(`Issue-committee mappings loaded: ${Object.keys(issueCommitteeMap.mappings || {}).length}`);
+  console.log(`LobbyMatch running on http://localhost:${PORT}`);
+  console.log(`Firms loaded: ${firmProfiles.firms?.length || 0}`);
 });
 
 module.exports = app;
