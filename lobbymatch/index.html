@@ -1342,7 +1342,7 @@
 
     async function loadIssueCodes() {
       try {
-        const res = await fetch('/api/issues');
+        const res = await fetch('/api/lobbymatch-issues');
         issueCodes = await res.json();
         const select = document.getElementById('issueArea');
         issueCodes.forEach(issue => {
@@ -1356,7 +1356,7 @@
 
     async function loadScenarios() {
       try {
-        const res = await fetch('/api/scenarios');
+        const res = await fetch('/api/lobbymatch-scenarios');
         scenarios = await res.json();
         const select = document.getElementById('scenario-select');
         scenarios.forEach(s => {
@@ -1474,7 +1474,7 @@
       document.getElementById('loading').style.display = 'block';
       startQuoteRotation();
       try {
-        const res = await fetch('/api/match', {
+        const res = await fetch('/api/lobbymatch-match', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
