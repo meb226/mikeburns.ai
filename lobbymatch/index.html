@@ -280,15 +280,11 @@
     /* Buttons */
     .btn-row {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
+      gap: 16px;
       margin-top: 32px;
       padding-top: 24px;
       border-top: 1px solid var(--gray-light);
-    }
-
-    .btn-row-split {
-      justify-content: flex-start;
-      gap: 16px;
     }
 
     button {
@@ -315,7 +311,6 @@
       background: var(--navy);
       border: none;
       color: var(--white);
-      margin-left: auto;
     }
 
     .btn-next:hover {
@@ -466,17 +461,15 @@
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      gap: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .card-header-left {
       display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      flex: 1;
-      min-width: 0;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .card-rank-circle {
@@ -486,44 +479,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--white);
       flex-shrink: 0;
     }
 
-    .match-card:nth-child(1) .card-rank-circle {
-      background: var(--card-red-border);
-    }
-
-    .match-card:nth-child(2) .card-rank-circle {
-      background: var(--card-blue-border);
-    }
-
-    .match-card:nth-child(3) .card-rank-circle {
-      background: var(--card-turquoise-border);
-    }
-
-    .match-card:nth-child(4) .card-rank-circle {
-      background: var(--card-orange-border);
-    }
-
-    .match-card:nth-child(5) .card-rank-circle {
-      background: var(--card-green-border);
-    }
+    .match-card:nth-child(1) .card-rank-circle { background: var(--card-red-border); }
+    .match-card:nth-child(2) .card-rank-circle { background: var(--card-blue-border); }
+    .match-card:nth-child(3) .card-rank-circle { background: var(--card-turquoise-border); }
+    .match-card:nth-child(4) .card-rank-circle { background: var(--card-orange-border); }
+    .match-card:nth-child(5) .card-rank-circle { background: var(--card-green-border); }
 
     .card-firm-name {
       font-size: 20px;
       font-weight: 700;
       color: var(--black);
       margin: 0;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
     }
 
     .card-overall-score {
       text-align: right;
-      flex-shrink: 0;
     }
 
     .overall-score-label {
@@ -531,213 +507,169 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--gray-mid);
+      margin-bottom: 2px;
     }
 
     .overall-score-value {
       font-size: 28px;
       font-weight: 700;
       color: var(--black);
+      line-height: 1;
     }
 
     .overall-score-max {
       font-size: 14px;
+      font-weight: 400;
       color: var(--gray-mid);
     }
 
     .card-rationale {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--gray-dark);
       margin-bottom: 20px;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
     }
 
     .card-rationale p {
       margin: 0 0 12px 0;
-      line-height: 1.65;
-      font-size: 15px;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
     }
 
-    .card-section {
-      margin-bottom: 20px;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
+    .card-rationale p:last-child {
+      margin-bottom: 0;
     }
 
-    .card-section-title {
-      font-size: 14px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--black);
-      margin-bottom: 10px;
-    }
-
-    /* Highlighted text in rationale */
     .card-rationale strong {
       color: var(--highlight-color);
       font-weight: 600;
     }
 
-    /* Key Personnel section - box style */
+    .card-section {
+      margin-bottom: 16px;
+    }
+
+    .card-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-mid);
+      margin-bottom: 8px;
+    }
+
     .personnel-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      padding: 0;
-      margin: 0;
-      list-style: none;
+      gap: 10px;
     }
 
     .personnel-box {
-      background: rgba(0, 57, 166, 0.06);
-      border: 1px solid rgba(0, 57, 166, 0.15);
-      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 10px 12px;
       flex: 1;
       min-width: 200px;
-      max-width: calc(50% - 6px);
-      box-sizing: border-box;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
+      max-width: calc(50% - 5px);
     }
 
     .personnel-name {
+      font-size: 14px;
       font-weight: 600;
       color: var(--black);
-      font-size: 14px;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .personnel-background {
-      font-size: 13px;
-      color: var(--gray-dark);
+      font-size: 12px;
+      color: var(--gray-mid);
       line-height: 1.4;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
     }
 
-    /* Representative Clients */
     .clients-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      padding: 0;
-      margin: 0;
+      gap: 6px;
       list-style: none;
     }
 
     .clients-list li {
-      background: rgba(0, 0, 0, 0.05);
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.1);
       padding: 4px 10px;
       font-size: 13px;
-      border-radius: 2px;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
+      color: var(--gray-dark);
       max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    /* Subjects Lobbied */
     .subjects-list {
       list-style: none;
-      padding: 0;
-      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .subjects-list li {
+      font-size: 13px;
+      color: var(--gray-dark);
+      padding-left: 16px;
       position: relative;
-      padding-left: 20px;
-      margin-bottom: 6px;
-      font-size: 14px;
-      line-height: 1.5;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
     }
 
-    .subjects-list li::before {
-      content: '§';
+    .subjects-list li:before {
+      content: "→";
       position: absolute;
       left: 0;
       color: var(--gray-mid);
-      font-weight: 600;
     }
 
-    /* Committee Engagement */
     .committee-engagement {
-      background: rgba(0, 57, 166, 0.04);
-      padding: 16px;
-      margin-bottom: 20px;
+      background: rgba(0, 57, 166, 0.05);
+      padding: 12px;
       border-left: 3px solid var(--navy);
-    }
-
-    .committee-engagement .card-section-title {
-      margin-bottom: 8px;
     }
 
     .committee-text {
       font-size: 14px;
-      line-height: 1.5;
       color: var(--gray-dark);
       margin: 0;
-      font-style: italic;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
-      word-break: break-word;
-    }
-
-    /* Firm link */
-    .firm-link {
-      display: inline-block;
-      margin-top: 16px;
-      padding: 8px 16px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--navy);
-      border: 1px solid var(--navy);
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
-    .firm-link:hover {
-      background: var(--navy);
-      color: var(--white);
+      line-height: 1.5;
     }
 
     .card-list {
       list-style: none;
-      padding: 0;
-      margin: 0;
     }
 
     .card-list li {
-      position: relative;
-      padding-left: 20px;
-      margin-bottom: 8px;
       font-size: 14px;
-      line-height: 1.5;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
-    }
-
-    .card-list li::before {
-      content: '→';
-      position: absolute;
-      left: 0;
-      color: var(--gray-mid);
-      font-weight: 500;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      color: var(--gray-dark);
     }
 
     .card-list li:last-child {
-      margin-bottom: 0;
+      border-bottom: none;
     }
 
-    /* Score Grid */
+    .card-list.strengths li:before {
+      content: "✓ ";
+      color: var(--subway-green);
+      font-weight: bold;
+    }
+
+    .card-list.considerations li:before {
+      content: "◦ ";
+      color: var(--gray-mid);
+    }
+
     .score-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
       margin-top: 16px;
       padding-top: 16px;
-      border-top: 1px solid rgba(0,0,0,0.1);
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .score-item {
@@ -747,105 +679,92 @@
     .score-label {
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.5px;
       color: var(--gray-mid);
       margin-bottom: 4px;
     }
 
     .score-value {
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 20px;
+      font-weight: 700;
       color: var(--black);
     }
 
     .score-value .max {
       font-size: 12px;
-      color: var(--gray-mid);
       font-weight: 400;
+      color: var(--gray-mid);
     }
 
-    /* Legacy results content - fallback */
-    .results-content {
-      white-space: pre-wrap;
-      font-size: 15px;
-      line-height: 1.7;
-    }
-
-    .results-content h3 {
-      font-size: 18px;
-      margin-top: 24px;
-      margin-bottom: 8px;
-      color: var(--navy);
-    }
-
-    .results-content h4 {
-      font-size: 16px;
+    .firm-link {
+      display: inline-block;
       margin-top: 16px;
-      margin-bottom: 4px;
+      font-size: 14px;
+      color: var(--navy);
+      text-decoration: none;
+      font-weight: 500;
     }
 
-    /* Export Bar */
+    .firm-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Export buttons */
     .export-bar {
-      margin-top: 32px;
-      padding-top: 24px;
-      border-top: 1px solid var(--gray-light);
       display: flex;
       gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
     }
 
     .btn-export {
-      background: var(--white);
-      border: 1px solid var(--navy);
-      color: var(--navy);
-      flex: 1;
+      background: var(--gray-light);
+      border: 1px solid var(--gray-mid);
+      color: var(--gray-dark);
+      padding: 10px 20px;
+      font-size: 13px;
     }
 
     .btn-export:hover {
-      background: var(--navy);
-      color: var(--white);
+      background: var(--white);
+      border-color: var(--navy);
+      color: var(--navy);
     }
 
     .new-search-row {
       margin-top: 16px;
-      text-align: center;
     }
 
     .btn-new-search {
-      background: var(--white);
-      border: 1px solid var(--gray-mid);
-      color: var(--gray-dark);
-      padding: 12px 32px;
+      background: var(--navy);
+      border: none;
+      color: var(--white);
+      padding: 12px 24px;
     }
 
     .btn-new-search:hover {
-      background: var(--red);
-      border-color: var(--red);
-      color: var(--white);
+      background: #002d80;
     }
 
-    /* Carousel Navigation */
+    /* Carousel navigation */
     .carousel-nav {
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       gap: 16px;
-      margin-top: 20px;
+      margin-top: 16px;
     }
 
     .carousel-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid var(--navy);
       background: var(--white);
-      color: var(--navy);
+      border: 1px solid var(--gray-mid);
+      width: 36px;
+      height: 36px;
       font-size: 18px;
       cursor: pointer;
-      transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0;
     }
 
     .carousel-btn:hover {
@@ -898,30 +817,172 @@
       border-color: var(--card-green-border);
     }
 
-    /* Loading State */
+    /* Loading State with Live Analysis */
     .loading {
+      padding: 32px 0;
+    }
+
+    .loading-header {
       text-align: center;
-      padding: 48px;
+      margin-bottom: 24px;
+    }
+
+    .loading-header p {
       color: var(--gray-mid);
-    }
-
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 3px solid var(--gray-light);
-      border-top-color: var(--navy);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 16px;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+      margin-bottom: 8px;
     }
 
     .loading-subtext {
       font-size: 13px;
-      margin-top: 8px;
+      color: var(--gray-mid);
+    }
+
+    /* Live Analysis Panel */
+    .live-analysis-panel {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .live-analysis-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: #252525;
+      border-bottom: 1px solid #333;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .live-analysis-header:hover {
+      background: #2a2a2a;
+    }
+
+    .live-analysis-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #e0e0e0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--subway-red);
+    }
+
+    .status-dot.streaming {
+      animation: pulse-red 1.2s ease-in-out infinite;
+    }
+
+    .status-dot.complete {
+      background: var(--subway-green);
+      animation: none;
+    }
+
+    @keyframes pulse-red {
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(238, 53, 46, 0.7);
+      }
+      50% {
+        opacity: 0.6;
+        transform: scale(1.1);
+        box-shadow: 0 0 0 6px rgba(238, 53, 46, 0);
+      }
+    }
+
+    .live-analysis-toggle {
+      font-size: 10px;
+      color: #888;
+      transition: transform 0.2s;
+    }
+
+    .live-analysis-toggle.collapsed {
+      transform: rotate(-90deg);
+    }
+
+    .live-analysis-content {
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 16px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #00ff00;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .live-analysis-content.collapsed {
+      display: none;
+    }
+
+    .live-analysis-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: #00ff00;
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Skeleton Cards */
+    .skeleton-cards {
+      margin-top: 24px;
+    }
+
+    .skeleton-card {
+      background: var(--gray-light);
+      border: 2px solid #e0e0e0;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .skeleton-line {
+      background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .skeleton-line.title {
+      height: 24px;
+      width: 60%;
+    }
+
+    .skeleton-line.text {
+      height: 14px;
+      width: 100%;
+    }
+
+    .skeleton-line.text.short {
+      width: 80%;
+    }
+
+    .skeleton-line.text.shorter {
+      width: 50%;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
     .loading-quote {
@@ -1018,7 +1079,8 @@
       }
 
       .btn-back,
-      .btn-next {
+      .btn-next,
+      .btn-generate {
         width: 100%;
       }
       
@@ -1130,7 +1192,6 @@
         </div>
 
         <div class="btn-row">
-          <div></div>
           <button type="button" class="btn-next" onclick="nextStep()">Continue</button>
         </div>
       </div>
@@ -1226,7 +1287,7 @@
         <label for="timeline">What's your timeline and any relevant context?</label>
         <textarea id="timeline" name="timeline" placeholder="e.g., The bill is expected to move in Q2, we have an existing relationship with Rep. Smith's office, we've never hired a lobbyist before..."></textarea>
 
-        <div class="btn-row btn-row-split">
+        <div class="btn-row">
           <button type="button" class="btn-back" onclick="prevStep()">Back</button>
           <button type="submit" class="btn-generate" id="generateBtn">Generate Matches</button>
         </div>
@@ -1279,12 +1340,36 @@
       </div>
     </div>
 
-    <!-- Loading State -->
+    <!-- Loading State with Live Analysis -->
     <div id="loading" style="display: none;">
       <div class="loading">
-        <div class="spinner"></div>
-        <p>Analyzing LDA filings and generating matches...</p>
-        <p class="loading-subtext">This typically takes 15-30 seconds.</p>
+        <div class="loading-header">
+          <p>Analyzing LDA filings and generating matches...</p>
+          <p class="loading-subtext">This typically takes 10-20 seconds.</p>
+        </div>
+
+        <!-- Live Analysis Panel -->
+        <div class="live-analysis-panel">
+          <div class="live-analysis-header" onclick="toggleLiveAnalysis()">
+            <div class="live-analysis-title">
+              <div class="status-dot streaming" id="statusDot"></div>
+              <span>Live Analysis</span>
+            </div>
+            <span class="live-analysis-toggle" id="liveAnalysisToggle">▼</span>
+          </div>
+          <div class="live-analysis-content" id="liveAnalysisContent"><span class="live-analysis-cursor"></span></div>
+        </div>
+
+        <!-- Skeleton Cards -->
+        <div class="skeleton-cards">
+          <div class="skeleton-card">
+            <div class="skeleton-line title"></div>
+            <div class="skeleton-line text"></div>
+            <div class="skeleton-line text short"></div>
+            <div class="skeleton-line text shorter"></div>
+          </div>
+        </div>
+
         <div class="loading-quote">
           <p id="rotatingQuote"></p>
         </div>
@@ -1300,6 +1385,7 @@
     let scenarios = [];
     let issueCodes = [];
     let quoteInterval = null;
+    let liveAnalysisCollapsed = false;
 
     const politicalQuotes = [
       '"In politics, nothing happens by accident. If it happens, you can bet it was planned that way." — Franklin D. Roosevelt',
@@ -1315,6 +1401,31 @@
       '<strong>Did you know?</strong> <em>The U.S. Chamber of Commerce has been the top-spending lobbying organization for over two decades.</em>',
       '"Never doubt that a small group of thoughtful, committed citizens can change the world." — Margaret Mead'
     ];
+
+    function toggleLiveAnalysis() {
+      const content = document.getElementById('liveAnalysisContent');
+      const toggle = document.getElementById('liveAnalysisToggle');
+      liveAnalysisCollapsed = !liveAnalysisCollapsed;
+      content.classList.toggle('collapsed', liveAnalysisCollapsed);
+      toggle.classList.toggle('collapsed', liveAnalysisCollapsed);
+    }
+
+    function updateLiveAnalysis(text) {
+      const content = document.getElementById('liveAnalysisContent');
+      // Remove cursor, add text, re-add cursor
+      content.innerHTML = text + '<span class="live-analysis-cursor"></span>';
+      // Auto-scroll to bottom
+      content.scrollTop = content.scrollHeight;
+    }
+
+    function setStreamingComplete() {
+      const dot = document.getElementById('statusDot');
+      dot.classList.remove('streaming');
+      dot.classList.add('complete');
+      // Remove cursor
+      const content = document.getElementById('liveAnalysisContent');
+      content.innerHTML = content.innerHTML.replace(/<span class="live-analysis-cursor"><\/span>/g, '');
+    }
 
     function startQuoteRotation() {
       const quoteEl = document.getElementById('rotatingQuote');
@@ -1348,10 +1459,12 @@
         issueCodes.forEach(issue => {
           const option = document.createElement('option');
           option.value = issue.value;
-          option.textContent = `${issue.name} (${issue.value})`;
+          option.textContent = issue.label;
           select.appendChild(option);
         });
-      } catch (e) { console.error('Failed to load issues:', e); }
+      } catch (err) {
+        console.error('Failed to load issue codes:', err);
+      }
     }
 
     async function loadScenarios() {
@@ -1359,84 +1472,94 @@
         const res = await fetch('/api/lobbymatch-scenarios');
         scenarios = await res.json();
         const select = document.getElementById('scenario-select');
-        scenarios.forEach(s => {
+        scenarios.forEach((scenario, index) => {
           const option = document.createElement('option');
-          option.value = s.id;
-          option.textContent = s.name;
+          option.value = index;
+          option.textContent = scenario.name;
           select.appendChild(option);
         });
-        select.addEventListener('change', applyScenario);
-      } catch (e) { console.error('Failed to load scenarios:', e); }
+        select.addEventListener('change', (e) => {
+          if (e.target.value !== '') {
+            loadScenario(parseInt(e.target.value));
+          }
+        });
+      } catch (err) {
+        console.error('Failed to load scenarios:', err);
+      }
     }
 
-    function applyScenario(e) {
-      const scenario = scenarios.find(s => s.id === e.target.value);
+    function loadScenario(index) {
+      const scenario = scenarios[index];
       if (!scenario) return;
-      document.querySelectorAll('.radio-option.selected').forEach(o => o.classList.remove('selected'));
-      const orgRadio = document.querySelector(`input[name="organizationType"][value="${scenario.organizationType}"]`);
-      if (orgRadio) { orgRadio.checked = true; orgRadio.closest('.radio-option').classList.add('selected'); }
+      document.querySelectorAll('input[name="organizationType"]').forEach(radio => {
+        radio.checked = radio.value === scenario.organizationType;
+        if (radio.checked) radio.closest('.radio-option').classList.add('selected');
+        else radio.closest('.radio-option').classList.remove('selected');
+      });
       document.getElementById('issueArea').value = scenario.issueArea;
       document.getElementById('priorities').value = scenario.priorities || '';
-      const budgetRadio = document.querySelector(`input[name="budget"][value="${scenario.budget}"]`);
-      if (budgetRadio) { budgetRadio.checked = true; budgetRadio.closest('.radio-option').classList.add('selected'); }
-      if (document.getElementById('orgDescription')) document.getElementById('orgDescription').value = scenario.description || '';
-      if (document.getElementById('policyGoals')) document.getElementById('policyGoals').value = scenario.policyGoals || '';
-      if (document.getElementById('timeline')) document.getElementById('timeline').value = scenario.timeline || '';
-      goToStep(1);
+      document.querySelectorAll('input[name="budget"]').forEach(radio => {
+        radio.checked = radio.value === scenario.budget;
+        if (radio.checked) radio.closest('.radio-option').classList.add('selected');
+        else radio.closest('.radio-option').classList.remove('selected');
+      });
+      document.getElementById('orgDescription').value = scenario.orgDescription;
+      document.getElementById('policyGoals').value = scenario.policyGoals || '';
+      document.getElementById('timeline').value = scenario.timeline || '';
+      goToStep(4);
     }
 
     function setupRadioListeners() {
       document.querySelectorAll('.radio-option').forEach(option => {
         option.addEventListener('click', () => {
-          const groupName = option.querySelector('input').name;
-          document.querySelectorAll(`input[name="${groupName}"]`).forEach(radio => {
-            radio.closest('.radio-option').classList.remove('selected');
-          });
+          const group = option.closest('.radio-group');
+          group.querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
           option.classList.add('selected');
-          option.querySelector('input').checked = true;
+          option.querySelector('input[type="radio"]').checked = true;
         });
       });
     }
 
     let issueRowCount = 0;
+
     function addIssueRow() {
       issueRowCount++;
       const container = document.getElementById('additionalIssues');
       const row = document.createElement('div');
       row.className = 'issue-row additional-issue-row';
       row.id = `issueRow${issueRowCount}`;
-      const selectCol = document.createElement('div');
-      selectCol.className = 'issue-col';
-      const select = document.createElement('select');
-      select.name = `additionalIssue${issueRowCount}`;
-      select.innerHTML = '<option value="">— Select an issue —</option>';
-      issueCodes.forEach(issue => {
-        const option = document.createElement('option');
-        option.value = issue.value;
-        option.textContent = `${issue.name} (${issue.value})`;
-        select.appendChild(option);
-      });
-      selectCol.appendChild(select);
-      const inputCol = document.createElement('div');
-      inputCol.className = 'issue-col issue-col-with-remove';
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.name = `additionalPriorities${issueRowCount}`;
-      input.placeholder = 'Key priorities for this issue';
-      const removeBtn = document.createElement('button');
-      removeBtn.type = 'button';
-      removeBtn.className = 'btn-remove-issue';
-      removeBtn.textContent = '×';
-      removeBtn.onclick = () => row.remove();
-      inputCol.appendChild(input);
-      inputCol.appendChild(removeBtn);
-      row.appendChild(selectCol);
-      row.appendChild(inputCol);
+      const options = issueCodes.map(issue => `<option value="${issue.value}">${issue.label}</option>`).join('');
+      row.innerHTML = `
+        <div class="issue-col">
+          <label>Additional Issue</label>
+          <div class="issue-col-with-remove">
+            <select name="additionalIssue">
+              <option value="">— Select an issue —</option>
+              ${options}
+            </select>
+            <button type="button" class="btn-remove-issue" onclick="removeIssueRow(${issueRowCount})">×</button>
+          </div>
+        </div>
+      `;
       container.appendChild(row);
     }
 
-    function nextStep() { if (currentStep < totalSteps) goToStep(currentStep + 1); }
-    function prevStep() { if (currentStep > 1) goToStep(currentStep - 1); }
+    function removeIssueRow(id) {
+      const row = document.getElementById(`issueRow${id}`);
+      if (row) row.remove();
+    }
+
+    function nextStep() {
+      if (currentStep < totalSteps) {
+        goToStep(currentStep + 1);
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 1) {
+        goToStep(currentStep - 1);
+      }
+    }
 
     function goToStep(step) {
       document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -1444,8 +1567,8 @@
       document.querySelectorAll('.progress-step').forEach(p => {
         const pStep = parseInt(p.dataset.step);
         p.classList.remove('active', 'complete');
-        if (pStep === step) p.classList.add('active');
         if (pStep < step) p.classList.add('complete');
+        else if (pStep === step) p.classList.add('active');
       });
       currentStep = step;
     }
@@ -1468,20 +1591,65 @@
         alert('Please complete all required fields.');
         return;
       }
+      
+      // Reset live analysis state
+      document.getElementById('statusDot').classList.remove('complete');
+      document.getElementById('statusDot').classList.add('streaming');
+      document.getElementById('liveAnalysisContent').innerHTML = '<span class="live-analysis-cursor"></span>';
+      liveAnalysisCollapsed = false;
+      document.getElementById('liveAnalysisContent').classList.remove('collapsed');
+      document.getElementById('liveAnalysisToggle').classList.remove('collapsed');
+      
       document.getElementById('matchForm').style.display = 'none';
       document.querySelector('.progress-bar').style.display = 'none';
       document.querySelector('.scenario-bar').style.display = 'none';
       document.getElementById('loading').style.display = 'block';
       startQuoteRotation();
+      
+      let streamedText = '';
+      let preComputedScores = null;
+      
       try {
-        const res = await fetch('/api/lobbymatch-match', {
+        const response = await fetch('/api/lobbymatch-match', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
         });
-        const data = await res.json();
-        if (data.success) displayResults(data.analysis);
-        else throw new Error(data.error || 'Failed to generate matches');
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+          
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+                
+                if (data.type === 'scores') {
+                  preComputedScores = data.topFirms;
+                } else if (data.type === 'chunk') {
+                  streamedText += data.text;
+                  updateLiveAnalysis(streamedText);
+                } else if (data.type === 'complete') {
+                  setStreamingComplete();
+                  // Small delay to let user see completion state
+                  await new Promise(resolve => setTimeout(resolve, 500));
+                  displayResults(data.analysis, preComputedScores);
+                } else if (data.type === 'error') {
+                  throw new Error(data.error);
+                }
+              } catch (parseErr) {
+                // Skip malformed JSON
+              }
+            }
+          }
+        }
       } catch (error) {
         console.error('Error:', error);
         alert('Error generating matches: ' + error.message);
@@ -1489,7 +1657,7 @@
       }
     });
 
-    function displayResults(analysis) {
+    function displayResults(analysis, preComputedScores) {
       document.getElementById('loading').style.display = 'none';
       stopQuoteRotation();
       if (analysis.raw) {
@@ -1814,7 +1982,7 @@
         doc.text(line, margin, y);
         y += 4;
       });
-      doc.save('Lobby Match-Results.pdf');
+      doc.save('Lobby-Match-Results.pdf');
     }
 
     function startOver() {
@@ -1830,6 +1998,7 @@
       document.getElementById('methodologyContent').innerHTML = '';
       document.getElementById('methodologyContent').style.display = 'none';
       document.querySelector('.methodology-arrow').classList.remove('open');
+      document.getElementById('loading').style.display = 'none';
       issueRowCount = 0;
       currentCard = 0;
       totalCards = 0;
