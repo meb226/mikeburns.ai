@@ -34,7 +34,6 @@ try {
 // ANALYTICS ENGINE - All scoring/filtering happens here, not in Claude
 // =============================================================================
 
-// Parse budget string to monthly number
 function parseBudgetToMonthly(budget) {
   if (!budget) return 10000;
   if (budget.includes('2,500-5,000')) return 3750;
@@ -44,7 +43,6 @@ function parseBudgetToMonthly(budget) {
   return 10000;
 }
 
-// Get relevant committees for user's issues
 function getRelevantCommittees(issueArea, additionalIssues) {
   const allIssues = [issueArea, ...(additionalIssues || [])].filter(Boolean);
   const committees = [];
@@ -63,7 +61,6 @@ function getRelevantCommittees(issueArea, additionalIssues) {
     }
   });
   
-  // Deduplicate by fullName
   const seen = new Set();
   return committees.filter(c => {
     if (seen.has(c.fullName)) return false;
@@ -72,14 +69,10 @@ function getRelevantCommittees(issueArea, additionalIssues) {
   });
 }
 
-// Calculate Issue Alignment Score (0-100)
 function calcIssueAlignmentScore(firm, issueArea, additionalIssues) {
-  const allIssues = [issueArea, ...(additionalIssues || [])].filter(Boolean);
   const firmIssues = (firm.issueAreas || []).map(i => i.code || i);
-  
   let score = 0;
   
-  // Primary issue match (worth 60 points)
   if (firmIssues.includes(issueArea)) {
     const position = firmIssues.indexOf(issueArea);
     if (position === 0) score += 60;
@@ -88,7 +81,6 @@ function calcIssueAlignmentScore(firm, issueArea, additionalIssues) {
     else score += 30;
   }
   
-  // Additional issues (worth up to 40 points)
   const additionalMatches = (additionalIssues || []).filter(i => firmIssues.includes(i)).length;
   const additionalTotal = (additionalIssues || []).length;
   if (additionalTotal > 0) {
@@ -100,16 +92,13 @@ function calcIssueAlignmentScore(firm, issueArea, additionalIssues) {
   return Math.min(100, score);
 }
 
-// Calculate Experience Depth Score (0-100)
 function calcExperienceDepthScore(firm, relevantCommittees) {
   let score = 0;
   
-  // Covered officials - up to 40 points
   const coveredLobbyists = (firm.verifiedLobbyists || [])
     .filter(l => l.coveredPosition && l.coveredPosition !== 'None listed');
   score += Math.min(coveredLobbyists.length * 10, 40);
   
-  // Committee relationships - up to 40 points
   const firmCommittees = (firm.committeeRelationships?.topCommittees || [])
     .map(c => c.committee?.toLowerCase() || '');
   const relevantCommitteeNames = relevantCommittees.map(c => c.name?.toLowerCase() || '');
@@ -123,7 +112,6 @@ function calcExperienceDepthScore(firm, relevantCommittees) {
   else if (committeeOverlap >= 1) score += 20;
   else if (firmCommittees.length > 0) score += 10;
   
-  // Client portfolio depth - up to 20 points
   const clientCount = (firm.recentClients || []).length;
   if (clientCount >= 20) score += 20;
   else if (clientCount >= 10) score += 15;
@@ -133,7 +121,6 @@ function calcExperienceDepthScore(firm, relevantCommittees) {
   return Math.min(100, score);
 }
 
-// Calculate Cost Fit Score (0-100)
 function calcCostFitScore(firm, budget) {
   if (!budget || !firm.billingRange) return 50;
   
@@ -147,7 +134,6 @@ function calcCostFitScore(firm, budget) {
   return 30;
 }
 
-// Calculate Overall Match Score (weighted composite)
 function calcOverallMatchScore(issueScore, experienceScore, costScore) {
   return Math.round(
     (issueScore * 0.45) + 
@@ -156,7 +142,6 @@ function calcOverallMatchScore(issueScore, experienceScore, costScore) {
   );
 }
 
-// Filter lobbyists relevant to the client's issues
 function filterRelevantPersonnel(firm, relevantCommittees) {
   const lobbyists = firm.verifiedLobbyists || [];
   const relevantCommitteeNames = relevantCommittees.map(c => c.name?.toLowerCase() || '');
@@ -183,7 +168,6 @@ function filterRelevantPersonnel(firm, relevantCommittees) {
     .slice(0, 4);
 }
 
-// Find committee overlap between firm and client's issues
 function findCommitteeOverlap(firm, relevantCommittees) {
   const firmCommittees = firm.committeeRelationships?.topCommittees || [];
   const relevantNames = relevantCommittees.map(c => c.name?.toLowerCase() || '');
@@ -200,7 +184,6 @@ function findCommitteeOverlap(firm, relevantCommittees) {
     }));
 }
 
-// Main analytics function - returns top 5 firms with all pre-computed data
 function analyzeAndRankFirms(firms, { issueArea, additionalIssues, budget, organizationType }) {
   const relevantCommittees = getRelevantCommittees(issueArea, additionalIssues);
   
@@ -293,6 +276,24 @@ app.post('/api/match', async (req, res) => {
     
     console.log(`Analytics complete: Top 5 from ${allFirms.length} firms`);
 
+    // Set up streaming response
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    // PHASE 1: Send pre-computed data immediately (instant feedback)
+    res.write(`data: ${JSON.stringify({ 
+      type: 'preview', 
+      topFirms: topFirms.map(f => ({
+        name: f.name,
+        website: f.website,
+        scores: f.scores,
+        relevantPersonnel: f.relevantPersonnel.slice(0, 2),
+        recentClients: f.recentClients.slice(0, 3).map(c => c.name)
+      }))
+    })}\n\n`);
+
     // Build prompt
     const matchingPrompt = buildMatchingPrompt({
       organizationType,
@@ -307,16 +308,7 @@ app.post('/api/match', async (req, res) => {
       relevantCommittees
     });
 
-    // Set up streaming response
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.setHeader('X-Accel-Buffering', 'no');
-
-    // Send pre-computed scores first
-    res.write(`data: ${JSON.stringify({ type: 'scores', topFirms })}\n\n`);
-
-    // Stream from Claude
+    // PHASE 2: Stream Claude's narrative
     let fullText = '';
     
     const stream = await anthropic.messages.stream({
@@ -334,7 +326,6 @@ Write in a warm, authoritative voice - like a trusted colleague who knows the Hi
 Important: This analysis is based on public LDA filings and is for informational purposes only. It does not constitute legal, business, or professional advice.`
     });
 
-    // Stream text chunks to client
     for await (const event of stream) {
       if (event.type === 'content_block_delta' && event.delta?.text) {
         const chunk = event.delta.text;

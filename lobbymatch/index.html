@@ -15,39 +15,29 @@
       --gray-light: #f5f5f5;
       --white: #fff;
       
-      /* Subway palette */
       --subway-red: #EE352E;
       --subway-blue: #0039A6;
       --subway-turquoise: #00A1DE;
       --subway-orange: #F7931E;
       --subway-green: #00933C;
       
-      /* Card background tints (8% opacity) */
       --card-red-bg: rgba(238, 53, 46, 0.08);
       --card-blue-bg: rgba(0, 57, 166, 0.08);
       --card-turquoise-bg: rgba(0, 161, 222, 0.08);
       --card-orange-bg: rgba(247, 147, 30, 0.08);
       --card-green-bg: rgba(0, 147, 60, 0.08);
       
-      /* Card border accents */
       --card-red-border: #EE352E;
       --card-blue-border: #0039A6;
       --card-turquoise-border: #00A1DE;
       --card-orange-border: #F7931E;
       --card-green-border: #00933C;
       
-      /* Highlight color for bold text */
       --highlight-color: #0039A6;
-      
-      /* Vignelli dark gray for executive summary */
       --vignelli-gray: #4A4A4A;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -63,7 +53,6 @@
       padding: 48px 32px;
     }
 
-    /* Header */
     header {
       margin-bottom: 48px;
       border-bottom: 2px solid var(--black);
@@ -102,7 +91,6 @@
       color: var(--black);
     }
 
-    /* Progress */
     .progress-bar {
       display: flex;
       gap: 8px;
@@ -116,22 +104,11 @@
       transition: background 0.3s;
     }
 
-    .progress-step.active {
-      background: var(--navy);
-    }
+    .progress-step.active { background: var(--navy); }
+    .progress-step.complete { background: var(--red); }
 
-    .progress-step.complete {
-      background: var(--red);
-    }
-
-    /* Form Steps */
-    .step {
-      display: none;
-    }
-
-    .step.active {
-      display: block;
-    }
+    .step { display: none; }
+    .step.active { display: block; }
 
     .step-title {
       font-size: 20px;
@@ -145,7 +122,6 @@
       margin-bottom: 24px;
     }
 
-    /* Form Elements */
     label {
       display: block;
       font-size: 14px;
@@ -153,9 +129,7 @@
       margin-bottom: 8px;
     }
 
-    select,
-    textarea,
-    input[type="text"] {
+    select, textarea, input[type="text"] {
       width: 100%;
       padding: 12px;
       font-size: 16px;
@@ -165,9 +139,7 @@
       margin-bottom: 24px;
     }
 
-    select:focus,
-    textarea:focus,
-    input:focus {
+    select:focus, textarea:focus, input:focus {
       outline: none;
       border-color: var(--navy);
     }
@@ -177,30 +149,21 @@
       resize: vertical;
     }
 
-    /* Issue Area Row Layout */
     .issue-row {
       display: flex;
       gap: 16px;
       margin-bottom: 16px;
     }
 
-    .issue-col {
-      flex: 1;
-    }
-
-    .issue-col select,
-    .issue-col input {
-      margin-bottom: 0;
-    }
+    .issue-col { flex: 1; }
+    .issue-col select, .issue-col input { margin-bottom: 0; }
 
     .issue-col-with-remove {
       display: flex;
       gap: 8px;
     }
 
-    .issue-col-with-remove input {
-      flex: 1;
-    }
+    .issue-col-with-remove input { flex: 1; }
 
     .btn-add-issue {
       background: transparent;
@@ -218,9 +181,7 @@
       color: var(--navy);
     }
 
-    .additional-issue-row {
-      margin-bottom: 12px;
-    }
+    .additional-issue-row { margin-bottom: 12px; }
 
     .btn-remove-issue {
       background: transparent;
@@ -238,10 +199,7 @@
       color: var(--red);
     }
 
-    /* Radio Groups */
-    .radio-group {
-      margin-bottom: 24px;
-    }
+    .radio-group { margin-bottom: 24px; }
 
     .radio-option {
       display: flex;
@@ -253,9 +211,7 @@
       transition: border-color 0.2s;
     }
 
-    .radio-option:hover {
-      border-color: var(--navy);
-    }
+    .radio-option:hover { border-color: var(--navy); }
 
     .radio-option.selected {
       border-color: var(--navy);
@@ -267,9 +223,7 @@
       margin-top: 2px;
     }
 
-    .radio-label {
-      font-weight: 500;
-    }
+    .radio-label { font-weight: 500; }
 
     .radio-desc {
       font-size: 13px;
@@ -277,7 +231,6 @@
       margin-top: 2px;
     }
 
-    /* Buttons */
     .btn-row {
       display: flex;
       justify-content: center;
@@ -313,9 +266,7 @@
       color: var(--white);
     }
 
-    .btn-next:hover {
-      background: #002d80;
-    }
+    .btn-next:hover { background: #002d80; }
 
     .btn-generate {
       background: var(--red);
@@ -325,16 +276,9 @@
       font-size: 15px;
     }
 
-    .btn-generate:hover {
-      background: #b01030;
-    }
+    .btn-generate:hover { background: #b01030; }
+    .btn-generate:disabled { background: var(--gray-mid); cursor: not-allowed; }
 
-    .btn-generate:disabled {
-      background: var(--gray-mid);
-      cursor: not-allowed;
-    }
-
-    /* Scenario Selector */
     .scenario-bar {
       background: var(--gray-light);
       padding: 16px;
@@ -352,16 +296,9 @@
       padding: 8px 12px;
     }
 
-    /* Results */
-    #results {
-      display: none;
-    }
+    #results { display: none; }
+    #results.visible { display: block; }
 
-    #results.visible {
-      display: block;
-    }
-
-    /* Executive Summary Section - Vignelli style */
     .analysis-section {
       margin-bottom: 32px;
       padding: 24px;
@@ -383,22 +320,15 @@
       line-height: 1.7;
     }
 
-    .analysis-content p {
-      margin: 0 0 12px 0;
-    }
-
-    .analysis-content p:last-child {
-      margin-bottom: 0;
-    }
+    .analysis-content p { margin: 0 0 12px 0; }
+    .analysis-content p:last-child { margin-bottom: 0; }
 
     .analysis-highlight {
       font-weight: 600;
       color: var(--navy);
     }
 
-    .matches-header {
-      margin-bottom: 24px;
-    }
+    .matches-header { margin-bottom: 24px; }
 
     .matches-header h2 {
       font-size: 20px;
@@ -407,7 +337,6 @@
       margin: 0;
     }
 
-    /* Carousel */
     .carousel-container {
       position: relative;
       margin-bottom: 32px;
@@ -431,30 +360,11 @@
       word-break: break-word;
     }
 
-    .match-card:nth-child(1) {
-      background: var(--card-red-bg);
-      border-color: var(--card-red-border);
-    }
-
-    .match-card:nth-child(2) {
-      background: var(--card-blue-bg);
-      border-color: var(--card-blue-border);
-    }
-
-    .match-card:nth-child(3) {
-      background: var(--card-turquoise-bg);
-      border-color: var(--card-turquoise-border);
-    }
-
-    .match-card:nth-child(4) {
-      background: var(--card-orange-bg);
-      border-color: var(--card-orange-border);
-    }
-
-    .match-card:nth-child(5) {
-      background: var(--card-green-bg);
-      border-color: var(--card-green-border);
-    }
+    .match-card:nth-child(1) { background: var(--card-red-bg); border-color: var(--card-red-border); }
+    .match-card:nth-child(2) { background: var(--card-blue-bg); border-color: var(--card-blue-border); }
+    .match-card:nth-child(3) { background: var(--card-turquoise-bg); border-color: var(--card-turquoise-border); }
+    .match-card:nth-child(4) { background: var(--card-orange-bg); border-color: var(--card-orange-border); }
+    .match-card:nth-child(5) { background: var(--card-green-bg); border-color: var(--card-green-border); }
 
     .card-header {
       display: flex;
@@ -498,9 +408,7 @@
       margin: 0;
     }
 
-    .card-overall-score {
-      text-align: right;
-    }
+    .card-overall-score { text-align: right; }
 
     .overall-score-label {
       font-size: 11px;
@@ -530,22 +438,15 @@
       margin-bottom: 20px;
     }
 
-    .card-rationale p {
-      margin: 0 0 12px 0;
-    }
-
-    .card-rationale p:last-child {
-      margin-bottom: 0;
-    }
+    .card-rationale p { margin: 0 0 12px 0; }
+    .card-rationale p:last-child { margin-bottom: 0; }
 
     .card-rationale strong {
       color: var(--highlight-color);
       font-weight: 600;
     }
 
-    .card-section {
-      margin-bottom: 16px;
-    }
+    .card-section { margin-bottom: 16px; }
 
     .card-section-title {
       font-size: 12px;
@@ -637,9 +538,7 @@
       line-height: 1.5;
     }
 
-    .card-list {
-      list-style: none;
-    }
+    .card-list { list-style: none; }
 
     .card-list li {
       font-size: 14px;
@@ -648,9 +547,7 @@
       color: var(--gray-dark);
     }
 
-    .card-list li:last-child {
-      border-bottom: none;
-    }
+    .card-list li:last-child { border-bottom: none; }
 
     .card-list.strengths li:before {
       content: "✓ ";
@@ -672,9 +569,7 @@
       border-top: 1px solid rgba(0, 0, 0, 0.1);
     }
 
-    .score-item {
-      text-align: center;
-    }
+    .score-item { text-align: center; }
 
     .score-label {
       font-size: 11px;
@@ -705,11 +600,8 @@
       font-weight: 500;
     }
 
-    .firm-link:hover {
-      text-decoration: underline;
-    }
+    .firm-link:hover { text-decoration: underline; }
 
-    /* Export buttons */
     .export-bar {
       display: flex;
       gap: 12px;
@@ -731,9 +623,7 @@
       color: var(--navy);
     }
 
-    .new-search-row {
-      margin-top: 16px;
-    }
+    .new-search-row { margin-top: 16px; }
 
     .btn-new-search {
       background: var(--navy);
@@ -742,11 +632,8 @@
       padding: 12px 24px;
     }
 
-    .btn-new-search:hover {
-      background: #002d80;
-    }
+    .btn-new-search:hover { background: #002d80; }
 
-    /* Carousel navigation */
     .carousel-nav {
       display: flex;
       justify-content: center;
@@ -787,100 +674,35 @@
       transition: all 0.2s;
     }
 
-    .carousel-dot.active {
-      background: var(--navy);
-      border-color: var(--navy);
-    }
+    .carousel-dot.active { background: var(--navy); border-color: var(--navy); }
+    .carousel-dot:nth-child(1).active { background: var(--card-red-border); border-color: var(--card-red-border); }
+    .carousel-dot:nth-child(2).active { background: var(--card-blue-border); border-color: var(--card-blue-border); }
+    .carousel-dot:nth-child(3).active { background: var(--card-turquoise-border); border-color: var(--card-turquoise-border); }
+    .carousel-dot:nth-child(4).active { background: var(--card-orange-border); border-color: var(--card-orange-border); }
+    .carousel-dot:nth-child(5).active { background: var(--card-green-border); border-color: var(--card-green-border); }
 
-    .carousel-dot:nth-child(1).active {
-      background: var(--card-red-border);
-      border-color: var(--card-red-border);
-    }
+    /* Loading State */
+    .loading { padding: 32px 0; }
 
-    .carousel-dot:nth-child(2).active {
-      background: var(--card-blue-border);
-      border-color: var(--card-blue-border);
-    }
-
-    .carousel-dot:nth-child(3).active {
-      background: var(--card-turquoise-border);
-      border-color: var(--card-turquoise-border);
-    }
-
-    .carousel-dot:nth-child(4).active {
-      background: var(--card-orange-border);
-      border-color: var(--card-orange-border);
-    }
-
-    .carousel-dot:nth-child(5).active {
-      background: var(--card-green-border);
-      border-color: var(--card-green-border);
-    }
-
-    /* Loading State with Live Analysis */
-    .loading {
-      padding: 32px 0;
-    }
-
-    .loading-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .loading-header p {
-      color: var(--gray-mid);
-      margin-bottom: 8px;
-    }
-
-    .loading-subtext {
-      font-size: 13px;
-      color: var(--gray-mid);
-    }
-
-    /* Live Analysis Panel */
-    .live-analysis-panel {
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 4px;
-      margin-bottom: 24px;
-      overflow: hidden;
-    }
-
-    .live-analysis-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background: #252525;
-      border-bottom: 1px solid #333;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .live-analysis-header:hover {
-      background: #2a2a2a;
-    }
-
-    .live-analysis-title {
+    .loading-status {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #e0e0e0;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      font-size: 15px;
+      color: var(--gray-dark);
     }
 
     .status-dot {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       background: var(--subway-red);
     }
 
     .status-dot.streaming {
-      animation: pulse-red 1.2s ease-in-out infinite;
+      animation: pulse-red 1s ease-in-out infinite;
     }
 
     .status-dot.complete {
@@ -889,52 +711,136 @@
     }
 
     @keyframes pulse-red {
-      0%, 100% {
-        opacity: 1;
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(238, 53, 46, 0.7);
-      }
-      50% {
-        opacity: 0.6;
-        transform: scale(1.1);
-        box-shadow: 0 0 0 6px rgba(238, 53, 46, 0);
-      }
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    /* Preview Cards - show immediately with scores */
+    .preview-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .preview-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border: 2px solid;
+      background: var(--white);
+    }
+
+    .preview-card:nth-child(1) { border-color: var(--card-red-border); }
+    .preview-card:nth-child(2) { border-color: var(--card-blue-border); }
+    .preview-card:nth-child(3) { border-color: var(--card-turquoise-border); }
+    .preview-card:nth-child(4) { border-color: var(--card-orange-border); }
+    .preview-card:nth-child(5) { border-color: var(--card-green-border); }
+
+    .preview-card-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .preview-rank {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .preview-card:nth-child(1) .preview-rank { background: var(--card-red-border); }
+    .preview-card:nth-child(2) .preview-rank { background: var(--card-blue-border); }
+    .preview-card:nth-child(3) .preview-rank { background: var(--card-turquoise-border); }
+    .preview-card:nth-child(4) .preview-rank { background: var(--card-orange-border); }
+    .preview-card:nth-child(5) .preview-rank { background: var(--card-green-border); }
+
+    .preview-firm-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    .preview-score {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    .preview-score span {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--gray-mid);
+    }
+
+    /* Live Analysis Panel */
+    .live-analysis-panel {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .live-analysis-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      background: #252525;
+      border-bottom: 1px solid #333;
+      cursor: pointer;
+    }
+
+    .live-analysis-header:hover { background: #2a2a2a; }
+
+    .live-analysis-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .live-analysis-toggle {
       font-size: 10px;
-      color: #888;
+      color: #666;
       transition: transform 0.2s;
     }
 
-    .live-analysis-toggle.collapsed {
-      transform: rotate(-90deg);
-    }
+    .live-analysis-toggle.collapsed { transform: rotate(-90deg); }
 
     .live-analysis-content {
-      max-height: 300px;
+      max-height: 200px;
       overflow-y: auto;
-      padding: 16px;
+      padding: 12px 16px;
       font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      font-size: 12px;
-      line-height: 1.6;
+      font-size: 11px;
+      line-height: 1.5;
       color: #00ff00;
       white-space: pre-wrap;
       word-break: break-all;
     }
 
-    .live-analysis-content.collapsed {
-      display: none;
-    }
+    .live-analysis-content.collapsed { display: none; }
 
-    .live-analysis-cursor {
+    .live-cursor {
       display: inline-block;
-      width: 8px;
-      height: 14px;
+      width: 7px;
+      height: 12px;
       background: #00ff00;
-      animation: blink 1s step-end infinite;
+      animation: blink 0.8s step-end infinite;
       vertical-align: middle;
-      margin-left: 2px;
+      margin-left: 1px;
     }
 
     @keyframes blink {
@@ -942,69 +848,6 @@
       50% { opacity: 0; }
     }
 
-    /* Skeleton Cards */
-    .skeleton-cards {
-      margin-top: 24px;
-    }
-
-    .skeleton-card {
-      background: var(--gray-light);
-      border: 2px solid #e0e0e0;
-      padding: 24px;
-      margin-bottom: 16px;
-    }
-
-    .skeleton-line {
-      background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 4px;
-      margin-bottom: 12px;
-    }
-
-    .skeleton-line.title {
-      height: 24px;
-      width: 60%;
-    }
-
-    .skeleton-line.text {
-      height: 14px;
-      width: 100%;
-    }
-
-    .skeleton-line.text.short {
-      width: 80%;
-    }
-
-    .skeleton-line.text.shorter {
-      width: 50%;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    .loading-quote {
-      margin-top: 24px;
-      padding: 16px 24px;
-      background: var(--gray-light);
-      border-left: 3px solid var(--navy);
-      max-width: 480px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .loading-quote p {
-      font-size: 14px;
-      font-style: italic;
-      color: var(--gray-dark);
-      margin: 0;
-      line-height: 1.5;
-      transition: opacity 0.3s ease;
-    }
-
-    /* Disclaimer */
     .disclaimer {
       font-size: 12px;
       color: var(--gray-mid);
@@ -1013,7 +856,6 @@
       background: var(--gray-light);
     }
 
-    /* Methodology */
     .methodology-section {
       margin-top: 24px;
       border: 1px solid var(--gray-light);
@@ -1029,9 +871,7 @@
       user-select: none;
     }
 
-    .methodology-toggle:hover {
-      background: #e8e8e8;
-    }
+    .methodology-toggle:hover { background: #e8e8e8; }
 
     .methodology-title {
       font-size: 13px;
@@ -1047,9 +887,7 @@
       transition: transform 0.2s;
     }
 
-    .methodology-arrow.open {
-      transform: rotate(180deg);
-    }
+    .methodology-arrow.open { transform: rotate(180deg); }
 
     .methodology-content {
       padding: 16px;
@@ -1059,59 +897,21 @@
       border-top: 1px solid var(--gray-light);
     }
 
-    .methodology-content p {
-      margin: 0;
-    }
+    .methodology-content p { margin: 0; }
 
-    /* Responsive */
     @media (max-width: 600px) {
-      .container {
-        padding: 24px 16px;
-      }
-
-      h1 {
-        font-size: 24px;
-      }
-
-      .btn-row {
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .btn-back,
-      .btn-next,
-      .btn-generate {
-        width: 100%;
-      }
-      
-      .issue-row {
-        flex-direction: column;
-      }
-      
-      .personnel-box {
-        max-width: 100%;
-        min-width: 100%;
-      }
-      
-      .match-card {
-        padding: 16px;
-      }
-      
-      .card-header {
-        flex-direction: column;
-        gap: 12px;
-      }
-      
-      .card-overall-score {
-        text-align: left;
-      }
-      
-      .clients-list li {
-        max-width: 100%;
-      }
+      .container { padding: 24px 16px; }
+      h1 { font-size: 24px; }
+      .btn-row { flex-direction: column; gap: 12px; }
+      .btn-back, .btn-next, .btn-generate { width: 100%; }
+      .issue-row { flex-direction: column; }
+      .personnel-box { max-width: 100%; min-width: 100%; }
+      .match-card { padding: 16px; }
+      .card-header { flex-direction: column; gap: 12px; }
+      .card-overall-score { text-align: left; }
+      .clients-list li { max-width: 100%; }
     }
 
-    /* Global copyright footer */
     .footer-copyright {
       text-align: center;
       font-size: 12px;
@@ -1130,7 +930,6 @@
       <p class="intro intro-callout"><strong>Answer a few questions, and we'll show you who's actually been in the arena on issues that matter to you.</strong></p>
     </header>
 
-    <!-- Scenario Selector -->
     <div class="scenario-bar">
       <label for="scenario-select">Try an example:</label>
       <select id="scenario-select">
@@ -1138,7 +937,6 @@
       </select>
     </div>
 
-    <!-- Progress Bar -->
     <div class="progress-bar">
       <div class="progress-step active" data-step="1"></div>
       <div class="progress-step" data-step="2"></div>
@@ -1146,9 +944,7 @@
       <div class="progress-step" data-step="4"></div>
     </div>
 
-    <!-- Questionnaire Form -->
     <form id="matchForm">
-      <!-- Step 1: Organization Type -->
       <div class="step active" data-step="1">
         <h2 class="step-title">What type of organization are you?</h2>
         <p class="step-subtitle">This helps us understand your resources and typical advocacy needs.</p>
@@ -1196,7 +992,6 @@
         </div>
       </div>
 
-      <!-- Step 2: Issue Area -->
       <div class="step" data-step="2">
         <h2 class="step-title">What policy areas are you focused on?</h2>
         <p class="step-subtitle">Select your primary issue and add any related areas.</p>
@@ -1215,7 +1010,6 @@
         </div>
 
         <div id="additionalIssues"></div>
-        
         <button type="button" class="btn-add-issue" onclick="addIssueRow()">+ Add another issue area</button>
 
         <div class="btn-row">
@@ -1224,7 +1018,6 @@
         </div>
       </div>
 
-      <!-- Step 3: Budget -->
       <div class="step" data-step="3">
         <h2 class="step-title">What's your advocacy budget?</h2>
         <p class="step-subtitle">This helps match you with appropriately-sized firms.</p>
@@ -1273,19 +1066,18 @@
         </div>
       </div>
 
-      <!-- Step 4: Details -->
       <div class="step" data-step="4">
         <h2 class="step-title">Tell us a bit more</h2>
         <p class="step-subtitle">These details help us find the best fit for your situation.</p>
         
         <label for="orgDescription">Describe your organization in 1-2 sentences</label>
-        <textarea id="orgDescription" name="orgDescription" required placeholder="e.g., We're a 501(c)(3) patient advocacy group focused on rare disease research funding, or We're a mid-sized manufacturing company facing new EPA regulations..."></textarea>
+        <textarea id="orgDescription" name="orgDescription" required placeholder="e.g., We're a 501(c)(3) patient advocacy group focused on rare disease research funding..."></textarea>
 
         <label for="policyGoals">What specific policy outcome are you trying to achieve?</label>
-        <textarea id="policyGoals" name="policyGoals" placeholder="e.g., We want to secure an earmark in the next appropriations bill, influence upcoming FDA guidance, get a tariff exemption renewed..."></textarea>
+        <textarea id="policyGoals" name="policyGoals" placeholder="e.g., We want to secure an earmark in the next appropriations bill..."></textarea>
 
         <label for="timeline">What's your timeline and any relevant context?</label>
-        <textarea id="timeline" name="timeline" placeholder="e.g., The bill is expected to move in Q2, we have an existing relationship with Rep. Smith's office, we've never hired a lobbyist before..."></textarea>
+        <textarea id="timeline" name="timeline" placeholder="e.g., The bill is expected to move in Q2..."></textarea>
 
         <div class="btn-row">
           <button type="button" class="btn-back" onclick="prevStep()">Back</button>
@@ -1294,18 +1086,14 @@
       </div>
     </form>
 
-    <!-- Results Section -->
     <div id="results">
       <div id="analysisSection" class="analysis-section">
         <div class="analysis-header">Executive Summary</div>
         <div id="analysisContent" class="analysis-content"></div>
       </div>
       
-      <div class="matches-header">
-        <h2>Top Matches</h2>
-      </div>
+      <div class="matches-header"><h2>Top Matches</h2></div>
       
-      <!-- Carousel -->
       <div class="carousel-container">
         <div id="matchCards" class="match-cards carousel"></div>
         <div class="carousel-nav">
@@ -1315,7 +1103,6 @@
         </div>
       </div>
 
-      <!-- Fallback for raw text -->
       <div id="resultsContent" class="results-content" style="display: none;"></div>
 
       <div class="export-bar">
@@ -1328,7 +1115,7 @@
       </div>
 
       <div class="disclaimer">
-        <strong>Disclaimer:</strong> This analysis is based on public LDA filings and is for informational purposes only. It does not constitute legal, business, or professional advice. Past performance does not guarantee future results. Users should conduct their own due diligence before engaging any firm. Data source: Senate Office of Public Records (lda.senate.gov).
+        <strong>Disclaimer:</strong> This analysis is based on public LDA filings and is for informational purposes only. It does not constitute legal, business, or professional advice. Past performance does not guarantee future results. Users should conduct their own due diligence before engaging any firm.
       </div>
       
       <div id="methodologySection" class="methodology-section">
@@ -1340,38 +1127,26 @@
       </div>
     </div>
 
-    <!-- Loading State with Live Analysis -->
+    <!-- Loading State -->
     <div id="loading" style="display: none;">
       <div class="loading">
-        <div class="loading-header">
-          <p>Analyzing LDA filings and generating matches...</p>
-          <p class="loading-subtext">This typically takes 10-20 seconds.</p>
+        <div class="loading-status">
+          <div class="status-dot streaming" id="statusDot"></div>
+          <span id="loadingText">Finding your top matches...</span>
         </div>
+
+        <!-- Preview cards - populated immediately with scores -->
+        <div class="preview-cards" id="previewCards"></div>
 
         <!-- Live Analysis Panel -->
         <div class="live-analysis-panel">
           <div class="live-analysis-header" onclick="toggleLiveAnalysis()">
             <div class="live-analysis-title">
-              <div class="status-dot streaming" id="statusDot"></div>
               <span>Live Analysis</span>
             </div>
             <span class="live-analysis-toggle" id="liveAnalysisToggle">▼</span>
           </div>
-          <div class="live-analysis-content" id="liveAnalysisContent"><span class="live-analysis-cursor"></span></div>
-        </div>
-
-        <!-- Skeleton Cards -->
-        <div class="skeleton-cards">
-          <div class="skeleton-card">
-            <div class="skeleton-line title"></div>
-            <div class="skeleton-line text"></div>
-            <div class="skeleton-line text short"></div>
-            <div class="skeleton-line text shorter"></div>
-          </div>
-        </div>
-
-        <div class="loading-quote">
-          <p id="rotatingQuote"></p>
+          <div class="live-analysis-content" id="liveAnalysisContent"><span class="live-cursor"></span></div>
         </div>
       </div>
     </div>
@@ -1384,23 +1159,7 @@
     const totalSteps = 4;
     let scenarios = [];
     let issueCodes = [];
-    let quoteInterval = null;
     let liveAnalysisCollapsed = false;
-
-    const politicalQuotes = [
-      '"In politics, nothing happens by accident. If it happens, you can bet it was planned that way." — Franklin D. Roosevelt',
-      '<strong>Did you know?</strong> <em>The term "lobbyist" originated from the lobby of the Willard Hotel, where influence-seekers would wait to meet President Grant.</em>',
-      '<strong>Did you know?</strong> <em>There are approximately 12,000 registered lobbyists in Washington, D.C.</em>',
-      '"Politics is the art of the possible." — Otto von Bismarck',
-      '<strong>Did you know?</strong> <em>K Street in Washington, D.C. has been synonymous with lobbying since the 1970s.</em>',
-      '<strong>Did you know?</strong> <em>The average lobbying retainer ranges from $10,000 to $50,000 per month.</em>',
-      '<strong>Did you know?</strong> <em>Over $3.5 billion is spent on federal lobbying annually in the United States.</em>',
-      '"In a democracy, the most important office is the office of the citizen." — Louis Brandeis',
-      '<strong>Did you know?</strong> <em>The First Amendment\'s right to petition the government is the constitutional basis for lobbying.</em>',
-      '<strong>Did you know?</strong> <em>501(c)(3) nonprofits can legally lobby. Under IRS rules, they can spend up to 20% of their budget on advocacy.</em>',
-      '<strong>Did you know?</strong> <em>The U.S. Chamber of Commerce has been the top-spending lobbying organization for over two decades.</em>',
-      '"Never doubt that a small group of thoughtful, committed citizens can change the world." — Margaret Mead'
-    ];
 
     function toggleLiveAnalysis() {
       const content = document.getElementById('liveAnalysisContent');
@@ -1412,9 +1171,7 @@
 
     function updateLiveAnalysis(text) {
       const content = document.getElementById('liveAnalysisContent');
-      // Remove cursor, add text, re-add cursor
-      content.innerHTML = text + '<span class="live-analysis-cursor"></span>';
-      // Auto-scroll to bottom
+      content.innerHTML = text + '<span class="live-cursor"></span>';
       content.scrollTop = content.scrollHeight;
     }
 
@@ -1422,27 +1179,23 @@
       const dot = document.getElementById('statusDot');
       dot.classList.remove('streaming');
       dot.classList.add('complete');
-      // Remove cursor
+      document.getElementById('loadingText').textContent = 'Analysis complete!';
       const content = document.getElementById('liveAnalysisContent');
-      content.innerHTML = content.innerHTML.replace(/<span class="live-analysis-cursor"><\/span>/g, '');
+      content.innerHTML = content.innerHTML.replace(/<span class="live-cursor"><\/span>/g, '');
     }
 
-    function startQuoteRotation() {
-      const quoteEl = document.getElementById('rotatingQuote');
-      let index = Math.floor(Math.random() * politicalQuotes.length);
-      quoteEl.innerHTML = politicalQuotes[index];
-      quoteInterval = setInterval(() => {
-        index = (index + 1) % politicalQuotes.length;
-        quoteEl.style.opacity = '0';
-        setTimeout(() => {
-          quoteEl.innerHTML = politicalQuotes[index];
-          quoteEl.style.opacity = '1';
-        }, 300);
-      }, 5000);
-    }
-
-    function stopQuoteRotation() {
-      if (quoteInterval) { clearInterval(quoteInterval); quoteInterval = null; }
+    function showPreviewCards(firms) {
+      const container = document.getElementById('previewCards');
+      container.innerHTML = firms.map((f, i) => `
+        <div class="preview-card">
+          <div class="preview-card-left">
+            <div class="preview-rank">${i + 1}</div>
+            <div class="preview-firm-name">${f.name}</div>
+          </div>
+          <div class="preview-score">${f.scores.overallMatch}<span>/100</span></div>
+        </div>
+      `).join('');
+      document.getElementById('loadingText').textContent = 'Generating detailed analysis...';
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -1462,9 +1215,7 @@
           option.textContent = issue.label;
           select.appendChild(option);
         });
-      } catch (err) {
-        console.error('Failed to load issue codes:', err);
-      }
+      } catch (err) { console.error('Failed to load issue codes:', err); }
     }
 
     async function loadScenarios() {
@@ -1479,18 +1230,16 @@
           select.appendChild(option);
         });
         select.addEventListener('change', (e) => {
-          if (e.target.value !== '') {
-            loadScenario(parseInt(e.target.value));
-          }
+          if (e.target.value !== '') loadScenario(parseInt(e.target.value));
         });
-      } catch (err) {
-        console.error('Failed to load scenarios:', err);
-      }
+      } catch (err) { console.error('Failed to load scenarios:', err); }
     }
 
     function loadScenario(index) {
       const scenario = scenarios[index];
       if (!scenario) return;
+      
+      // Populate fields but stay on step 1
       document.querySelectorAll('input[name="organizationType"]').forEach(radio => {
         radio.checked = radio.value === scenario.organizationType;
         if (radio.checked) radio.closest('.radio-option').classList.add('selected');
@@ -1506,7 +1255,7 @@
       document.getElementById('orgDescription').value = scenario.orgDescription;
       document.getElementById('policyGoals').value = scenario.policyGoals || '';
       document.getElementById('timeline').value = scenario.timeline || '';
-      goToStep(4);
+      // Don't skip to step 4 - let user click through
     }
 
     function setupRadioListeners() {
@@ -1533,10 +1282,7 @@
         <div class="issue-col">
           <label>Additional Issue</label>
           <div class="issue-col-with-remove">
-            <select name="additionalIssue">
-              <option value="">— Select an issue —</option>
-              ${options}
-            </select>
+            <select name="additionalIssue"><option value="">— Select an issue —</option>${options}</select>
             <button type="button" class="btn-remove-issue" onclick="removeIssueRow(${issueRowCount})">×</button>
           </div>
         </div>
@@ -1549,17 +1295,8 @@
       if (row) row.remove();
     }
 
-    function nextStep() {
-      if (currentStep < totalSteps) {
-        goToStep(currentStep + 1);
-      }
-    }
-
-    function prevStep() {
-      if (currentStep > 1) {
-        goToStep(currentStep - 1);
-      }
-    }
+    function nextStep() { if (currentStep < totalSteps) goToStep(currentStep + 1); }
+    function prevStep() { if (currentStep > 1) goToStep(currentStep - 1); }
 
     function goToStep(step) {
       document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -1580,22 +1317,25 @@
       const formData = {
         organizationType: document.querySelector('input[name="organizationType"]:checked')?.value,
         issueArea: document.getElementById('issueArea').value,
-        additionalIssues: additionalIssues,
+        additionalIssues,
         budget: document.querySelector('input[name="budget"]:checked')?.value,
         priorities: document.getElementById('priorities').value,
         orgDescription: document.getElementById('orgDescription').value,
         policyGoals: document.getElementById('policyGoals')?.value || '',
         timeline: document.getElementById('timeline')?.value || ''
       };
+      
       if (!formData.organizationType || !formData.issueArea || !formData.orgDescription) {
         alert('Please complete all required fields.');
         return;
       }
       
-      // Reset live analysis state
+      // Reset state
       document.getElementById('statusDot').classList.remove('complete');
       document.getElementById('statusDot').classList.add('streaming');
-      document.getElementById('liveAnalysisContent').innerHTML = '<span class="live-analysis-cursor"></span>';
+      document.getElementById('loadingText').textContent = 'Finding your top matches...';
+      document.getElementById('liveAnalysisContent').innerHTML = '<span class="live-cursor"></span>';
+      document.getElementById('previewCards').innerHTML = '';
       liveAnalysisCollapsed = false;
       document.getElementById('liveAnalysisContent').classList.remove('collapsed');
       document.getElementById('liveAnalysisToggle').classList.remove('collapsed');
@@ -1604,7 +1344,6 @@
       document.querySelector('.progress-bar').style.display = 'none';
       document.querySelector('.scenario-bar').style.display = 'none';
       document.getElementById('loading').style.display = 'block';
-      startQuoteRotation();
       
       let streamedText = '';
       let preComputedScores = null;
@@ -1631,22 +1370,20 @@
               try {
                 const data = JSON.parse(line.slice(6));
                 
-                if (data.type === 'scores') {
+                if (data.type === 'preview') {
                   preComputedScores = data.topFirms;
+                  showPreviewCards(data.topFirms);
                 } else if (data.type === 'chunk') {
                   streamedText += data.text;
                   updateLiveAnalysis(streamedText);
                 } else if (data.type === 'complete') {
                   setStreamingComplete();
-                  // Small delay to let user see completion state
-                  await new Promise(resolve => setTimeout(resolve, 500));
+                  await new Promise(resolve => setTimeout(resolve, 400));
                   displayResults(data.analysis, preComputedScores);
                 } else if (data.type === 'error') {
                   throw new Error(data.error);
                 }
-              } catch (parseErr) {
-                // Skip malformed JSON
-              }
+              } catch (parseErr) { /* skip malformed */ }
             }
           }
         }
@@ -1659,7 +1396,7 @@
 
     function displayResults(analysis, preComputedScores) {
       document.getElementById('loading').style.display = 'none';
-      stopQuoteRotation();
+      
       if (analysis.raw) {
         document.getElementById('resultsContent').style.display = 'block';
         document.getElementById('analysisSection').style.display = 'none';
@@ -1675,6 +1412,7 @@
         document.getElementById('resultsContent').style.display = 'none';
         document.getElementById('analysisSection').style.display = 'block';
         document.querySelector('.carousel-container').style.display = 'block';
+        
         if (analysis.executiveSummary) {
           let summaryHtml = analysis.executiveSummary.replace(/\*\*(.*?)\*\*/g, '<span class="analysis-highlight">$1</span>');
           const sentences = summaryHtml.match(/[^.!?]+[.!?]+/g) || [summaryHtml];
@@ -1686,6 +1424,7 @@
           }
           document.getElementById('analysisContent').innerHTML = summaryHtml;
         }
+        
         const cardsContainer = document.getElementById('matchCards');
         cardsContainer.innerHTML = '';
         if (analysis.matches && analysis.matches.length > 0) {
@@ -1695,6 +1434,7 @@
           });
           requestAnimationFrame(() => { requestAnimationFrame(() => { initCarousel(analysis.matches.length); }); });
         }
+        
         if (analysis.methodology) {
           document.getElementById('methodologyContent').innerHTML = `<p>${analysis.methodology}</p>`;
           document.getElementById('methodologySection').style.display = 'block';
@@ -1793,10 +1533,7 @@
         const firmName = card.querySelector('.card-firm-name')?.textContent || '';
         const overallScore = card.querySelector('.overall-score-value')?.textContent || '';
         const rationale = card.querySelector('.card-rationale')?.textContent?.trim() || '';
-        text += `MATCH #${i + 1}: ${firmName}\n`;
-        text += `Overall Score: ${overallScore}\n\n`;
-        text += `${rationale}\n\n`;
-        text += '---\n\n';
+        text += `MATCH #${i + 1}: ${firmName}\nOverall Score: ${overallScore}\n\n${rationale}\n\n---\n\n`;
       });
       return text;
     }
@@ -1821,7 +1558,7 @@
       const scores = match.scores || {};
       let personnelHtml = '';
       if (match.keyPersonnel && match.keyPersonnel.length > 0) {
-        personnelHtml = `<div class="card-section"><div class="card-section-title">Key Personnel</div><div class="personnel-list">${match.keyPersonnel.map(p => `<div class="personnel-box"><div class="personnel-name">${p.name}</div><div class="personnel-background">${p.background || p.title || ''}</div></div>`).join('')}</div></div>`;
+        personnelHtml = `<div class="card-section"><div class="card-section-title">Key Personnel</div><div class="personnel-list">${match.keyPersonnel.map(p => `<div class="personnel-box"><div class="personnel-name">${p.name}</div><div class="personnel-background">${p.background || ''}</div></div>`).join('')}</div></div>`;
       }
       let clientsHtml = '';
       if (match.representativeClients && match.representativeClients.length > 0) {
@@ -1831,15 +1568,11 @@
       if (match.subjectsLobbied && match.subjectsLobbied.length > 0) {
         subjectsHtml = `<div class="card-section"><div class="card-section-title">Subjects Lobbied</div><ul class="subjects-list">${match.subjectsLobbied.map(s => `<li>${s}</li>`).join('')}</ul></div>`;
       }
-      let committeeHtml = '';
-      if (match.committeeEngagement) {
-        committeeHtml = `<div class="card-section committee-engagement"><div class="card-section-title">Capitol Hill Relationships</div><p class="committee-text">${match.committeeEngagement}</p></div>`;
-      }
       let firmLinkHtml = '';
       if (match.firmWebsite) {
         firmLinkHtml = `<a href="${match.firmWebsite}" target="_blank" rel="noopener noreferrer" class="firm-link">Visit ${match.firmName} →</a>`;
       }
-      const keyStrengths = match.keyStrengths || match.strengths || [];
+      const keyStrengths = match.keyStrengths || [];
       card.innerHTML = `
         <div class="card-header">
           <div class="card-header-left">
@@ -1855,7 +1588,6 @@
         ${personnelHtml}
         ${clientsHtml}
         ${subjectsHtml}
-        ${committeeHtml}
         <div class="card-section">
           <div class="card-section-title">Key Strengths</div>
           <ul class="card-list strengths">${keyStrengths.map(s => `<li>${s}</li>`).join('')}</ul>
@@ -1942,45 +1674,12 @@
         doc.text('Score: ' + overallScore, pageWidth - margin - 25, y + 1);
         y += 12;
         addText(rationale.replace(/\s+/g, ' '), 10, false);
-        const strengths = card.querySelectorAll('.strengths li');
-        if (strengths.length > 0) {
-          y += 2;
-          addText('Key Strengths:', 10, true);
-          strengths.forEach(s => { addText('• ' + s.textContent, 10, false); });
-        }
-        const considerations = card.querySelectorAll('.considerations li');
-        if (considerations.length > 0) {
-          y += 2;
-          addText('Considerations:', 10, true);
-          considerations.forEach(c => { addText('• ' + c.textContent, 10, false); });
-        }
-        const clients = card.querySelectorAll('.clients-list li');
-        if (clients.length > 0) {
-          y += 2;
-          addText('Representative Clients:', 10, true);
-          const clientNames = Array.from(clients).map(c => c.textContent).join(', ');
-          addText(clientNames, 10, false);
-        }
         y += 10;
         if (i < cards.length - 1) {
           doc.setDrawColor(220, 220, 220);
           doc.line(margin, y, pageWidth - margin, y);
           y += 10;
         }
-      });
-      if (y > 230) { doc.addPage(); y = 20; } else { y += 10; }
-      doc.setDrawColor(200, 200, 200);
-      doc.line(margin, y, pageWidth - margin, y);
-      y += 10;
-      doc.setTextColor(100, 100, 100);
-      doc.setFontSize(8);
-      doc.setFont('helvetica', 'italic');
-      const disclaimer = 'Disclaimer: This analysis is based on public Lobbying Disclosure Act filings and is for informational purposes only. It does not constitute legal, business, or professional advice. Past performance does not guarantee future results. Users should conduct their own due diligence before engaging any firm. Data source: Senate Office of Public Records (lda.senate.gov).';
-      const disclaimerLines = doc.splitTextToSize(disclaimer, maxWidth);
-      disclaimerLines.forEach(line => {
-        if (y > 280) { doc.addPage(); y = 20; }
-        doc.text(line, margin, y);
-        y += 4;
       });
       doc.save('Lobby-Match-Results.pdf');
     }
@@ -1999,6 +1698,7 @@
       document.getElementById('methodologyContent').style.display = 'none';
       document.querySelector('.methodology-arrow').classList.remove('open');
       document.getElementById('loading').style.display = 'none';
+      document.getElementById('previewCards').innerHTML = '';
       issueRowCount = 0;
       currentCard = 0;
       totalCards = 0;
