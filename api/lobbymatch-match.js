@@ -1,12 +1,14 @@
 const Anthropic = require('@anthropic-ai/sdk');
 
-// Load data files
-let firmProfiles = { firms: [] };
+// Load data files - UPDATE THESE PATHS TO MATCH YOUR STRUCTURE
+let firmData = { results: [] };
 let issueCommitteeMap = {};
 
 try {
-  firmProfiles = require('../lobbymatch/data/firm-profiles.json');
+  // Load the enriched firms file - uses data.results structure
+  firmData = require('../lobbymatch/data/final-enriched-firms.json');
   issueCommitteeMap = require('../lobbymatch/data/issue-committee-map.json');
+  console.log(`Loaded ${firmData.results?.length || 0} firms from final-enriched-firms.json`);
 } catch (e) {
   console.log('Data files not fully loaded:', e.message);
 }
@@ -46,7 +48,7 @@ function getRelevantCommittees(issueArea, additionalIssues) {
 function calcIssueAlignmentScore(firm, issueArea, additionalIssues) {
   // Use enrichment.issues if available (has filing counts)
   const enrichedIssues = firm.enrichment?.issues || [];
-  const simpleIssues = (firm.issueAreas || []).map(i => i.code || i);
+  const topIssues = firm.enrichment?.topIssues || [];
   
   let score = 0;
   
@@ -71,15 +73,15 @@ function calcIssueAlignmentScore(firm, issueArea, additionalIssues) {
     else if (count >= 25) score += 20;
     else if (count >= 10) score += 15;
     else score += 10;
-  } else if (simpleIssues.includes(issueArea)) {
-    // Fallback to simple issue list
-    const position = simpleIssues.indexOf(issueArea);
+  } else if (topIssues.includes(issueArea)) {
+    // Fallback to topIssues array
+    const position = topIssues.indexOf(issueArea);
     score += position <= 2 ? 25 : 15;
   }
   
   // Additional issues match (0-20)
   const additionalMatches = (additionalIssues || []).filter(issue => {
-    return enrichedIssues.some(i => i.code === issue) || simpleIssues.includes(issue);
+    return enrichedIssues.some(i => i.code === issue) || topIssues.includes(issue);
   }).length;
   const additionalTotal = (additionalIssues || []).length;
   if (additionalTotal > 0) {
@@ -89,8 +91,8 @@ function calcIssueAlignmentScore(firm, issueArea, additionalIssues) {
   }
   
   // Specialization bonus - fewer issues = more specialized (0-10)
-  const issueCount = enrichedIssues.length || simpleIssues.length;
-  if (issueCount <= 5) score += 10;
+  const issueCount = enrichedIssues.length;
+  if (issueCount > 0 && issueCount <= 5) score += 10;
   else if (issueCount <= 8) score += 7;
   else if (issueCount <= 12) score += 4;
   else score += 2;
@@ -101,21 +103,20 @@ function calcIssueAlignmentScore(firm, issueArea, additionalIssues) {
 function calcExperienceDepthScore(firm, relevantCommittees) {
   let score = 0;
   
-  // Covered officials from lobbyists array (0-30)
-  const lobbyists = firm.lobbyists || [];
+  // Covered officials from firm data (0-30)
   const coveredCount = firm.coveredOfficialCount || 
-    lobbyists.filter(l => l.hasCoveredPosition).length;
+    (firm.lobbyists || []).filter(l => l.hasCoveredPosition).length;
   
-  if (coveredCount >= 8) score += 30;
-  else if (coveredCount >= 5) score += 25;
-  else if (coveredCount >= 3) score += 20;
+  if (coveredCount >= 10) score += 30;
+  else if (coveredCount >= 6) score += 25;
+  else if (coveredCount >= 4) score += 22;
+  else if (coveredCount >= 2) score += 18;
   else if (coveredCount >= 1) score += 12;
   else score += 5;
   
   // Committee relationship signal strength (0-35) - MAJOR DIFFERENTIATOR
   const committeeData = firm.committeeRelationships;
   if (committeeData?.topCommittees?.length > 0) {
-    // Check for overlap with relevant committees
     const relevantNames = relevantCommittees.map(c => c.name?.toLowerCase() || '');
     const matchingCommittees = committeeData.topCommittees.filter(tc => {
       const tcName = (tc.committee || '').toLowerCase();
@@ -123,7 +124,6 @@ function calcExperienceDepthScore(firm, relevantCommittees) {
     });
     
     if (matchingCommittees.length >= 3) {
-      // Sum signal strength for matching committees
       const totalSignal = matchingCommittees.reduce((sum, c) => sum + (c.signalStrength || 0), 0);
       if (totalSignal >= 300000) score += 35;
       else if (totalSignal >= 150000) score += 30;
@@ -137,7 +137,7 @@ function calcExperienceDepthScore(firm, relevantCommittees) {
   }
   
   // Client portfolio depth (0-20)
-  const clientCount = firm.enrichment?.clientCount || (firm.recentClients || []).length;
+  const clientCount = firm.enrichment?.clientCount || 0;
   if (clientCount >= 50) score += 20;
   else if (clientCount >= 30) score += 17;
   else if (clientCount >= 20) score += 14;
@@ -145,7 +145,7 @@ function calcExperienceDepthScore(firm, relevantCommittees) {
   else score += 5;
   
   // Team size (0-15)
-  const teamSize = firm.lobbyistCount || lobbyists.length;
+  const teamSize = firm.lobbyistCount || (firm.lobbyists || []).length;
   if (teamSize >= 10) score += 15;
   else if (teamSize >= 6) score += 12;
   else if (teamSize >= 4) score += 9;
@@ -156,13 +156,10 @@ function calcExperienceDepthScore(firm, relevantCommittees) {
 
 function calcCostFitScore(firm, budget) {
   const budgetNum = parseBudgetToMonthly(budget);
-  
-  // Use enrichment.billing if available
   const billing = firm.enrichment?.billing;
   
   if (!budgetNum) {
-    // No budget specified - neutral score
-    return 70;
+    return 70; // No budget specified - neutral
   }
   
   if (billing && billing.averagePerFiling) {
@@ -171,25 +168,14 @@ function calcCostFitScore(firm, budget) {
     const minMonthly = (billing.min || billing.averagePerFiling * 0.5) / 3;
     const maxMonthly = (billing.max || billing.averagePerFiling * 1.5) / 3;
     
-    // Perfect fit
-    if (budgetNum >= minMonthly * 0.8 && budgetNum <= maxMonthly * 1.2) {
-      return 95;
-    }
-    // Good fit
-    if (budgetNum >= minMonthly * 0.5 && budgetNum <= maxMonthly * 1.5) {
-      return 80;
-    }
-    // Moderate fit
-    if (budgetNum >= minMonthly * 0.3 && budgetNum <= maxMonthly * 2) {
-      return 65;
-    }
-    // Poor fit
+    if (budgetNum >= minMonthly * 0.8 && budgetNum <= maxMonthly * 1.2) return 95;
+    if (budgetNum >= minMonthly * 0.5 && budgetNum <= maxMonthly * 1.5) return 80;
+    if (budgetNum >= minMonthly * 0.3 && budgetNum <= maxMonthly * 2) return 65;
     return 45;
   }
   
-  // Fallback: use client count as proxy for firm size/cost
-  const clientCount = firm.enrichment?.clientCount || (firm.recentClients || []).length;
-  
+  // Fallback: use client count as proxy
+  const clientCount = firm.enrichment?.clientCount || 0;
   if (budget.includes('30,000+')) {
     return clientCount >= 30 ? 85 : clientCount >= 15 ? 70 : 55;
   } else if (budget.includes('15,000-30,000')) {
@@ -218,7 +204,7 @@ function analyzeAndRankFirms(firms, { issueArea, additionalIssues, budget }) {
     const costFitScore = calcCostFitScore(firm, budget);
     const overallMatchScore = calcOverallMatchScore(issueAlignmentScore, experienceDepthScore, costFitScore);
     
-    // Get primary issue filing count for display
+    // Get primary issue filing count
     const primaryIssueData = (firm.enrichment?.issues || []).find(i => i.code === issueArea);
     const issueFilingCount = primaryIssueData?.count || 0;
     
@@ -231,20 +217,12 @@ function analyzeAndRankFirms(firms, { issueArea, additionalIssues, budget }) {
         position: l.coveredPositions[0]?.raw || 'Former government official'
       }));
     
-    // Fallback to verifiedLobbyists if lobbyists array doesn't have positions
-    const fallbackLobbyists = (firm.verifiedLobbyists || [])
-      .filter(l => l.coveredPosition && l.coveredPosition !== 'None listed')
-      .slice(0, 4)
-      .map(l => ({ name: l.name, position: l.coveredPosition }));
-    
-    const displayLobbyists = lobbyistsWithPositions.length > 0 ? lobbyistsWithPositions : fallbackLobbyists;
-    
-    // Get clients
-    const clients = (firm.enrichment?.clients || firm.recentClients || [])
+    // Get clients from enrichment
+    const clients = (firm.enrichment?.clients || [])
       .slice(0, 8)
       .map(c => typeof c === 'string' ? c : c.name);
     
-    // Get relevant committees
+    // Get committees
     const firmCommittees = (firm.committeeRelationships?.topCommittees || [])
       .slice(0, 5)
       .map(c => c.committee);
@@ -259,11 +237,11 @@ function analyzeAndRankFirms(firms, { issueArea, additionalIssues, budget }) {
         overallMatch: overallMatchScore 
       },
       issueFilingCount,
-      lobbyists: displayLobbyists,
+      lobbyists: lobbyistsWithPositions,
       clients,
       committees: firmCommittees,
       clientCount: firm.enrichment?.clientCount || clients.length,
-      coveredOfficialCount: firm.coveredOfficialCount || displayLobbyists.length,
+      coveredOfficialCount: firm.coveredOfficialCount || lobbyistsWithPositions.length,
       billingAvg: firm.enrichment?.billing?.averagePerFiling || null
     };
   });
@@ -276,7 +254,7 @@ function analyzeAndRankFirms(firms, { issueArea, additionalIssues, budget }) {
   };
 }
 
-// Build transparent methodology
+// Build methodology
 function buildMethodology(topFirms, totalAnalyzed) {
   const scores = topFirms.map(f => f.scores.overallMatch);
   const top = topFirms[0];
@@ -302,20 +280,26 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Run analytics engine
-    const allFirms = firmProfiles.firms || firmProfiles;
+    // Get firms from data.results
+    const allFirms = firmData.results || [];
+    
+    if (allFirms.length === 0) {
+      console.error('No firms loaded!');
+      return res.status(500).json({ error: 'No firm data available' });
+    }
+    
     const { topFirms, relevantCommittees, totalAnalyzed } = analyzeAndRankFirms(allFirms, { issueArea, additionalIssues, budget });
     
     console.log(`Analytics: ${Date.now() - startTime}ms - Top 3 from ${totalAnalyzed} firms`);
-    console.log(`Scores: ${topFirms.map(f => `${f.name}: ${f.scores.overallMatch}`).join(', ')}`);
+    console.log(`Scores: ${topFirms.map(f => `${f.name}: ${f.scores.overallMatch} (I:${f.scores.issueAlignment} E:${f.scores.experienceDepth} C:${f.scores.costFit})`).join(' | ')}`);
 
-    // Build prompt with TOP 3 firms only
-    const firmData = topFirms.map((f, i) => 
+    // Build prompt with TOP 3 firms
+    const firmDataStr = topFirms.map((f, i) => 
       `FIRM ${i+1}: ${f.name} (Score: ${f.scores.overallMatch}/100 | Issue: ${f.scores.issueAlignment} | Experience: ${f.scores.experienceDepth} | Cost: ${f.scores.costFit})
 Website: ${f.website || 'N/A'}
 Issue Filing Count: ${f.issueFilingCount > 0 ? `${f.issueFilingCount} filings in ${issueArea}` : 'Active in this area'}
 Key Lobbyists: ${f.lobbyists.map(l => `${l.name} (${l.position})`).join('; ') || 'Team available'}
-Representative Clients: ${f.clients.join(', ')}
+Representative Clients: ${f.clients.join(', ') || 'Various clients'}
 Committee Relationships: ${f.committees.join('; ') || 'General government affairs'}
 Stats: ${f.coveredOfficialCount} former officials, ${f.clientCount} total clients`
     ).join('\n\n');
@@ -335,7 +319,7 @@ Stats: ${f.coveredOfficialCount} former officials, ${f.clientCount} total client
 ${relevantCommittees.slice(0, 4).join(', ')}
 
 ## TOP 3 MATCHES
-${firmData}
+${firmDataStr}
 
 ## OUTPUT FORMAT
 
@@ -402,7 +386,6 @@ RULES:
       });
     }
     
-    // Ensure methodology
     if (!analysis.methodology || analysis.methodology.length < 100) {
       analysis.methodology = methodology;
     }
