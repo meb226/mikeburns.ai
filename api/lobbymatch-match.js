@@ -103,10 +103,10 @@ function analyzeAndRankFirms(firms, { issueArea, additionalIssues, budget }) {
       name: firm.name,
       website: firm.website,
       scores: { issueAlignment: issueAlignmentScore, experienceDepth: experienceDepthScore, costFit: costFitScore, overallMatch: overallMatchScore },
-      issueAreas: (firm.issueAreas || []).slice(0, 5),
-      lobbyists: (firm.verifiedLobbyists || []).slice(0, 4).map(l => ({ name: l.name, position: l.coveredPosition })),
-      clients: (firm.recentClients || []).slice(0, 6).map(c => typeof c === 'string' ? c : c.name),
-      committees: (firm.committeeRelationships?.topCommittees || []).slice(0, 4).map(c => c.committee)
+      issueAreas: (firm.issueAreas || []).slice(0, 6),
+      lobbyists: (firm.verifiedLobbyists || []).slice(0, 5).map(l => ({ name: l.name, position: l.coveredPosition })),
+      clients: (firm.recentClients || []).slice(0, 8).map(c => typeof c === 'string' ? c : c.name),
+      committees: (firm.committeeRelationships?.topCommittees || []).slice(0, 5).map(c => `${c.chamber} ${c.committee}`)
     };
   });
   
@@ -140,58 +140,87 @@ module.exports = async (req, res) => {
     
     console.log(`Analytics: ${Date.now() - startTime}ms - Top 5 from ${allFirms.length} firms`);
 
-    // Compact prompt - only 5 firms, essential data
+    // Build firm data for prompt - include rich detail for better narratives
     const firmData = topFirms.map((f, i) => 
-      `${i+1}. ${f.name} (Match: ${f.scores.overallMatch}/100)
-   Lobbyists: ${f.lobbyists.map(l => `${l.name}${l.position && l.position !== 'None listed' ? ` [${l.position}]` : ''}`).join('; ')}
-   Clients: ${f.clients.join(', ')}
-   Committees: ${f.committees.join(', ') || 'N/A'}`
+      `FIRM ${i+1}: ${f.name}
+Website: ${f.website || 'N/A'}
+Key Lobbyists: ${f.lobbyists.map(l => `${l.name}${l.position && l.position !== 'None listed' ? ` (Former: ${l.position})` : ''}`).join('; ')}
+Representative Clients: ${f.clients.join(', ')}
+Committee Relationships: ${f.committees.join('; ') || 'General government affairs'}
+Issue Areas: ${f.issueAreas.map(i => i.code || i).join(', ')}`
     ).join('\n\n');
 
-    const prompt = `Write analysis for these 5 lobbying firm matches for a ${organizationType} focused on ${issueArea}.
+    const prompt = `Analyze these 5 pre-ranked lobbying firm matches for a ${organizationType} client.
 
-CLIENT: ${orgDescription}
-${policyGoals ? `GOALS: ${policyGoals}` : ''}
-${budget ? `BUDGET: ${budget}` : ''}
+## CLIENT PROFILE
+**Organization:** ${orgDescription}
+**Primary Issue:** ${issueArea}
+**Additional Issues:** ${additionalIssues?.length ? additionalIssues.join(', ') : 'None'}
+**Policy Goals:** ${policyGoals || 'Not specified'}
+**Budget:** ${budget || 'Not specified'}
+**Timeline:** ${timeline || 'Not specified'}
 
-RELEVANT COMMITTEES: ${relevantCommittees.slice(0, 4).join(', ')}
+## RELEVANT COMMITTEES
+${relevantCommittees.slice(0, 5).join(', ')}
 
-TOP 5 MATCHES (pre-ranked by algorithm):
+## TOP 5 MATCHES (pre-ranked by matching algorithm)
 ${firmData}
 
-Respond with JSON only:
+## OUTPUT INSTRUCTIONS
+
+Write expert analysis explaining WHY each firm fits. The ranking and scores are already determined - focus on compelling narratives.
+
+Respond with this exact JSON structure:
 {
-  "executiveSummary": "2-3 sentences recommending top firm. Mention a specific lobbyist name and their government background. Warm, collegial tone.",
+  "executiveSummary": "3-4 sentences in warm, collegial tone. Lead with the #1 firm and why it stands out. Name a specific lobbyist and their relevant government experience. Mention committee relationships using 'established relationships with [Committee] members'. Make it feel like advice from a trusted DC insider.",
+  
   "matches": [
     {
       "rank": 1,
-      "firmName": "Name from data",
-      "firmWebsite": "url or null", 
-      "rationale": "Two paragraphs. First: why firm fits the issue (cite policy work, clients). Second: highlight 1-2 lobbyists by name with government background, fee alignment.",
-      "keyPersonnel": [{"name": "Real name from data", "background": "Their coveredPosition"}],
-      "representativeClients": ["From clients list"],
-      "keyStrengths": ["Strength 1", "Strength 2", "Strength 3"],
-      "considerations": ["One honest consideration"]
+      "firmName": "Exact firm name from data",
+      "firmWebsite": "URL from data or null",
+      "rationale": "TWO SUBSTANTIAL PARAGRAPHS with **bold** on 2-3 key phrases per paragraph. First paragraph: Explain why this firm understands the client's issue - cite their relevant clients, policy expertise, and committee relationships. Second paragraph: Highlight 1-2 specific lobbyists BY NAME with their government background, and explain fee/approach alignment.",
+      "keyPersonnel": [
+        {"name": "Real lobbyist name from data", "background": "Their former government position, written out fully"},
+        {"name": "Second lobbyist name", "background": "Their background"}
+      ],
+      "representativeClients": ["Client from data", "Another client", "Third client"],
+      "keyStrengths": ["Specific strength with evidence", "Second strength", "Third strength"],
+      "considerations": ["One honest consideration with helpful context"]
     }
   ],
-  "methodology": "Brief: matches based on LDA filings, issue expertise, lobbyist credentials, committee relationships, budget fit."
+  
+  "methodology": "One paragraph: Matches determined by analyzing LDA filing history, issue expertise frequency, lobbyist credentials and former government positions, client portfolio alignment, Capitol Hill committee relationships, and budget fit. Lobbyist data verified against Q3-Q4 2024 and Q1 2025 LD-2 filings."
 }
 
-RULES:
-- Never say "access" - use "relationships with"
-- Use fuzzy numbers ("more than 50" not "57")
-- keyPersonnel: ONLY names from lobbyists data, minimum 2 per firm
-- keyStrengths: EXACTLY 3 per firm
-- JSON only, no markdown`;
+## CRITICAL RULES
+
+1. DO NOT include a "scores" field - scores are added separately by the system.
+
+2. NEVER use "access" - say "relationships with", "connections to", "experience with".
+
+3. Use FUZZY NUMBERS: "more than 50 filings" not "57 filings".
+
+4. "keyPersonnel" MUST use ONLY names from the lobbyists data. Minimum 2 per firm.
+
+5. "representativeClients" MUST use ONLY clients from the data.
+
+6. "keyStrengths" MUST have EXACTLY 3 items per firm.
+
+7. "rationale" MUST be two full paragraphs with **bold** markers.
+
+8. Maintain the exact firm order (they are pre-ranked).
+
+9. Respond with ONLY valid JSON, no markdown fences.`;
 
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-    // HAIKU for speed
+    // Use Sonnet for quality narratives - prompt is small enough to be fast
     const message = await anthropic.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 2500,
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 4000,
       messages: [{ role: 'user', content: prompt }],
-      system: 'You are a DC lobbying expert. Write concise, specific firm recommendations. Respond with valid JSON only.'
+      system: 'You are a seasoned Washington DC lobbying expert. Write compelling, specific firm recommendations based on LDA data. Be warm and collegial in tone. Respond with valid JSON only - no markdown code fences.'
     });
 
     console.log(`Claude API: ${Date.now() - startTime}ms | In: ${message.usage.input_tokens} Out: ${message.usage.output_tokens}`);
@@ -207,14 +236,18 @@ RULES:
       analysis = { raw: text };
     }
 
-    // Merge pre-computed scores (authoritative)
+    // INJECT pre-computed scores (authoritative - replaces any Claude might have added)
     if (analysis.matches) {
-      analysis.matches = analysis.matches.map((match, idx) => ({
-        ...match,
-        scores: topFirms[idx]?.scores || match.scores,
-        firmWebsite: topFirms[idx]?.website || match.firmWebsite,
-        rank: idx + 1
-      }));
+      analysis.matches = analysis.matches.map((match, idx) => {
+        // Remove any scores Claude might have included
+        const { scores: _, ...matchWithoutScores } = match;
+        return {
+          ...matchWithoutScores,
+          scores: topFirms[idx]?.scores,
+          firmWebsite: match.firmWebsite || topFirms[idx]?.website,
+          rank: idx + 1
+        };
+      });
     }
 
     console.log(`Total: ${Date.now() - startTime}ms`);
