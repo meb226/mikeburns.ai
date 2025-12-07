@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lobby Match – Find Your Advocate</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --red: #DC143C;
+      --navy: #0039A6;
+      --black: #1a1a1a;
+      --gray-dark: #333;
+      --gray-mid: #666;
+      --gray-light: #f5f5f5;
+      --white: #fff;
+      
+      /* Subway palette */
+      --subway-red: #EE352E;
+      --subway-blue: #0039A6;
+      --subway-turquoise: #00A1DE;
+      --subway-orange: #F7931E;
+      --subway-green: #00933C;
+      
+      /* Card background tints (8% opacity) */
+      --card-red-bg: rgba(238, 53, 46, 0.08);
+      --card-blue-bg: rgba(0, 57, 166, 0.08);
+      --card-turquoise-bg: rgba(0, 161, 222, 0.08);
+      --card-orange-bg: rgba(247, 147, 30, 0.08);
+      --card-green-bg: rgba(0, 147, 60, 0.08);
+      
+      /* Card border accents */
+      --card-red-border: #EE352E;
+      --card-blue-border: #0039A6;
+      --card-turquoise-border: #00A1DE;
+      --card-orange-border: #F7931E;
+      --card-green-border: #00933C;
+      
+      /* Highlight color for bold text */
+      --highlight-color: #0039A6;
+      
+      /* Vignelli dark gray for executive summary */
+      --vignelli-gray: #4A4A4A;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--black);
+      background: var(--white);
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 32px;
+    }
+
+    /* Header */
+    header {
+      margin-bottom: 48px;
+      border-bottom: 2px solid var(--black);
+      padding-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .tagline {
+      font-size: 18px;
+      color: var(--gray-mid);
+    }
+
+    .intro {
+      margin-top: 16px;
+      font-size: 15px;
+      color: var(--gray-dark);
+      line-height: 1.6;
+    }
+
+    .intro strong {
+      color: var(--navy);
+      font-weight: 600;
+    }
+
+    .intro-callout {
+      margin-top: 12px;
+    }
+
+    .intro-callout strong {
+      color: var(--black);
+    }
+
+    /* Progress */
+    .progress-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .progress-step {
+      flex: 1;
+      height: 4px;
+      background: var(--gray-light);
+      transition: background 0.3s;
+    }
+
+    .progress-step.active {
+      background: var(--navy);
+    }
+
+    .progress-step.complete {
+      background: var(--red);
+    }
+
+    /* Form Steps */
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    .step-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .step-subtitle {
+      font-size: 14px;
+      color: var(--gray-mid);
+      margin-bottom: 24px;
+    }
+
+    /* Form Elements */
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    select,
+    textarea,
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-family: inherit;
+      border: 1px solid var(--gray-mid);
+      background: var(--white);
+      margin-bottom: 24px;
+    }
+
+    select:focus,
+    textarea:focus,
+    input:focus {
+      outline: none;
+      border-color: var(--navy);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    /* Issue Area Row Layout */
+    .issue-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .issue-col {
+      flex: 1;
+    }
+
+    .issue-col select,
+    .issue-col input {
+      margin-bottom: 0;
+    }
+
+    .issue-col-with-remove {
+      display: flex;
+      gap: 8px;
+    }
+
+    .issue-col-with-remove input {
+      flex: 1;
+    }
+
+    .btn-add-issue {
+      background: transparent;
+      border: 1px dashed var(--gray-mid);
+      color: var(--gray-mid);
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 24px;
+    }
+
+    .btn-add-issue:hover {
+      border-color: var(--navy);
+      color: var(--navy);
+    }
+
+    .additional-issue-row {
+      margin-bottom: 12px;
+    }
+
+    .btn-remove-issue {
+      background: transparent;
+      border: 1px solid var(--gray-mid);
+      color: var(--gray-mid);
+      padding: 12px 14px;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .btn-remove-issue:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* Radio Groups */
+    .radio-group {
+      margin-bottom: 24px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: flex-start;
+      padding: 12px;
+      border: 1px solid var(--gray-light);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .radio-option:hover {
+      border-color: var(--navy);
+    }
+
+    .radio-option.selected {
+      border-color: var(--navy);
+      background: rgba(0, 57, 166, 0.03);
+    }
+
+    .radio-option input {
+      margin-right: 12px;
+      margin-top: 2px;
+    }
+
+    .radio-label {
+      font-weight: 500;
+    }
+
+    .radio-desc {
+      font-size: 13px;
+      color: var(--gray-mid);
+      margin-top: 2px;
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--gray-light);
+    }
+
+    .btn-row-split {
+      justify-content: flex-start;
+      gap: 16px;
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--gray-mid);
+      color: var(--gray-dark);
+    }
+
+    .btn-back:hover {
+      border-color: var(--black);
+      color: var(--black);
+    }
+
+    .btn-next {
+      background: var(--navy);
+      border: none;
+      color: var(--white);
+      margin-left: auto;
+    }
+
+    .btn-next:hover {
+      background: #002d80;
+    }
+
+    .btn-generate {
+      background: var(--red);
+      border: none;
+      color: var(--white);
+      padding: 14px 32px;
+      font-size: 15px;
+    }
+
+    .btn-generate:hover {
+      background: #b01030;
+    }
+
+    .btn-generate:disabled {
+      background: var(--gray-mid);
+      cursor: not-allowed;
+    }
+
+    /* Scenario Selector */
+    .scenario-bar {
+      background: var(--gray-light);
+      padding: 16px;
+      margin-bottom: 32px;
+    }
+
+    .scenario-bar label {
+      display: inline;
+      margin-right: 12px;
+    }
+
+    .scenario-bar select {
+      width: auto;
+      margin-bottom: 0;
+      padding: 8px 12px;
+    }
+
+    /* Results */
+    #results {
+      display: none;
+    }
+
+    #results.visible {
+      display: block;
+    }
+
+    /* Executive Summary Section - Vignelli style */
+    .analysis-section {
+      margin-bottom: 32px;
+      padding: 24px;
+      background: var(--white);
+      border: 2px solid var(--vignelli-gray);
+    }
+
+    .analysis-header {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--vignelli-gray);
+      margin-bottom: 16px;
+    }
+
+    .analysis-content {
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .analysis-content p {
+      margin: 0 0 12px 0;
+    }
+
+    .analysis-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .analysis-highlight {
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .matches-header {
+      margin-bottom: 24px;
+    }
+
+    .matches-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--black);
+      margin: 0;
+    }
+
+    /* Carousel */
+    .carousel-container {
+      position: relative;
+      margin-bottom: 32px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .match-cards.carousel {
+      display: flex;
+      flex-wrap: nowrap;
+      transition: transform 0.3s ease;
+    }
+
+    .match-card {
+      border: 3px solid;
+      padding: 24px;
+      box-sizing: border-box;
+      overflow: hidden;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      word-break: break-word;
+    }
+
+    .match-card:nth-child(1) {
+      background: var(--card-red-bg);
+      border-color: var(--card-red-border);
+    }
+
+    .match-card:nth-child(2) {
+      background: var(--card-blue-bg);
+      border-color: var(--card-blue-border);
+    }
+
+    .match-card:nth-child(3) {
+      background: var(--card-turquoise-bg);
+      border-color: var(--card-turquoise-border);
+    }
+
+    .match-card:nth-child(4) {
+      background: var(--card-orange-bg);
+      border-color: var(--card-orange-border);
+    }
+
+    .match-card:nth-child(5) {
+      background: var(--card-green-bg);
+      border-color: var(--card-green-border);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      gap: 16px;
+    }
+
+    .card-header-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-rank-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      flex-shrink: 0;
+    }
+
+    .match-card:nth-child(1) .card-rank-circle {
+      background: var(--card-red-border);
+    }
+
+    .match-card:nth-child(2) .card-rank-circle {
+      background: var(--card-blue-border);
+    }
+
+    .match-card:nth-child(3) .card-rank-circle {
+      background: var(--card-turquoise-border);
+    }
+
+    .match-card:nth-child(4) .card-rank-circle {
+      background: var(--card-orange-border);
+    }
+
+    .match-card:nth-child(5) .card-rank-circle {
+      background: var(--card-green-border);
+    }
+
+    .card-firm-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--black);
+      margin: 0;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .card-overall-score {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .overall-score-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-mid);
+    }
+
+    .overall-score-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    .overall-score-max {
+      font-size: 14px;
+      color: var(--gray-mid);
+    }
+
+    .card-rationale {
+      margin-bottom: 20px;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .card-rationale p {
+      margin: 0 0 12px 0;
+      line-height: 1.65;
+      font-size: 15px;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .card-section {
+      margin-bottom: 20px;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .card-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--black);
+      margin-bottom: 10px;
+    }
+
+    /* Highlighted text in rationale */
+    .card-rationale strong {
+      color: var(--highlight-color);
+      font-weight: 600;
+    }
+
+    /* Key Personnel section - box style */
+    .personnel-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .personnel-box {
+      background: rgba(0, 57, 166, 0.06);
+      border: 1px solid rgba(0, 57, 166, 0.15);
+      padding: 12px 16px;
+      flex: 1;
+      min-width: 200px;
+      max-width: calc(50% - 6px);
+      box-sizing: border-box;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .personnel-name {
+      font-weight: 600;
+      color: var(--black);
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .personnel-background {
+      font-size: 13px;
+      color: var(--gray-dark);
+      line-height: 1.4;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    /* Representative Clients */
+    .clients-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .clients-list li {
+      background: rgba(0, 0, 0, 0.05);
+      padding: 4px 10px;
+      font-size: 13px;
+      border-radius: 2px;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      max-width: 100%;
+    }
+
+    /* Subjects Lobbied */
+    .subjects-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .subjects-list li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 6px;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .subjects-list li::before {
+      content: '§';
+      position: absolute;
+      left: 0;
+      color: var(--gray-mid);
+      font-weight: 600;
+    }
+
+    /* Committee Engagement */
+    .committee-engagement {
+      background: rgba(0, 57, 166, 0.04);
+      padding: 16px;
+      margin-bottom: 20px;
+      border-left: 3px solid var(--navy);
+    }
+
+    .committee-engagement .card-section-title {
+      margin-bottom: 8px;
+    }
+
+    .committee-text {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--gray-dark);
+      margin: 0;
+      font-style: italic;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      word-break: break-word;
+    }
+
+    /* Firm link */
+    .firm-link {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--navy);
+      border: 1px solid var(--navy);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .firm-link:hover {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .card-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .card-list li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .card-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--gray-mid);
+      font-weight: 500;
+    }
+
+    .card-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Score Grid */
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .score-item {
+      text-align: center;
+    }
+
+    .score-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: var(--gray-mid);
+      margin-bottom: 4px;
+    }
+
+    .score-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    .score-value .max {
+      font-size: 12px;
+      color: var(--gray-mid);
+      font-weight: 400;
+    }
+
+    /* Legacy results content - fallback */
+    .results-content {
+      white-space: pre-wrap;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .results-content h3 {
+      font-size: 18px;
+      margin-top: 24px;
+      margin-bottom: 8px;
+      color: var(--navy);
+    }
+
+    .results-content h4 {
+      font-size: 16px;
+      margin-top: 16px;
+      margin-bottom: 4px;
+    }
+
+    /* Export Bar */
+    .export-bar {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--gray-light);
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-export {
+      background: var(--white);
+      border: 1px solid var(--navy);
+      color: var(--navy);
+      flex: 1;
+    }
+
+    .btn-export:hover {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .new-search-row {
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .btn-new-search {
+      background: var(--white);
+      border: 1px solid var(--gray-mid);
+      color: var(--gray-dark);
+      padding: 12px 32px;
+    }
+
+    .btn-new-search:hover {
+      background: var(--red);
+      border-color: var(--red);
+      color: var(--white);
+    }
+
+    /* Carousel Navigation */
+    .carousel-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .carousel-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--navy);
+      background: var(--white);
+      color: var(--navy);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .carousel-btn:hover {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .carousel-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--gray-light);
+      border: 1px solid var(--gray-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .carousel-dot.active {
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .carousel-dot:nth-child(1).active {
+      background: var(--card-red-border);
+      border-color: var(--card-red-border);
+    }
+
+    .carousel-dot:nth-child(2).active {
+      background: var(--card-blue-border);
+      border-color: var(--card-blue-border);
+    }
+
+    .carousel-dot:nth-child(3).active {
+      background: var(--card-turquoise-border);
+      border-color: var(--card-turquoise-border);
+    }
+
+    .carousel-dot:nth-child(4).active {
+      background: var(--card-orange-border);
+      border-color: var(--card-orange-border);
+    }
+
+    .carousel-dot:nth-child(5).active {
+      background: var(--card-green-border);
+      border-color: var(--card-green-border);
+    }
+
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 48px;
+      color: var(--gray-mid);
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--gray-light);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-subtext {
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .loading-quote {
+      margin-top: 24px;
+      padding: 16px 24px;
+      background: var(--gray-light);
+      border-left: 3px solid var(--navy);
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .loading-quote p {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--gray-dark);
+      margin: 0;
+      line-height: 1.5;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Disclaimer */
+    .disclaimer {
+      font-size: 12px;
+      color: var(--gray-mid);
+      margin-top: 32px;
+      padding: 16px;
+      background: var(--gray-light);
+    }
+
+    /* Methodology */
+    .methodology-section {
+      margin-top: 24px;
+      border: 1px solid var(--gray-light);
+    }
+
+    .methodology-toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--gray-light);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .methodology-toggle:hover {
+      background: #e8e8e8;
+    }
+
+    .methodology-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-dark);
+    }
+
+    .methodology-arrow {
+      font-size: 10px;
+      color: var(--gray-mid);
+      transition: transform 0.2s;
+    }
+
+    .methodology-arrow.open {
+      transform: rotate(180deg);
+    }
+
+    .methodology-content {
+      padding: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--gray-dark);
+      border-top: 1px solid var(--gray-light);
+    }
+
+    .methodology-content p {
+      margin: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container {
+        padding: 24px 16px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .btn-row {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .btn-back,
+      .btn-next {
+        width: 100%;
+      }
+      
+      .issue-row {
+        flex-direction: column;
+      }
+      
+      .personnel-box {
+        max-width: 100%;
+        min-width: 100%;
+      }
+      
+      .match-card {
+        padding: 16px;
+      }
+      
+      .card-header {
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      .card-overall-score {
+        text-align: left;
+      }
+      
+      .clients-list li {
+        max-width: 100%;
+      }
+    }
+
+    /* Global copyright footer */
+    .footer-copyright {
+      text-align: center;
+      font-size: 12px;
+      color: var(--gray-mid);
+      padding: 24px;
+      margin-top: 48px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Lobby Match</h1>
+      <p class="tagline">Find the right advocate for your cause.</p>
+      <p class="intro">Washington runs on relationships and expertise — but finding the right lobbying firm shouldn't require being a Beltway insider yourself. Lobby Match analyzes thousands of Lobbying Disclosure Act filings to match you with firms that have <strong>proven track records</strong> in your policy area, <strong>relevant government experience</strong>, and <strong>clients like you</strong>. No more guesswork, cold calls, or relying on who-knows-who.</p>
+      <p class="intro intro-callout"><strong>Answer a few questions, and we'll show you who's actually been in the arena on issues that matter to you.</strong></p>
+    </header>
+
+    <!-- Scenario Selector -->
+    <div class="scenario-bar">
+      <label for="scenario-select">Try an example:</label>
+      <select id="scenario-select">
+        <option value="">— Select a scenario —</option>
+      </select>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+      <div class="progress-step active" data-step="1"></div>
+      <div class="progress-step" data-step="2"></div>
+      <div class="progress-step" data-step="3"></div>
+      <div class="progress-step" data-step="4"></div>
+    </div>
+
+    <!-- Questionnaire Form -->
+    <form id="matchForm">
+      <!-- Step 1: Organization Type -->
+      <div class="step active" data-step="1">
+        <h2 class="step-title">What type of organization are you?</h2>
+        <p class="step-subtitle">This helps us understand your resources and typical advocacy needs.</p>
+        
+        <div class="radio-group" id="orgType">
+          <label class="radio-option">
+            <input type="radio" name="organizationType" value="individual">
+            <div>
+              <div class="radio-label">Individual</div>
+              <div class="radio-desc">High-net-worth individual with personal advocacy goals</div>
+            </div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="organizationType" value="nonprofit">
+            <div>
+              <div class="radio-label">Nonprofit Organization</div>
+              <div class="radio-desc">501(c)(3), 501(c)(4), trade association, or similar</div>
+            </div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="organizationType" value="small-business">
+            <div>
+              <div class="radio-label">Small Business</div>
+              <div class="radio-desc">Under $50M annual revenue, limited DC experience</div>
+            </div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="organizationType" value="mid-market">
+            <div>
+              <div class="radio-label">Mid-Market Company</div>
+              <div class="radio-desc">$50M-$500M revenue, some policy exposure</div>
+            </div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="organizationType" value="large-company">
+            <div>
+              <div class="radio-label">Large Company</div>
+              <div class="radio-desc">$500M+ revenue, established government affairs function</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="btn-row">
+          <div></div>
+          <button type="button" class="btn-next" onclick="nextStep()">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Issue Area -->
+      <div class="step" data-step="2">
+        <h2 class="step-title">What policy areas are you focused on?</h2>
+        <p class="step-subtitle">Select your primary issue and add any related areas.</p>
+        
+        <div class="issue-row">
+          <div class="issue-col">
+            <label for="issueArea">Primary Issue</label>
+            <select id="issueArea" name="issueArea" required>
+              <option value="">— Select an issue —</option>
+            </select>
+          </div>
+          <div class="issue-col">
+            <label for="priorities">Key priorities</label>
+            <input type="text" id="priorities" name="priorities" placeholder="e.g., Tax credits, regulatory relief">
+          </div>
+        </div>
+
+        <div id="additionalIssues"></div>
+        
+        <button type="button" class="btn-add-issue" onclick="addIssueRow()">+ Add another issue area</button>
+
+        <div class="btn-row">
+          <button type="button" class="btn-back" onclick="prevStep()">Back</button>
+          <button type="button" class="btn-next" onclick="nextStep()">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Budget -->
+      <div class="step" data-step="3">
+        <h2 class="step-title">What's your advocacy budget?</h2>
+        <p class="step-subtitle">This helps match you with appropriately-sized firms.</p>
+        
+        <div class="radio-group" id="budgetGroup">
+          <label class="radio-option">
+            <input type="radio" name="budget" value="$2,500-$5,000/month">
+            <div>
+              <div class="radio-label">$2,500 – $5,000/month</div>
+              <div class="radio-desc">Entry-level engagement, focused scope</div>
+            </div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="budget" value="$5,000-$15,000/month">
+            <div>
+              <div class="radio-label">$5,000 – $15,000/month</div>
+              <div class="radio-desc">Standard boutique firm retainer</div>
+            </div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="budget" value="$15,000-$30,000/month">
+            <div>
+              <div class="radio-label">$15,000 – $30,000/month</div>
+              <div class="radio-desc">Full-service representation</div>
+            </div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="budget" value="$30,000+/month">
+            <div>
+              <div class="radio-label">$30,000+/month</div>
+              <div class="radio-desc">Major firm, comprehensive campaign</div>
+            </div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="budget" value="Not specified">
+            <div>
+              <div class="radio-label">Prefer not to say</div>
+              <div class="radio-desc">Match based on other factors</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-back" onclick="prevStep()">Back</button>
+          <button type="button" class="btn-next" onclick="nextStep()">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Details -->
+      <div class="step" data-step="4">
+        <h2 class="step-title">Tell us a bit more</h2>
+        <p class="step-subtitle">These details help us find the best fit for your situation.</p>
+        
+        <label for="orgDescription">Describe your organization in 1-2 sentences</label>
+        <textarea id="orgDescription" name="orgDescription" required placeholder="e.g., We're a 501(c)(3) patient advocacy group focused on rare disease research funding, or We're a mid-sized manufacturing company facing new EPA regulations..."></textarea>
+
+        <label for="policyGoals">What specific policy outcome are you trying to achieve?</label>
+        <textarea id="policyGoals" name="policyGoals" placeholder="e.g., We want to secure an earmark in the next appropriations bill, influence upcoming FDA guidance, get a tariff exemption renewed..."></textarea>
+
+        <label for="timeline">What's your timeline and any relevant context?</label>
+        <textarea id="timeline" name="timeline" placeholder="e.g., The bill is expected to move in Q2, we have an existing relationship with Rep. Smith's office, we've never hired a lobbyist before..."></textarea>
+
+        <div class="btn-row btn-row-split">
+          <button type="button" class="btn-back" onclick="prevStep()">Back</button>
+          <button type="submit" class="btn-generate" id="generateBtn">Generate Matches</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Results Section -->
+    <div id="results">
+      <div id="analysisSection" class="analysis-section">
+        <div class="analysis-header">Executive Summary</div>
+        <div id="analysisContent" class="analysis-content"></div>
+      </div>
+      
+      <div class="matches-header">
+        <h2>Top Matches</h2>
+      </div>
+      
+      <!-- Carousel -->
+      <div class="carousel-container">
+        <div id="matchCards" class="match-cards carousel"></div>
+        <div class="carousel-nav">
+          <button class="carousel-btn carousel-prev" onclick="prevCard()">←</button>
+          <div class="carousel-dots" id="carouselDots"></div>
+          <button class="carousel-btn carousel-next" onclick="nextCard()">→</button>
+        </div>
+      </div>
+
+      <!-- Fallback for raw text -->
+      <div id="resultsContent" class="results-content" style="display: none;"></div>
+
+      <div class="export-bar">
+        <button class="btn-export" onclick="copyResults()">Copy to Clipboard</button>
+        <button class="btn-export" onclick="downloadPDF()">Download PDF</button>
+        <button class="btn-export" onclick="emailResults()">E-Mail</button>
+      </div>
+      <div class="new-search-row">
+        <button class="btn-new-search" onclick="startOver()">New Search</button>
+      </div>
+
+      <div class="disclaimer">
+        <strong>Disclaimer:</strong> This analysis is based on public LDA filings and is for informational purposes only. It does not constitute legal, business, or professional advice. Past performance does not guarantee future results. Users should conduct their own due diligence before engaging any firm. Data source: Senate Office of Public Records (lda.senate.gov).
+      </div>
+      
+      <div id="methodologySection" class="methodology-section">
+        <div class="methodology-toggle" onclick="toggleMethodology()">
+          <span class="methodology-title">Methodology</span>
+          <span class="methodology-arrow">▼</span>
+        </div>
+        <div id="methodologyContent" class="methodology-content" style="display: none;"></div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading" style="display: none;">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Analyzing LDA filings and generating matches...</p>
+        <p class="loading-subtext">This typically takes 15-30 seconds.</p>
+        <div class="loading-quote">
+          <p id="rotatingQuote"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer-copyright">© Mike Burns 2025</footer>
+
+  <script>
+    let currentStep = 1;
+    const totalSteps = 4;
+    let scenarios = [];
+    let issueCodes = [];
+    let quoteInterval = null;
+
+    const politicalQuotes = [
+      '"In politics, nothing happens by accident. If it happens, you can bet it was planned that way." — Franklin D. Roosevelt',
+      '<strong>Did you know?</strong> <em>The term "lobbyist" originated from the lobby of the Willard Hotel, where influence-seekers would wait to meet President Grant.</em>',
+      '<strong>Did you know?</strong> <em>There are approximately 12,000 registered lobbyists in Washington, D.C.</em>',
+      '"Politics is the art of the possible." — Otto von Bismarck',
+      '<strong>Did you know?</strong> <em>K Street in Washington, D.C. has been synonymous with lobbying since the 1970s.</em>',
+      '<strong>Did you know?</strong> <em>The average lobbying retainer ranges from $10,000 to $50,000 per month.</em>',
+      '<strong>Did you know?</strong> <em>Over $3.5 billion is spent on federal lobbying annually in the United States.</em>',
+      '"In a democracy, the most important office is the office of the citizen." — Louis Brandeis',
+      '<strong>Did you know?</strong> <em>The First Amendment\'s right to petition the government is the constitutional basis for lobbying.</em>',
+      '<strong>Did you know?</strong> <em>501(c)(3) nonprofits can legally lobby. Under IRS rules, they can spend up to 20% of their budget on advocacy.</em>',
+      '<strong>Did you know?</strong> <em>The U.S. Chamber of Commerce has been the top-spending lobbying organization for over two decades.</em>',
+      '"Never doubt that a small group of thoughtful, committed citizens can change the world." — Margaret Mead'
+    ];
+
+    function startQuoteRotation() {
+      const quoteEl = document.getElementById('rotatingQuote');
+      let index = Math.floor(Math.random() * politicalQuotes.length);
+      quoteEl.innerHTML = politicalQuotes[index];
+      quoteInterval = setInterval(() => {
+        index = (index + 1) % politicalQuotes.length;
+        quoteEl.style.opacity = '0';
+        setTimeout(() => {
+          quoteEl.innerHTML = politicalQuotes[index];
+          quoteEl.style.opacity = '1';
+        }, 300);
+      }, 5000);
+    }
+
+    function stopQuoteRotation() {
+      if (quoteInterval) { clearInterval(quoteInterval); quoteInterval = null; }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadIssueCodes();
+      await loadScenarios();
+      setupRadioListeners();
+    });
+
+    async function loadIssueCodes() {
+      try {
+        const res = await fetch('/api/issues');
+        issueCodes = await res.json();
+        const select = document.getElementById('issueArea');
+        issueCodes.forEach(issue => {
+          const option = document.createElement('option');
+          option.value = issue.value;
+          option.textContent = `${issue.name} (${issue.value})`;
+          select.appendChild(option);
+        });
+      } catch (e) { console.error('Failed to load issues:', e); }
+    }
+
+    async function loadScenarios() {
+      try {
+        const res = await fetch('/api/scenarios');
+        scenarios = await res.json();
+        const select = document.getElementById('scenario-select');
+        scenarios.forEach(s => {
+          const option = document.createElement('option');
+          option.value = s.id;
+          option.textContent = s.name;
+          select.appendChild(option);
+        });
+        select.addEventListener('change', applyScenario);
+      } catch (e) { console.error('Failed to load scenarios:', e); }
+    }
+
+    function applyScenario(e) {
+      const scenario = scenarios.find(s => s.id === e.target.value);
+      if (!scenario) return;
+      document.querySelectorAll('.radio-option.selected').forEach(o => o.classList.remove('selected'));
+      const orgRadio = document.querySelector(`input[name="organizationType"][value="${scenario.organizationType}"]`);
+      if (orgRadio) { orgRadio.checked = true; orgRadio.closest('.radio-option').classList.add('selected'); }
+      document.getElementById('issueArea').value = scenario.issueArea;
+      document.getElementById('priorities').value = scenario.priorities || '';
+      const budgetRadio = document.querySelector(`input[name="budget"][value="${scenario.budget}"]`);
+      if (budgetRadio) { budgetRadio.checked = true; budgetRadio.closest('.radio-option').classList.add('selected'); }
+      if (document.getElementById('orgDescription')) document.getElementById('orgDescription').value = scenario.description || '';
+      if (document.getElementById('policyGoals')) document.getElementById('policyGoals').value = scenario.policyGoals || '';
+      if (document.getElementById('timeline')) document.getElementById('timeline').value = scenario.timeline || '';
+      goToStep(1);
+    }
+
+    function setupRadioListeners() {
+      document.querySelectorAll('.radio-option').forEach(option => {
+        option.addEventListener('click', () => {
+          const groupName = option.querySelector('input').name;
+          document.querySelectorAll(`input[name="${groupName}"]`).forEach(radio => {
+            radio.closest('.radio-option').classList.remove('selected');
+          });
+          option.classList.add('selected');
+          option.querySelector('input').checked = true;
+        });
+      });
+    }
+
+    let issueRowCount = 0;
+    function addIssueRow() {
+      issueRowCount++;
+      const container = document.getElementById('additionalIssues');
+      const row = document.createElement('div');
+      row.className = 'issue-row additional-issue-row';
+      row.id = `issueRow${issueRowCount}`;
+      const selectCol = document.createElement('div');
+      selectCol.className = 'issue-col';
+      const select = document.createElement('select');
+      select.name = `additionalIssue${issueRowCount}`;
+      select.innerHTML = '<option value="">— Select an issue —</option>';
+      issueCodes.forEach(issue => {
+        const option = document.createElement('option');
+        option.value = issue.value;
+        option.textContent = `${issue.name} (${issue.value})`;
+        select.appendChild(option);
+      });
+      selectCol.appendChild(select);
+      const inputCol = document.createElement('div');
+      inputCol.className = 'issue-col issue-col-with-remove';
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.name = `additionalPriorities${issueRowCount}`;
+      input.placeholder = 'Key priorities for this issue';
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'btn-remove-issue';
+      removeBtn.textContent = '×';
+      removeBtn.onclick = () => row.remove();
+      inputCol.appendChild(input);
+      inputCol.appendChild(removeBtn);
+      row.appendChild(selectCol);
+      row.appendChild(inputCol);
+      container.appendChild(row);
+    }
+
+    function nextStep() { if (currentStep < totalSteps) goToStep(currentStep + 1); }
+    function prevStep() { if (currentStep > 1) goToStep(currentStep - 1); }
+
+    function goToStep(step) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.querySelector(`.step[data-step="${step}"]`).classList.add('active');
+      document.querySelectorAll('.progress-step').forEach(p => {
+        const pStep = parseInt(p.dataset.step);
+        p.classList.remove('active', 'complete');
+        if (pStep === step) p.classList.add('active');
+        if (pStep < step) p.classList.add('complete');
+      });
+      currentStep = step;
+    }
+
+    document.getElementById('matchForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const additionalIssueSelects = document.querySelectorAll('#additionalIssues select');
+      const additionalIssues = Array.from(additionalIssueSelects).map(s => s.value).filter(v => v);
+      const formData = {
+        organizationType: document.querySelector('input[name="organizationType"]:checked')?.value,
+        issueArea: document.getElementById('issueArea').value,
+        additionalIssues: additionalIssues,
+        budget: document.querySelector('input[name="budget"]:checked')?.value,
+        priorities: document.getElementById('priorities').value,
+        orgDescription: document.getElementById('orgDescription').value,
+        policyGoals: document.getElementById('policyGoals')?.value || '',
+        timeline: document.getElementById('timeline')?.value || ''
+      };
+      if (!formData.organizationType || !formData.issueArea || !formData.orgDescription) {
+        alert('Please complete all required fields.');
+        return;
+      }
+      document.getElementById('matchForm').style.display = 'none';
+      document.querySelector('.progress-bar').style.display = 'none';
+      document.querySelector('.scenario-bar').style.display = 'none';
+      document.getElementById('loading').style.display = 'block';
+      startQuoteRotation();
+      try {
+        const res = await fetch('/api/match', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        const data = await res.json();
+        if (data.success) displayResults(data.analysis);
+        else throw new Error(data.error || 'Failed to generate matches');
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error generating matches: ' + error.message);
+        startOver();
+      }
+    });
+
+    function displayResults(analysis) {
+      document.getElementById('loading').style.display = 'none';
+      stopQuoteRotation();
+      if (analysis.raw) {
+        document.getElementById('resultsContent').style.display = 'block';
+        document.getElementById('analysisSection').style.display = 'none';
+        document.querySelector('.carousel-container').style.display = 'none';
+        let formatted = analysis.raw
+          .replace(/### (.*)/g, '<h3>$1</h3>')
+          .replace(/\*\*#(\d+): (.*?)\*\*/g, '<h4>#$1: $2</h4>')
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+          .replace(/^- (.*)/gm, '• $1');
+        document.getElementById('resultsContent').innerHTML = formatted;
+      } else {
+        document.getElementById('resultsContent').style.display = 'none';
+        document.getElementById('analysisSection').style.display = 'block';
+        document.querySelector('.carousel-container').style.display = 'block';
+        if (analysis.executiveSummary) {
+          let summaryHtml = analysis.executiveSummary.replace(/\*\*(.*?)\*\*/g, '<span class="analysis-highlight">$1</span>');
+          const sentences = summaryHtml.match(/[^.!?]+[.!?]+/g) || [summaryHtml];
+          if (sentences.length > 2) {
+            const mid = Math.ceil(sentences.length / 2);
+            summaryHtml = `<p>${sentences.slice(0, mid).join(' ')}</p><p>${sentences.slice(mid).join(' ')}</p>`;
+          } else {
+            summaryHtml = `<p>${summaryHtml}</p>`;
+          }
+          document.getElementById('analysisContent').innerHTML = summaryHtml;
+        }
+        const cardsContainer = document.getElementById('matchCards');
+        cardsContainer.innerHTML = '';
+        if (analysis.matches && analysis.matches.length > 0) {
+          analysis.matches.forEach((match, index) => {
+            const card = createMatchCard(match, index);
+            cardsContainer.appendChild(card);
+          });
+          requestAnimationFrame(() => { requestAnimationFrame(() => { initCarousel(analysis.matches.length); }); });
+        }
+        if (analysis.methodology) {
+          document.getElementById('methodologyContent').innerHTML = `<p>${analysis.methodology}</p>`;
+          document.getElementById('methodologySection').style.display = 'block';
+        } else {
+          document.getElementById('methodologySection').style.display = 'none';
+        }
+      }
+      document.getElementById('results').classList.add('visible');
+    }
+
+    function toggleMethodology() {
+      const content = document.getElementById('methodologyContent');
+      const arrow = document.querySelector('.methodology-arrow');
+      if (content.style.display === 'none') { content.style.display = 'block'; arrow.classList.add('open'); }
+      else { content.style.display = 'none'; arrow.classList.remove('open'); }
+    }
+
+    let currentCard = 0;
+    let totalCards = 0;
+
+    function initCarousel(count) {
+      totalCards = count;
+      currentCard = 0;
+      const container = document.querySelector('.carousel-container');
+      const cardsContainer = document.getElementById('matchCards');
+      const cards = document.querySelectorAll('.match-card');
+      if (container && cardsContainer && cards.length > 0) {
+        let containerWidth = container.offsetWidth;
+        if (containerWidth <= 0) containerWidth = container.parentElement?.offsetWidth || 720;
+        cards.forEach(card => {
+          card.style.width = containerWidth + 'px';
+          card.style.minWidth = containerWidth + 'px';
+          card.style.maxWidth = containerWidth + 'px';
+          card.style.flexShrink = '0';
+        });
+        cardsContainer.style.width = (containerWidth * count) + 'px';
+      }
+      const dotsContainer = document.getElementById('carouselDots');
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.onclick = () => goToCard(i);
+        dotsContainer.appendChild(dot);
+      }
+      updateCarousel();
+    }
+
+    function updateCarousel() {
+      const container = document.querySelector('.carousel-container');
+      const cardsContainer = document.getElementById('matchCards');
+      if (container && cardsContainer) {
+        let containerWidth = container.offsetWidth;
+        if (containerWidth <= 0) containerWidth = container.parentElement?.offsetWidth || 720;
+        cardsContainer.style.transform = `translateX(-${currentCard * containerWidth}px)`;
+      }
+      const dots = document.querySelectorAll('.carousel-dot');
+      dots.forEach((dot, i) => { dot.classList.toggle('active', i === currentCard); });
+    }
+
+    function nextCard() { currentCard = (currentCard + 1) % totalCards; updateCarousel(); }
+    function prevCard() { currentCard = (currentCard - 1 + totalCards) % totalCards; updateCarousel(); }
+    function goToCard(index) { currentCard = index; updateCarousel(); }
+
+    window.addEventListener('resize', function() {
+      if (totalCards > 0) {
+        const container = document.querySelector('.carousel-container');
+        const cardsContainer = document.getElementById('matchCards');
+        const cards = document.querySelectorAll('.match-card');
+        if (container && cardsContainer && cards.length > 0) {
+          let containerWidth = container.offsetWidth;
+          if (containerWidth <= 0) containerWidth = container.parentElement?.offsetWidth || 720;
+          cards.forEach(card => {
+            card.style.width = containerWidth + 'px';
+            card.style.minWidth = containerWidth + 'px';
+            card.style.maxWidth = containerWidth + 'px';
+          });
+          cardsContainer.style.width = (containerWidth * totalCards) + 'px';
+          cardsContainer.style.transform = `translateX(-${currentCard * containerWidth}px)`;
+        }
+      }
+    });
+
+    function emailResults() {
+      const subject = encodeURIComponent('Lobby Match Results');
+      const body = encodeURIComponent(buildResultsText());
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    function buildResultsText() {
+      let text = 'LOBBY MATCH RESULTS\n\n';
+      const analysis = document.getElementById('analysisContent').textContent;
+      if (analysis) text += 'EXECUTIVE SUMMARY\n' + analysis + '\n\n';
+      const cards = document.querySelectorAll('.match-card');
+      cards.forEach((card, i) => {
+        const firmName = card.querySelector('.card-firm-name')?.textContent || '';
+        const overallScore = card.querySelector('.overall-score-value')?.textContent || '';
+        const rationale = card.querySelector('.card-rationale')?.textContent?.trim() || '';
+        text += `MATCH #${i + 1}: ${firmName}\n`;
+        text += `Overall Score: ${overallScore}\n\n`;
+        text += `${rationale}\n\n`;
+        text += '---\n\n';
+      });
+      return text;
+    }
+
+    function createMatchCard(match, index) {
+      const card = document.createElement('div');
+      card.className = 'match-card';
+      let rationaleHtml = '';
+      if (match.rationale) {
+        let processedRationale = match.rationale.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        const paragraphs = processedRationale.split('\n\n').filter(p => p.trim());
+        if (paragraphs.length === 1) {
+          const sentences = processedRationale.match(/[^.!?]+[.!?]+/g) || [processedRationale];
+          const midpoint = Math.ceil(sentences.length / 2);
+          const para1 = sentences.slice(0, midpoint).join(' ');
+          const para2 = sentences.slice(midpoint).join(' ');
+          rationaleHtml = `<p>${para1}</p>${para2 ? `<p>${para2}</p>` : ''}`;
+        } else {
+          rationaleHtml = paragraphs.map(p => `<p>${p}</p>`).join('');
+        }
+      }
+      const scores = match.scores || {};
+      let personnelHtml = '';
+      if (match.keyPersonnel && match.keyPersonnel.length > 0) {
+        personnelHtml = `<div class="card-section"><div class="card-section-title">Key Personnel</div><div class="personnel-list">${match.keyPersonnel.map(p => `<div class="personnel-box"><div class="personnel-name">${p.name}</div><div class="personnel-background">${p.background || p.title || ''}</div></div>`).join('')}</div></div>`;
+      }
+      let clientsHtml = '';
+      if (match.representativeClients && match.representativeClients.length > 0) {
+        clientsHtml = `<div class="card-section"><div class="card-section-title">Representative Clients</div><ul class="clients-list">${match.representativeClients.map(c => `<li>${c}</li>`).join('')}</ul></div>`;
+      }
+      let subjectsHtml = '';
+      if (match.subjectsLobbied && match.subjectsLobbied.length > 0) {
+        subjectsHtml = `<div class="card-section"><div class="card-section-title">Subjects Lobbied</div><ul class="subjects-list">${match.subjectsLobbied.map(s => `<li>${s}</li>`).join('')}</ul></div>`;
+      }
+      let committeeHtml = '';
+      if (match.committeeEngagement) {
+        committeeHtml = `<div class="card-section committee-engagement"><div class="card-section-title">Capitol Hill Relationships</div><p class="committee-text">${match.committeeEngagement}</p></div>`;
+      }
+      let firmLinkHtml = '';
+      if (match.firmWebsite) {
+        firmLinkHtml = `<a href="${match.firmWebsite}" target="_blank" rel="noopener noreferrer" class="firm-link">Visit ${match.firmName} →</a>`;
+      }
+      const keyStrengths = match.keyStrengths || match.strengths || [];
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-rank-circle">${match.rank || index + 1}</div>
+            <h3 class="card-firm-name">${match.firmName || 'Unknown Firm'}</h3>
+          </div>
+          <div class="card-overall-score">
+            <div class="overall-score-label">Overall Match</div>
+            <div class="overall-score-value">${scores.overallMatch || '—'}<span class="overall-score-max">/100</span></div>
+          </div>
+        </div>
+        <div class="card-rationale">${rationaleHtml}</div>
+        ${personnelHtml}
+        ${clientsHtml}
+        ${subjectsHtml}
+        ${committeeHtml}
+        <div class="card-section">
+          <div class="card-section-title">Key Strengths</div>
+          <ul class="card-list strengths">${keyStrengths.map(s => `<li>${s}</li>`).join('')}</ul>
+        </div>
+        <div class="card-section">
+          <div class="card-section-title">Considerations</div>
+          <ul class="card-list considerations">${(match.considerations || []).map(c => `<li>${c}</li>`).join('')}</ul>
+        </div>
+        <div class="score-grid">
+          <div class="score-item"><div class="score-label">Issue Alignment</div><div class="score-value">${scores.issueAlignment || '—'}<span class="max">/100</span></div></div>
+          <div class="score-item"><div class="score-label">Experience</div><div class="score-value">${scores.experienceDepth || '—'}<span class="max">/100</span></div></div>
+          <div class="score-item"><div class="score-label">Cost Fit</div><div class="score-value">${scores.costFit || '—'}<span class="max">/100</span></div></div>
+        </div>
+        ${firmLinkHtml}
+      `;
+      return card;
+    }
+
+    function copyResults() {
+      const text = buildResultsText();
+      navigator.clipboard.writeText(text).then(() => { alert('Copied to clipboard!'); });
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const margin = 20;
+      const maxWidth = pageWidth - (margin * 2);
+      let y = 20;
+      function addText(text, fontSize, isBold, color) {
+        doc.setFontSize(fontSize);
+        doc.setFont('helvetica', isBold ? 'bold' : 'normal');
+        if (color) doc.setTextColor(color[0], color[1], color[2]);
+        else doc.setTextColor(0, 0, 0);
+        const lines = doc.splitTextToSize(text, maxWidth);
+        lines.forEach(line => {
+          if (y > 270) { doc.addPage(); y = 20; }
+          doc.text(line, margin, y);
+          y += fontSize * 0.5;
+        });
+        y += 4;
+      }
+      doc.setTextColor(0, 57, 166);
+      doc.setFontSize(24);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Lobby Match Results', margin, y);
+      y += 10;
+      doc.setTextColor(100, 100, 100);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Generated: ' + new Date().toLocaleDateString(), margin, y);
+      y += 8;
+      const analysis = document.getElementById('analysisContent').textContent;
+      if (analysis) {
+        addText('Executive Summary', 14, true, [74, 74, 74]);
+        addText(analysis, 11, false);
+        y += 3;
+      }
+      doc.setDrawColor(200, 200, 200);
+      doc.line(margin, y, pageWidth - margin, y);
+      y += 8;
+      const cards = document.querySelectorAll('.match-card');
+      cards.forEach((card, i) => {
+        if (y > 220) { doc.addPage(); y = 20; }
+        const firmName = card.querySelector('.card-firm-name')?.textContent || '';
+        const overallScore = card.querySelector('.overall-score-value')?.textContent || '';
+        const rationale = card.querySelector('.card-rationale')?.textContent?.trim() || '';
+        const colors = [[238, 53, 46], [0, 57, 166], [0, 161, 222], [247, 147, 30], [0, 147, 60]];
+        const cardColor = colors[i] || colors[0];
+        doc.setFillColor(cardColor[0], cardColor[1], cardColor[2]);
+        doc.rect(margin, y - 6, 10, 10, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text(String(i + 1), margin + 3, y + 2);
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text(firmName, margin + 14, y + 1);
+        doc.setTextColor(100, 100, 100);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Score: ' + overallScore, pageWidth - margin - 25, y + 1);
+        y += 12;
+        addText(rationale.replace(/\s+/g, ' '), 10, false);
+        const strengths = card.querySelectorAll('.strengths li');
+        if (strengths.length > 0) {
+          y += 2;
+          addText('Key Strengths:', 10, true);
+          strengths.forEach(s => { addText('• ' + s.textContent, 10, false); });
+        }
+        const considerations = card.querySelectorAll('.considerations li');
+        if (considerations.length > 0) {
+          y += 2;
+          addText('Considerations:', 10, true);
+          considerations.forEach(c => { addText('• ' + c.textContent, 10, false); });
+        }
+        const clients = card.querySelectorAll('.clients-list li');
+        if (clients.length > 0) {
+          y += 2;
+          addText('Representative Clients:', 10, true);
+          const clientNames = Array.from(clients).map(c => c.textContent).join(', ');
+          addText(clientNames, 10, false);
+        }
+        y += 10;
+        if (i < cards.length - 1) {
+          doc.setDrawColor(220, 220, 220);
+          doc.line(margin, y, pageWidth - margin, y);
+          y += 10;
+        }
+      });
+      if (y > 230) { doc.addPage(); y = 20; } else { y += 10; }
+      doc.setDrawColor(200, 200, 200);
+      doc.line(margin, y, pageWidth - margin, y);
+      y += 10;
+      doc.setTextColor(100, 100, 100);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'italic');
+      const disclaimer = 'Disclaimer: This analysis is based on public Lobbying Disclosure Act filings and is for informational purposes only. It does not constitute legal, business, or professional advice. Past performance does not guarantee future results. Users should conduct their own due diligence before engaging any firm. Data source: Senate Office of Public Records (lda.senate.gov).';
+      const disclaimerLines = doc.splitTextToSize(disclaimer, maxWidth);
+      disclaimerLines.forEach(line => {
+        if (y > 280) { doc.addPage(); y = 20; }
+        doc.text(line, margin, y);
+        y += 4;
+      });
+      doc.save('Lobby Match-Results.pdf');
+    }
+
+    function startOver() {
+      document.getElementById('results').classList.remove('visible');
+      const matchCards = document.getElementById('matchCards');
+      matchCards.innerHTML = '';
+      matchCards.style.transform = 'translateX(0)';
+      matchCards.style.width = '';
+      document.getElementById('analysisContent').innerHTML = '';
+      document.getElementById('carouselDots').innerHTML = '';
+      document.getElementById('resultsContent').innerHTML = '';
+      document.getElementById('additionalIssues').innerHTML = '';
+      document.getElementById('methodologyContent').innerHTML = '';
+      document.getElementById('methodologyContent').style.display = 'none';
+      document.querySelector('.methodology-arrow').classList.remove('open');
+      issueRowCount = 0;
+      currentCard = 0;
+      totalCards = 0;
+      document.getElementById('matchForm').style.display = 'block';
+      document.querySelector('.progress-bar').style.display = 'flex';
+      document.querySelector('.scenario-bar').style.display = 'block';
+      document.getElementById('matchForm').reset();
+      document.querySelectorAll('.radio-option.selected').forEach(o => o.classList.remove('selected'));
+      document.getElementById('scenario-select').value = '';
+      goToStep(1);
+    }
+  </script>
+</body>
+</html>
