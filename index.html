@@ -227,8 +227,8 @@
 
         /* Pink project box - in-development compliance tools */
         .project-box.pink {
-            background: #D81B60;
-            border: 1px solid #D81B60;
+            background: #F78CA0;
+            border: 1px solid #F78CA0;
         }
 
         .project-box.pink h4 {
@@ -321,6 +321,11 @@
             .sidebar {
                 width: 100%;
                 padding: 24px;
+                align-items: center;
+            }
+
+            .sidebar-photo {
+                align-self: center;
             }
 
             .main-area {
@@ -335,6 +340,19 @@
             .project-grid {
                 grid-template-columns: 1fr;
                 max-width: 100%;
+            }
+
+            /* Disable hover effects on mobile/touch devices */
+            .project-btn:hover {
+                background: white;
+                border-color: white;
+                color: #000000;
+            }
+
+            .project-box.navy .project-btn:hover {
+                background: white;
+                border-color: white;
+                color: #000000;
             }
         }
     </style>
@@ -384,16 +402,16 @@
                     <!-- Top right: Navy - Completed political intelligence tool -->
                     <div class="project-box navy">
                         <div>
-                            <h4>Lobby Match</h4>
+                            <h4>LobbyMatch</h4>
                             <p>Matches organizations with lobbying firms with AI-powered insights derived from Lobbying Disclosure Act data.</p>
                         </div>
-                        <a href="lobbymatch/index.html" class="project-btn">Open Tool</a>
+                        <a href="https://lobbymatch.vercel.app" class="project-btn">Open Tool</a>
                     </div>
 
                     <!-- Bottom left: Pink - In-development compliance tool -->
                     <div class="project-box pink">
                         <div>
-                            <h4>Policy Lens (in development)</h4>
+                            <h4>Compliance Lens (in development)</h4>
                             <p>Scans internal policies against regulatory frameworks and provides risk gap analysis.</p>
                         </div>
                     </div>
