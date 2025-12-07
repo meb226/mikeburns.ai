@@ -1,0 +1,556 @@
+{
+  "meta": {
+    "description": "Maps LDA issue codes to relevant Congressional committees",
+    "lastUpdated": "2025-01",
+    "source": "Manual mapping based on committee jurisdictions"
+  },
+  "mappings": {
+    "ACC": {
+      "name": "Accounting",
+      "committees": [
+        {"chamber": "Senate", "committee": "Banking, Housing, and Urban Affairs"},
+        {"chamber": "House", "committee": "Financial Services"}
+      ]
+    },
+    "ADV": {
+      "name": "Advertising",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "AER": {
+      "name": "Aerospace",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "Senate", "committee": "Armed Services"},
+        {"chamber": "House", "committee": "Science, Space, and Technology"},
+        {"chamber": "House", "committee": "Armed Services"}
+      ]
+    },
+    "AGR": {
+      "name": "Agriculture",
+      "committees": [
+        {"chamber": "Senate", "committee": "Agriculture, Nutrition, and Forestry"},
+        {"chamber": "House", "committee": "Agriculture"}
+      ]
+    },
+    "ALC": {
+      "name": "Alcohol and Drug Abuse",
+      "committees": [
+        {"chamber": "Senate", "committee": "Health, Education, Labor, and Pensions"},
+        {"chamber": "Senate", "committee": "Judiciary"},
+        {"chamber": "House", "committee": "Energy and Commerce"},
+        {"chamber": "House", "committee": "Judiciary"}
+      ]
+    },
+    "ANI": {
+      "name": "Animals",
+      "committees": [
+        {"chamber": "Senate", "committee": "Agriculture, Nutrition, and Forestry"},
+        {"chamber": "House", "committee": "Agriculture"}
+      ]
+    },
+    "APP": {
+      "name": "Apparel/Clothing/Textiles",
+      "committees": [
+        {"chamber": "Senate", "committee": "Finance"},
+        {"chamber": "House", "committee": "Ways and Means"}
+      ]
+    },
+    "ART": {
+      "name": "Arts/Entertainment",
+      "committees": [
+        {"chamber": "Senate", "committee": "Health, Education, Labor, and Pensions"},
+        {"chamber": "House", "committee": "Education and the Workforce"}
+      ]
+    },
+    "AUT": {
+      "name": "Automotive Industry",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "AVI": {
+      "name": "Aviation/Aircraft/Airlines",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Transportation and Infrastructure"}
+      ]
+    },
+    "BAN": {
+      "name": "Banking",
+      "committees": [
+        {"chamber": "Senate", "committee": "Banking, Housing, and Urban Affairs"},
+        {"chamber": "House", "committee": "Financial Services"}
+      ]
+    },
+    "BNK": {
+      "name": "Bankruptcy",
+      "committees": [
+        {"chamber": "Senate", "committee": "Judiciary"},
+        {"chamber": "House", "committee": "Judiciary"}
+      ]
+    },
+    "BUD": {
+      "name": "Budget/Appropriations",
+      "committees": [
+        {"chamber": "Senate", "committee": "Appropriations"},
+        {"chamber": "Senate", "committee": "Budget"},
+        {"chamber": "House", "committee": "Appropriations"},
+        {"chamber": "House", "committee": "Budget"}
+      ]
+    },
+    "CHM": {
+      "name": "Chemicals/Chemical Industry",
+      "committees": [
+        {"chamber": "Senate", "committee": "Environment and Public Works"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "CIV": {
+      "name": "Civil Rights/Civil Liberties",
+      "committees": [
+        {"chamber": "Senate", "committee": "Judiciary"},
+        {"chamber": "House", "committee": "Judiciary"}
+      ]
+    },
+    "COM": {
+      "name": "Communications/Broadcasting/Radio/TV",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "CPI": {
+      "name": "Computer Industry",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Energy and Commerce"},
+        {"chamber": "House", "committee": "Science, Space, and Technology"}
+      ]
+    },
+    "CAW": {
+      "name": "Clean Air and Water",
+      "committees": [
+        {"chamber": "Senate", "committee": "Environment and Public Works"},
+        {"chamber": "House", "committee": "Energy and Commerce"},
+        {"chamber": "House", "committee": "Transportation and Infrastructure"}
+      ]
+    },
+    "CDT": {
+      "name": "Commodities",
+      "committees": [
+        {"chamber": "Senate", "committee": "Agriculture, Nutrition, and Forestry"},
+        {"chamber": "House", "committee": "Agriculture"}
+      ]
+    },
+    "CON": {
+      "name": "Consumer Issues/Safety/Products",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "CPT": {
+      "name": "Copyright/Patent/Trademark",
+      "committees": [
+        {"chamber": "Senate", "committee": "Judiciary"},
+        {"chamber": "House", "committee": "Judiciary"}
+      ]
+    },
+    "DEF": {
+      "name": "Defense",
+      "committees": [
+        {"chamber": "Senate", "committee": "Armed Services"},
+        {"chamber": "House", "committee": "Armed Services"}
+      ]
+    },
+    "DIS": {
+      "name": "Disaster Planning/Emergencies",
+      "committees": [
+        {"chamber": "Senate", "committee": "Homeland Security and Governmental Affairs"},
+        {"chamber": "House", "committee": "Homeland Security"}
+      ]
+    },
+    "DOC": {
+      "name": "District of Columbia",
+      "committees": [
+        {"chamber": "Senate", "committee": "Homeland Security and Governmental Affairs"},
+        {"chamber": "House", "committee": "Oversight and Accountability"}
+      ]
+    },
+    "ECN": {
+      "name": "Economics/Economic Development",
+      "committees": [
+        {"chamber": "Senate", "committee": "Banking, Housing, and Urban Affairs"},
+        {"chamber": "House", "committee": "Financial Services"}
+      ]
+    },
+    "EDU": {
+      "name": "Education",
+      "committees": [
+        {"chamber": "Senate", "committee": "Health, Education, Labor, and Pensions"},
+        {"chamber": "House", "committee": "Education and the Workforce"}
+      ]
+    },
+    "ENG": {
+      "name": "Energy/Nuclear",
+      "committees": [
+        {"chamber": "Senate", "committee": "Energy and Natural Resources"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "ENV": {
+      "name": "Environment/Superfund",
+      "committees": [
+        {"chamber": "Senate", "committee": "Environment and Public Works"},
+        {"chamber": "House", "committee": "Energy and Commerce"},
+        {"chamber": "House", "committee": "Natural Resources"}
+      ]
+    },
+    "FAM": {
+      "name": "Family Issues/Abortion/Adoption",
+      "committees": [
+        {"chamber": "Senate", "committee": "Judiciary"},
+        {"chamber": "Senate", "committee": "Health, Education, Labor, and Pensions"},
+        {"chamber": "House", "committee": "Judiciary"}
+      ]
+    },
+    "FIN": {
+      "name": "Financial Institutions/Investments/Securities",
+      "committees": [
+        {"chamber": "Senate", "committee": "Banking, Housing, and Urban Affairs"},
+        {"chamber": "Senate", "committee": "Finance"},
+        {"chamber": "House", "committee": "Financial Services"}
+      ]
+    },
+    "FIR": {
+      "name": "Firearms/Guns/Ammunition",
+      "committees": [
+        {"chamber": "Senate", "committee": "Judiciary"},
+        {"chamber": "House", "committee": "Judiciary"}
+      ]
+    },
+    "FOO": {
+      "name": "Food Industry",
+      "committees": [
+        {"chamber": "Senate", "committee": "Agriculture, Nutrition, and Forestry"},
+        {"chamber": "House", "committee": "Agriculture"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "FOR": {
+      "name": "Foreign Relations",
+      "committees": [
+        {"chamber": "Senate", "committee": "Foreign Relations"},
+        {"chamber": "House", "committee": "Foreign Affairs"}
+      ]
+    },
+    "FUE": {
+      "name": "Fuel/Gas/Oil",
+      "committees": [
+        {"chamber": "Senate", "committee": "Energy and Natural Resources"},
+        {"chamber": "House", "committee": "Energy and Commerce"},
+        {"chamber": "House", "committee": "Natural Resources"}
+      ]
+    },
+    "GAM": {
+      "name": "Gaming/Gambling/Casino",
+      "committees": [
+        {"chamber": "Senate", "committee": "Indian Affairs"},
+        {"chamber": "House", "committee": "Natural Resources"}
+      ]
+    },
+    "GOV": {
+      "name": "Government Issues",
+      "committees": [
+        {"chamber": "Senate", "committee": "Homeland Security and Governmental Affairs"},
+        {"chamber": "House", "committee": "Oversight and Accountability"}
+      ]
+    },
+    "HCR": {
+      "name": "Health Issues",
+      "committees": [
+        {"chamber": "Senate", "committee": "Health, Education, Labor, and Pensions"},
+        {"chamber": "Senate", "committee": "Finance"},
+        {"chamber": "House", "committee": "Energy and Commerce"},
+        {"chamber": "House", "committee": "Ways and Means"}
+      ]
+    },
+    "HOM": {
+      "name": "Homeland Security",
+      "committees": [
+        {"chamber": "Senate", "committee": "Homeland Security and Governmental Affairs"},
+        {"chamber": "House", "committee": "Homeland Security"}
+      ]
+    },
+    "HOU": {
+      "name": "Housing",
+      "committees": [
+        {"chamber": "Senate", "committee": "Banking, Housing, and Urban Affairs"},
+        {"chamber": "House", "committee": "Financial Services"}
+      ]
+    },
+    "IMM": {
+      "name": "Immigration",
+      "committees": [
+        {"chamber": "Senate", "committee": "Judiciary"},
+        {"chamber": "House", "committee": "Judiciary"},
+        {"chamber": "House", "committee": "Homeland Security"}
+      ]
+    },
+    "IND": {
+      "name": "Indian/Native American Affairs",
+      "committees": [
+        {"chamber": "Senate", "committee": "Indian Affairs"},
+        {"chamber": "House", "committee": "Natural Resources"}
+      ]
+    },
+    "INS": {
+      "name": "Insurance",
+      "committees": [
+        {"chamber": "Senate", "committee": "Banking, Housing, and Urban Affairs"},
+        {"chamber": "Senate", "committee": "Finance"},
+        {"chamber": "House", "committee": "Financial Services"}
+      ]
+    },
+    "INT": {
+      "name": "Intelligence and Surveillance",
+      "committees": [
+        {"chamber": "Senate", "committee": "Intelligence"},
+        {"chamber": "House", "committee": "Intelligence"}
+      ]
+    },
+    "LBR": {
+      "name": "Labor Issues/Antitrust/Workplace",
+      "committees": [
+        {"chamber": "Senate", "committee": "Health, Education, Labor, and Pensions"},
+        {"chamber": "House", "committee": "Education and the Workforce"}
+      ]
+    },
+    "LAW": {
+      "name": "Law Enforcement/Crime/Criminal Justice",
+      "committees": [
+        {"chamber": "Senate", "committee": "Judiciary"},
+        {"chamber": "House", "committee": "Judiciary"}
+      ]
+    },
+    "MAN": {
+      "name": "Manufacturing",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "MAR": {
+      "name": "Marine/Maritime/Boating/Fisheries",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Transportation and Infrastructure"},
+        {"chamber": "House", "committee": "Natural Resources"}
+      ]
+    },
+    "MED": {
+      "name": "Medical/Disease Research/Clinical Labs",
+      "committees": [
+        {"chamber": "Senate", "committee": "Health, Education, Labor, and Pensions"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "MMM": {
+      "name": "Medicare/Medicaid",
+      "committees": [
+        {"chamber": "Senate", "committee": "Finance"},
+        {"chamber": "House", "committee": "Ways and Means"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "MON": {
+      "name": "Minting/Money/Gold Standard",
+      "committees": [
+        {"chamber": "Senate", "committee": "Banking, Housing, and Urban Affairs"},
+        {"chamber": "House", "committee": "Financial Services"}
+      ]
+    },
+    "NAT": {
+      "name": "Natural Resources",
+      "committees": [
+        {"chamber": "Senate", "committee": "Energy and Natural Resources"},
+        {"chamber": "House", "committee": "Natural Resources"}
+      ]
+    },
+    "PHA": {
+      "name": "Pharmacy",
+      "committees": [
+        {"chamber": "Senate", "committee": "Health, Education, Labor, and Pensions"},
+        {"chamber": "Senate", "committee": "Finance"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "POS": {
+      "name": "Postal",
+      "committees": [
+        {"chamber": "Senate", "committee": "Homeland Security and Governmental Affairs"},
+        {"chamber": "House", "committee": "Oversight and Accountability"}
+      ]
+    },
+    "RRR": {
+      "name": "Railroads",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Transportation and Infrastructure"}
+      ]
+    },
+    "RES": {
+      "name": "Real Estate/Land Use/Conservation",
+      "committees": [
+        {"chamber": "Senate", "committee": "Energy and Natural Resources"},
+        {"chamber": "House", "committee": "Natural Resources"}
+      ]
+    },
+    "REL": {
+      "name": "Religion",
+      "committees": [
+        {"chamber": "Senate", "committee": "Judiciary"},
+        {"chamber": "House", "committee": "Judiciary"}
+      ]
+    },
+    "RET": {
+      "name": "Retirement",
+      "committees": [
+        {"chamber": "Senate", "committee": "Finance"},
+        {"chamber": "Senate", "committee": "Health, Education, Labor, and Pensions"},
+        {"chamber": "House", "committee": "Ways and Means"},
+        {"chamber": "House", "committee": "Education and the Workforce"}
+      ]
+    },
+    "ROD": {
+      "name": "Roads/Highway",
+      "committees": [
+        {"chamber": "Senate", "committee": "Environment and Public Works"},
+        {"chamber": "House", "committee": "Transportation and Infrastructure"}
+      ]
+    },
+    "SCI": {
+      "name": "Science/Technology",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Science, Space, and Technology"}
+      ]
+    },
+    "SMB": {
+      "name": "Small Business",
+      "committees": [
+        {"chamber": "Senate", "committee": "Small Business and Entrepreneurship"},
+        {"chamber": "House", "committee": "Small Business"}
+      ]
+    },
+    "SPO": {
+      "name": "Sports/Athletics",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "TAX": {
+      "name": "Taxation/Internal Revenue Code",
+      "committees": [
+        {"chamber": "Senate", "committee": "Finance"},
+        {"chamber": "House", "committee": "Ways and Means"}
+      ]
+    },
+    "TEC": {
+      "name": "Telecommunications",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "TOB": {
+      "name": "Tobacco",
+      "committees": [
+        {"chamber": "Senate", "committee": "Health, Education, Labor, and Pensions"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "TOR": {
+      "name": "Torts",
+      "committees": [
+        {"chamber": "Senate", "committee": "Judiciary"},
+        {"chamber": "House", "committee": "Judiciary"}
+      ]
+    },
+    "TRD": {
+      "name": "Trade",
+      "committees": [
+        {"chamber": "Senate", "committee": "Finance"},
+        {"chamber": "House", "committee": "Ways and Means"}
+      ]
+    },
+    "TRA": {
+      "name": "Transportation",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Transportation and Infrastructure"}
+      ]
+    },
+    "TOU": {
+      "name": "Travel/Tourism",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "TRU": {
+      "name": "Trucking/Shipping",
+      "committees": [
+        {"chamber": "Senate", "committee": "Commerce, Science, and Transportation"},
+        {"chamber": "House", "committee": "Transportation and Infrastructure"}
+      ]
+    },
+    "URB": {
+      "name": "Urban Development/Municipalities",
+      "committees": [
+        {"chamber": "Senate", "committee": "Banking, Housing, and Urban Affairs"},
+        {"chamber": "House", "committee": "Financial Services"}
+      ]
+    },
+    "UNM": {
+      "name": "Unemployment",
+      "committees": [
+        {"chamber": "Senate", "committee": "Finance"},
+        {"chamber": "House", "committee": "Ways and Means"}
+      ]
+    },
+    "UTI": {
+      "name": "Utilities",
+      "committees": [
+        {"chamber": "Senate", "committee": "Energy and Natural Resources"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "VET": {
+      "name": "Veterans",
+      "committees": [
+        {"chamber": "Senate", "committee": "Veterans' Affairs"},
+        {"chamber": "House", "committee": "Veterans' Affairs"}
+      ]
+    },
+    "WAS": {
+      "name": "Waste/Hazardous Waste",
+      "committees": [
+        {"chamber": "Senate", "committee": "Environment and Public Works"},
+        {"chamber": "House", "committee": "Energy and Commerce"}
+      ]
+    },
+    "WEL": {
+      "name": "Welfare",
+      "committees": [
+        {"chamber": "Senate", "committee": "Finance"},
+        {"chamber": "House", "committee": "Ways and Means"}
+      ]
+    }
+  }
+}

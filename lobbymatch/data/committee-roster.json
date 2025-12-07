@@ -1,0 +1,347 @@
+{
+  "meta": {
+    "description": "Key committee members for relationship mapping (119th Congress)",
+    "lastUpdated": "2025-01",
+    "note": "Includes chairs, ranking members, and key subcommittee leaders"
+  },
+  "committees": {
+    "Senate": {
+      "Finance": {
+        "jurisdiction": ["Tax", "Trade", "Medicare", "Medicaid", "Social Security", "Health"],
+        "chair": {"name": "Mike Crapo", "state": "ID", "party": "R"},
+        "rankingMember": {"name": "Ron Wyden", "state": "OR", "party": "D"},
+        "keyMembers": [
+          {"name": "John Thune", "state": "SD", "party": "R"},
+          {"name": "Chuck Grassley", "state": "IA", "party": "R"},
+          {"name": "John Cornyn", "state": "TX", "party": "R"},
+          {"name": "Debbie Stabenow", "state": "MI", "party": "D"},
+          {"name": "Maria Cantwell", "state": "WA", "party": "D"},
+          {"name": "Bob Menendez", "state": "NJ", "party": "D"}
+        ]
+      },
+      "Health, Education, Labor, and Pensions": {
+        "jurisdiction": ["Health", "Education", "Labor", "Pensions", "FDA", "NIH", "CDC"],
+        "chair": {"name": "Bill Cassidy", "state": "LA", "party": "R"},
+        "rankingMember": {"name": "Bernie Sanders", "state": "VT", "party": "I"},
+        "keyMembers": [
+          {"name": "Rand Paul", "state": "KY", "party": "R"},
+          {"name": "Susan Collins", "state": "ME", "party": "R"},
+          {"name": "Tim Scott", "state": "SC", "party": "R"},
+          {"name": "Patty Murray", "state": "WA", "party": "D"},
+          {"name": "Bob Casey", "state": "PA", "party": "D"},
+          {"name": "Tammy Baldwin", "state": "WI", "party": "D"}
+        ]
+      },
+      "Armed Services": {
+        "jurisdiction": ["Defense", "Military", "National Security"],
+        "chair": {"name": "Roger Wicker", "state": "MS", "party": "R"},
+        "rankingMember": {"name": "Jack Reed", "state": "RI", "party": "D"},
+        "keyMembers": [
+          {"name": "Tom Cotton", "state": "AR", "party": "R"},
+          {"name": "Joni Ernst", "state": "IA", "party": "R"},
+          {"name": "Kirsten Gillibrand", "state": "NY", "party": "D"},
+          {"name": "Tim Kaine", "state": "VA", "party": "D"}
+        ]
+      },
+      "Energy and Natural Resources": {
+        "jurisdiction": ["Energy", "Nuclear", "Public Lands", "Mining"],
+        "chair": {"name": "Mike Lee", "state": "UT", "party": "R"},
+        "rankingMember": {"name": "Martin Heinrich", "state": "NM", "party": "D"},
+        "keyMembers": [
+          {"name": "John Barrasso", "state": "WY", "party": "R"},
+          {"name": "Lisa Murkowski", "state": "AK", "party": "R"},
+          {"name": "Joe Manchin", "state": "WV", "party": "D"},
+          {"name": "Angus King", "state": "ME", "party": "I"}
+        ]
+      },
+      "Banking, Housing, and Urban Affairs": {
+        "jurisdiction": ["Banking", "Housing", "Securities", "Insurance"],
+        "chair": {"name": "Tim Scott", "state": "SC", "party": "R"},
+        "rankingMember": {"name": "Sherrod Brown", "state": "OH", "party": "D"},
+        "keyMembers": [
+          {"name": "Mike Rounds", "state": "SD", "party": "R"},
+          {"name": "Thom Tillis", "state": "NC", "party": "R"},
+          {"name": "Elizabeth Warren", "state": "MA", "party": "D"},
+          {"name": "Mark Warner", "state": "VA", "party": "D"}
+        ]
+      },
+      "Judiciary": {
+        "jurisdiction": ["Courts", "Immigration", "Crime", "Civil Rights", "IP"],
+        "chair": {"name": "Chuck Grassley", "state": "IA", "party": "R"},
+        "rankingMember": {"name": "Dick Durbin", "state": "IL", "party": "D"},
+        "keyMembers": [
+          {"name": "Lindsey Graham", "state": "SC", "party": "R"},
+          {"name": "Ted Cruz", "state": "TX", "party": "R"},
+          {"name": "Amy Klobuchar", "state": "MN", "party": "D"},
+          {"name": "Cory Booker", "state": "NJ", "party": "D"}
+        ]
+      },
+      "Commerce, Science, and Transportation": {
+        "jurisdiction": ["Telecommunications", "Technology", "Aviation", "Rail", "Maritime"],
+        "chair": {"name": "Ted Cruz", "state": "TX", "party": "R"},
+        "rankingMember": {"name": "Maria Cantwell", "state": "WA", "party": "D"},
+        "keyMembers": [
+          {"name": "John Thune", "state": "SD", "party": "R"},
+          {"name": "Jerry Moran", "state": "KS", "party": "R"},
+          {"name": "Amy Klobuchar", "state": "MN", "party": "D"},
+          {"name": "Gary Peters", "state": "MI", "party": "D"}
+        ]
+      },
+      "Environment and Public Works": {
+        "jurisdiction": ["Environment", "Infrastructure", "Highways", "Clean Air/Water"],
+        "chair": {"name": "Shelley Moore Capito", "state": "WV", "party": "R"},
+        "rankingMember": {"name": "Tom Carper", "state": "DE", "party": "D"},
+        "keyMembers": [
+          {"name": "Kevin Cramer", "state": "ND", "party": "R"},
+          {"name": "Cynthia Lummis", "state": "WY", "party": "R"},
+          {"name": "Ben Cardin", "state": "MD", "party": "D"},
+          {"name": "Jeff Merkley", "state": "OR", "party": "D"}
+        ]
+      },
+      "Foreign Relations": {
+        "jurisdiction": ["Foreign Policy", "Treaties", "Foreign Aid", "State Department"],
+        "chair": {"name": "Jim Risch", "state": "ID", "party": "R"},
+        "rankingMember": {"name": "Jeanne Shaheen", "state": "NH", "party": "D"},
+        "keyMembers": [
+          {"name": "Marco Rubio", "state": "FL", "party": "R"},
+          {"name": "Rand Paul", "state": "KY", "party": "R"},
+          {"name": "Chris Murphy", "state": "CT", "party": "D"},
+          {"name": "Chris Coons", "state": "DE", "party": "D"}
+        ]
+      },
+      "Veterans' Affairs": {
+        "jurisdiction": ["Veterans Benefits", "VA Healthcare", "Veterans Services"],
+        "chair": {"name": "Jerry Moran", "state": "KS", "party": "R"},
+        "rankingMember": {"name": "Richard Blumenthal", "state": "CT", "party": "D"},
+        "keyMembers": [
+          {"name": "John Boozman", "state": "AR", "party": "R"},
+          {"name": "Thom Tillis", "state": "NC", "party": "R"},
+          {"name": "Mazie Hirono", "state": "HI", "party": "D"},
+          {"name": "Maggie Hassan", "state": "NH", "party": "D"}
+        ]
+      },
+      "Appropriations": {
+        "jurisdiction": ["Federal Spending", "Budget"],
+        "chair": {"name": "Susan Collins", "state": "ME", "party": "R"},
+        "rankingMember": {"name": "Patty Murray", "state": "WA", "party": "D"},
+        "keyMembers": [
+          {"name": "Mitch McConnell", "state": "KY", "party": "R"},
+          {"name": "John Kennedy", "state": "LA", "party": "R"},
+          {"name": "Brian Schatz", "state": "HI", "party": "D"},
+          {"name": "Chris Van Hollen", "state": "MD", "party": "D"}
+        ]
+      },
+      "Small Business and Entrepreneurship": {
+        "jurisdiction": ["Small Business", "SBA", "Entrepreneurship"],
+        "chair": {"name": "Joni Ernst", "state": "IA", "party": "R"},
+        "rankingMember": {"name": "Jeanne Shaheen", "state": "NH", "party": "D"},
+        "keyMembers": [
+          {"name": "Marco Rubio", "state": "FL", "party": "R"},
+          {"name": "Tim Scott", "state": "SC", "party": "R"},
+          {"name": "Ben Cardin", "state": "MD", "party": "D"},
+          {"name": "Tammy Duckworth", "state": "IL", "party": "D"}
+        ]
+      },
+      "Agriculture, Nutrition, and Forestry": {
+        "jurisdiction": ["Agriculture", "Food", "Nutrition Programs", "Forestry"],
+        "chair": {"name": "John Boozman", "state": "AR", "party": "R"},
+        "rankingMember": {"name": "Debbie Stabenow", "state": "MI", "party": "D"},
+        "keyMembers": [
+          {"name": "Chuck Grassley", "state": "IA", "party": "R"},
+          {"name": "Roger Marshall", "state": "KS", "party": "R"},
+          {"name": "Amy Klobuchar", "state": "MN", "party": "D"},
+          {"name": "Cory Booker", "state": "NJ", "party": "D"}
+        ]
+      },
+      "Homeland Security and Governmental Affairs": {
+        "jurisdiction": ["Homeland Security", "Government Operations", "FEMA"],
+        "chair": {"name": "Rand Paul", "state": "KY", "party": "R"},
+        "rankingMember": {"name": "Gary Peters", "state": "MI", "party": "D"},
+        "keyMembers": [
+          {"name": "Ron Johnson", "state": "WI", "party": "R"},
+          {"name": "Josh Hawley", "state": "MO", "party": "R"},
+          {"name": "Maggie Hassan", "state": "NH", "party": "D"},
+          {"name": "Jon Ossoff", "state": "GA", "party": "D"}
+        ]
+      },
+      "Indian Affairs": {
+        "jurisdiction": ["Native American Affairs", "Tribal Issues"],
+        "chair": {"name": "Lisa Murkowski", "state": "AK", "party": "R"},
+        "rankingMember": {"name": "Brian Schatz", "state": "HI", "party": "D"},
+        "keyMembers": [
+          {"name": "Steve Daines", "state": "MT", "party": "R"},
+          {"name": "Tina Smith", "state": "MN", "party": "D"}
+        ]
+      }
+    },
+    "House": {
+      "Ways and Means": {
+        "jurisdiction": ["Tax", "Trade", "Medicare", "Social Security"],
+        "chair": {"name": "Jason Smith", "state": "MO", "party": "R"},
+        "rankingMember": {"name": "Richard Neal", "state": "MA", "party": "D"},
+        "keyMembers": [
+          {"name": "Vern Buchanan", "state": "FL", "party": "R"},
+          {"name": "Adrian Smith", "state": "NE", "party": "R"},
+          {"name": "Mike Kelly", "state": "PA", "party": "R"},
+          {"name": "Lloyd Doggett", "state": "TX", "party": "D"},
+          {"name": "Mike Thompson", "state": "CA", "party": "D"},
+          {"name": "Earl Blumenauer", "state": "OR", "party": "D"}
+        ]
+      },
+      "Energy and Commerce": {
+        "jurisdiction": ["Health", "Energy", "Telecommunications", "Consumer Protection"],
+        "chair": {"name": "Brett Guthrie", "state": "KY", "party": "R"},
+        "rankingMember": {"name": "Frank Pallone", "state": "NJ", "party": "D"},
+        "keyMembers": [
+          {"name": "Cathy McMorris Rodgers", "state": "WA", "party": "R"},
+          {"name": "Michael Burgess", "state": "TX", "party": "R"},
+          {"name": "Anna Eshoo", "state": "CA", "party": "D"},
+          {"name": "Diana DeGette", "state": "CO", "party": "D"}
+        ]
+      },
+      "Financial Services": {
+        "jurisdiction": ["Banking", "Housing", "Insurance", "Securities"],
+        "chair": {"name": "French Hill", "state": "AR", "party": "R"},
+        "rankingMember": {"name": "Maxine Waters", "state": "CA", "party": "D"},
+        "keyMembers": [
+          {"name": "Ann Wagner", "state": "MO", "party": "R"},
+          {"name": "Bill Huizenga", "state": "MI", "party": "R"},
+          {"name": "Gregory Meeks", "state": "NY", "party": "D"},
+          {"name": "Brad Sherman", "state": "CA", "party": "D"}
+        ]
+      },
+      "Armed Services": {
+        "jurisdiction": ["Defense", "Military"],
+        "chair": {"name": "Mike Rogers", "state": "AL", "party": "R"},
+        "rankingMember": {"name": "Adam Smith", "state": "WA", "party": "D"},
+        "keyMembers": [
+          {"name": "Rob Wittman", "state": "VA", "party": "R"},
+          {"name": "Doug Lamborn", "state": "CO", "party": "R"},
+          {"name": "Joe Courtney", "state": "CT", "party": "D"},
+          {"name": "John Garamendi", "state": "CA", "party": "D"}
+        ]
+      },
+      "Judiciary": {
+        "jurisdiction": ["Immigration", "Crime", "Courts", "Civil Rights"],
+        "chair": {"name": "Jim Jordan", "state": "OH", "party": "R"},
+        "rankingMember": {"name": "Jerry Nadler", "state": "NY", "party": "D"},
+        "keyMembers": [
+          {"name": "Steve Chabot", "state": "OH", "party": "R"},
+          {"name": "Tom McClintock", "state": "CA", "party": "R"},
+          {"name": "Zoe Lofgren", "state": "CA", "party": "D"},
+          {"name": "Sheila Jackson Lee", "state": "TX", "party": "D"}
+        ]
+      },
+      "Transportation and Infrastructure": {
+        "jurisdiction": ["Surface Transportation", "Aviation", "Maritime", "Infrastructure"],
+        "chair": {"name": "Sam Graves", "state": "MO", "party": "R"},
+        "rankingMember": {"name": "Rick Larsen", "state": "WA", "party": "D"},
+        "keyMembers": [
+          {"name": "Garret Graves", "state": "LA", "party": "R"},
+          {"name": "Brian Babin", "state": "TX", "party": "R"},
+          {"name": "Eleanor Holmes Norton", "state": "DC", "party": "D"},
+          {"name": "Grace Napolitano", "state": "CA", "party": "D"}
+        ]
+      },
+      "Agriculture": {
+        "jurisdiction": ["Agriculture", "Food", "Nutrition", "Rural Development"],
+        "chair": {"name": "Glenn Thompson", "state": "PA", "party": "R"},
+        "rankingMember": {"name": "David Scott", "state": "GA", "party": "D"},
+        "keyMembers": [
+          {"name": "Austin Scott", "state": "GA", "party": "R"},
+          {"name": "Rick Crawford", "state": "AR", "party": "R"},
+          {"name": "Jim Costa", "state": "CA", "party": "D"},
+          {"name": "Alma Adams", "state": "NC", "party": "D"}
+        ]
+      },
+      "Appropriations": {
+        "jurisdiction": ["Federal Spending"],
+        "chair": {"name": "Tom Cole", "state": "OK", "party": "R"},
+        "rankingMember": {"name": "Rosa DeLauro", "state": "CT", "party": "D"},
+        "keyMembers": [
+          {"name": "Mario Diaz-Balart", "state": "FL", "party": "R"},
+          {"name": "Steve Womack", "state": "AR", "party": "R"},
+          {"name": "Marcy Kaptur", "state": "OH", "party": "D"},
+          {"name": "Pete Aguilar", "state": "CA", "party": "D"}
+        ]
+      },
+      "Natural Resources": {
+        "jurisdiction": ["Public Lands", "Energy", "Mining", "Native Affairs"],
+        "chair": {"name": "Bruce Westerman", "state": "AR", "party": "R"},
+        "rankingMember": {"name": "Raul Grijalva", "state": "AZ", "party": "D"},
+        "keyMembers": [
+          {"name": "Doug Lamborn", "state": "CO", "party": "R"},
+          {"name": "Paul Gosar", "state": "AZ", "party": "R"},
+          {"name": "Jared Huffman", "state": "CA", "party": "D"},
+          {"name": "Katie Porter", "state": "CA", "party": "D"}
+        ]
+      },
+      "Science, Space, and Technology": {
+        "jurisdiction": ["Science", "Technology", "R&D", "NASA"],
+        "chair": {"name": "Frank Lucas", "state": "OK", "party": "R"},
+        "rankingMember": {"name": "Zoe Lofgren", "state": "CA", "party": "D"},
+        "keyMembers": [
+          {"name": "Brian Babin", "state": "TX", "party": "R"},
+          {"name": "Randy Weber", "state": "TX", "party": "R"},
+          {"name": "Suzanne Bonamici", "state": "OR", "party": "D"},
+          {"name": "Haley Stevens", "state": "MI", "party": "D"}
+        ]
+      },
+      "Veterans' Affairs": {
+        "jurisdiction": ["Veterans Benefits", "VA Healthcare"],
+        "chair": {"name": "Mike Bost", "state": "IL", "party": "R"},
+        "rankingMember": {"name": "Mark Takano", "state": "CA", "party": "D"},
+        "keyMembers": [
+          {"name": "Jack Bergman", "state": "MI", "party": "R"},
+          {"name": "Nancy Mace", "state": "SC", "party": "R"},
+          {"name": "Julia Brownley", "state": "CA", "party": "D"},
+          {"name": "Chris Pappas", "state": "NH", "party": "D"}
+        ]
+      },
+      "Small Business": {
+        "jurisdiction": ["Small Business", "SBA"],
+        "chair": {"name": "Roger Williams", "state": "TX", "party": "R"},
+        "rankingMember": {"name": "Nydia Velazquez", "state": "NY", "party": "D"},
+        "keyMembers": [
+          {"name": "Blaine Luetkemeyer", "state": "MO", "party": "R"},
+          {"name": "Beth Van Duyne", "state": "TX", "party": "R"},
+          {"name": "Jared Golden", "state": "ME", "party": "D"},
+          {"name": "Kweisi Mfume", "state": "MD", "party": "D"}
+        ]
+      },
+      "Education and the Workforce": {
+        "jurisdiction": ["Education", "Labor", "Workforce", "Pensions"],
+        "chair": {"name": "Tim Walberg", "state": "MI", "party": "R"},
+        "rankingMember": {"name": "Bobby Scott", "state": "VA", "party": "D"},
+        "keyMembers": [
+          {"name": "Glenn Grothman", "state": "WI", "party": "R"},
+          {"name": "Elise Stefanik", "state": "NY", "party": "R"},
+          {"name": "Frederica Wilson", "state": "FL", "party": "D"},
+          {"name": "Raul Grijalva", "state": "AZ", "party": "D"}
+        ]
+      },
+      "Foreign Affairs": {
+        "jurisdiction": ["Foreign Policy", "State Department", "Foreign Aid"],
+        "chair": {"name": "Brian Mast", "state": "FL", "party": "R"},
+        "rankingMember": {"name": "Gregory Meeks", "state": "NY", "party": "D"},
+        "keyMembers": [
+          {"name": "Ann Wagner", "state": "MO", "party": "R"},
+          {"name": "Michael McCaul", "state": "TX", "party": "R"},
+          {"name": "Brad Sherman", "state": "CA", "party": "D"},
+          {"name": "Gerry Connolly", "state": "VA", "party": "D"}
+        ]
+      },
+      "Homeland Security": {
+        "jurisdiction": ["Homeland Security", "Border", "TSA", "FEMA"],
+        "chair": {"name": "Mark Green", "state": "TN", "party": "R"},
+        "rankingMember": {"name": "Bennie Thompson", "state": "MS", "party": "D"},
+        "keyMembers": [
+          {"name": "Dan Crenshaw", "state": "TX", "party": "R"},
+          {"name": "Clay Higgins", "state": "LA", "party": "R"},
+          {"name": "Sheila Jackson Lee", "state": "TX", "party": "D"},
+          {"name": "Eric Swalwell", "state": "CA", "party": "D"}
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "nonprofit-healthcare",
+    "name": "Healthcare Nonprofit",
+    "organizationType": "nonprofit",
+    "issueArea": "HCR",
+    "budget": "$15,000-$30,000/month",
+    "priorities": "Access to care, Medicare policy",
+    "description": "We are a 501(c)(3) patient advocacy organization focused on expanding access to cancer screening and treatment.",
+    "orgDescription": "We are a 501(c)(3) patient advocacy organization focused on expanding access to cancer screening and treatment. We have a small policy team but no DC presence.",
+    "policyGoals": "We want to influence upcoming Medicare reimbursement policies and build relationships with key congressional committees overseeing healthcare.",
+    "timeline": "The next Medicare payment rule is expected in Q2. Our annual advocacy budget is approximately $200,000."
+  },
+  {
+    "id": "tech-startup",
+    "name": "Tech Startup (AI Focus)",
+    "organizationType": "small-business",
+    "issueArea": "SCI",
+    "budget": "$15,000-$30,000/month",
+    "priorities": "AI regulation, data privacy",
+    "description": "We're a Series B AI startup building enterprise automation tools.",
+    "orgDescription": "We're a Series B AI startup building enterprise automation tools. About 50 employees, headquartered in San Francisco.",
+    "policyGoals": "With increasing congressional attention on AI regulation, we need representation to ensure our voice is heard in policy discussions. We want a seat at the table, not reactive damage control.",
+    "timeline": "AI legislation is moving fast. We want a firm that understands technology but can also navigate the current political environment. Ideally connections to Commerce Committee and relevant executive branch agencies."
+  },
+  {
+    "id": "manufacturing-tariffs",
+    "name": "Manufacturing (Trade Issues)",
+    "organizationType": "small-business",
+    "issueArea": "TRD",
+    "budget": "$5,000-$15,000/month",
+    "priorities": "Tariff relief, supply chain",
+    "description": "We're a mid-sized manufacturer of industrial equipment facing steel tariffs.",
+    "orgDescription": "We're a mid-sized manufacturer of industrial equipment with about 200 employees in Ohio. Significant exposure to steel tariffs.",
+    "policyGoals": "Recent trade policy changes have increased our costs by 15%. We need help navigating tariff exemption processes and advocating for more favorable trade policies.",
+    "timeline": "Budget is limited but the issue is urgent. Our current exemption expires in 6 months."
+  },
+  {
+    "id": "individual-veteran",
+    "name": "Veterans Advocacy (Individual)",
+    "organizationType": "individual",
+    "issueArea": "VET",
+    "budget": "$2,500-$5,000/month",
+    "priorities": "VA healthcare, benefits",
+    "description": "I'm a retired military officer looking to advocate for improved VA mental health services.",
+    "orgDescription": "I'm a retired military officer (Colonel, U.S. Army) with 28 years of service. I've personally experienced gaps in the VA mental health system.",
+    "policyGoals": "I want to push for specific legislative changes to improve VA mental health services, particularly for veterans in rural areas.",
+    "timeline": "I have limited resources but strong personal experience and some media connections. Looking for a firm that has genuine commitment to veterans' issues, not just a contract."
+  },
+  {
+    "id": "energy-nonprofit",
+    "name": "Clean Energy Coalition",
+    "organizationType": "nonprofit",
+    "issueArea": "ENG",
+    "budget": "$30,000+/month",
+    "priorities": "Renewable energy incentives, grid modernization",
+    "description": "We're a coalition of clean energy companies and environmental groups.",
+    "orgDescription": "We're a coalition of 15 clean energy companies and 5 environmental groups advocating for renewable energy policy. 501(c)(4) structure.",
+    "policyGoals": "We're focused on extension of renewable energy tax credits and grid infrastructure investment in the next budget cycle.",
+    "timeline": "Appropriations process is our window. We need a firm with deep energy policy expertise, relationships with key appropriators, and experience working coalitions. Bipartisan credibility is essential."
+  }
+]
