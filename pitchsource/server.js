@@ -246,8 +246,10 @@ Generate a pitch memo with these sections:
 ### 1. EXECUTIVE SUMMARY (Always include)
 2-3 sentences on why this firm is positioned to win this prospect. Lead with the strongest differentiator. CRITICAL: Only mention committees, agencies, or government experience that are DIRECTLY relevant to the prospect's stated issue areas. Do not list unrelated committees just because the firm has relationships there — it looks unfocused and undermines credibility.
 
+**DO NOT include a formal memo header.** No "MEMORANDUM", no "To:", "From:", "Date:", "Re:" lines. Just start directly with the Executive Summary section header.
+
 ### 2. INTRODUCING [FIRM NAME] (Always include)
-A paragraph that establishes who this firm is and what makes them distinctive. You will receive a FIRM INTRO in the user prompt containing pre-crafted language about the firm. Use this as the foundation for this section, adapting it slightly if needed to connect to the prospect's situation, but preserving the firm's authentic voice and positioning claims.
+A paragraph that establishes who this firm is and what makes them distinctive. You will receive a FIRM INTRO in the user prompt containing pre-crafted language about the firm. **Use this FIRM INTRO verbatim as the first paragraph of this section.** Do not modify, paraphrase, or rewrite it. After the firm intro paragraph, you may add 1-2 additional sentences connecting the firm's positioning to the prospect's specific situation if needed.
 
 If no firm intro is provided, write a brief paragraph (3-4 sentences) based on the voice profile tone, positioning, and differentiators. Keep it factual and grounded in the data provided.
 
