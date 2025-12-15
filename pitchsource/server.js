@@ -12,7 +12,7 @@ const fs = require('fs');
 
 const app = express();
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(__dirname));
 
 // Load firm data (20 curated firms with Tier 1 enhancements)
 let firmData = { firms: [] };
