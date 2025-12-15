@@ -17,7 +17,7 @@ app.use(express.static(__dirname));
 // Load firm data (20 curated firms with Tier 1 enhancements)
 let firmData = { firms: [] };
 try {
-  firmData = JSON.parse(fs.readFileSync('./data/firm-profiles-final.json', 'utf-8'));
+  firmData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'firm-profiles-final.json'), 'utf-8'));
   console.log(`Loaded ${firmData.firms.length} firms (Tier 1 enhanced: ${firmData.metadata?.tier1Enhanced || false})`);
 } catch (err) {
   console.error('Error loading firm data:', err.message);
@@ -29,7 +29,7 @@ try {
 // Load 50 principles
 let principles = '';
 try {
-  principles = fs.readFileSync('./data/pitch_craft_50_principles.md', 'utf-8');
+  principles = fs.readFileSync(path.join(__dirname, 'data', 'pitch_craft_50_principles.md'), 'utf-8');
   console.log('Loaded 50 principles knowledge layer');
 } catch (err) {
   console.error('Error loading principles:', err.message);
