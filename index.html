@@ -182,7 +182,7 @@
             justify-content: space-between;
         }
 
-        /* Red project box - completed compliance tools */
+        /* Red project box */
         .project-box.red {
             background: #DC143C;
             border: 1px solid #DC143C;
@@ -204,7 +204,7 @@
             margin-bottom: 20px;
         }
 
-        /* Navy project box - completed political intelligence tools */
+        /* Navy project box */
         .project-box.navy {
             background: #0039A6;
             border: 1px solid #0039A6;
@@ -219,48 +219,6 @@
         }
 
         .project-box.navy p {
-            font-size: 16px;
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.7;
-        }
-
-        /* Pink project box - in-development compliance tools */
-        .project-box.pink {
-            background: #F78CA0;
-            border: 1px solid #F78CA0;
-        }
-
-        .project-box.pink h4 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: -0.01em;
-            color: white;
-        }
-
-        .project-box.pink p {
-            font-size: 16px;
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.7;
-        }
-
-        /* Sky blue project box - in-development political intelligence tools */
-        .project-box.skyblue {
-            background: #4DA8DA;
-            border: 1px solid #4DA8DA;
-        }
-
-        .project-box.skyblue h4 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: -0.01em;
-            color: white;
-        }
-
-        .project-box.skyblue p {
             font-size: 16px;
             font-weight: 300;
             color: rgba(255, 255, 255, 0.9);
@@ -282,14 +240,20 @@
         }
 
         .project-btn:hover {
-            background: #0039A6;
-            border-color: #0039A6;
+            background: #DC143C;
+            border-color: #DC143C;
             color: white;
         }
 
         .project-box.navy .project-btn:hover {
             background: #DC143C;
             border-color: #DC143C;
+            color: white;
+        }
+
+        .project-box.red .project-btn:hover {
+            background: #0039A6;
+            border-color: #0039A6;
             color: white;
         }
 
@@ -354,6 +318,12 @@
                 border-color: white;
                 color: #000000;
             }
+
+            .project-box.red .project-btn:hover {
+                background: white;
+                border-color: white;
+                color: #000000;
+            }
         }
     </style>
 </head>
@@ -390,16 +360,16 @@
             <section class="projects-section">
                 <h3>Projects</h3>
                 <div class="project-grid">
-                    <!-- Top left: Red - Completed compliance tool -->
-                    <div class="project-box red">
+                    <!-- Top left: Navy - PitchSource -->
+                    <div class="project-box navy">
                         <div>
-                            <h4>Workflow Insights</h4>
-                            <p>Analyzes compliance workflows and identifies automation opportunities.</p>
+                            <h4>PitchSource</h4>
+                            <p>Build lobbying pitch memos with curated lobbying disclosure data, research-based strategies, and brand positioning.</p>
                         </div>
-                        <a href="compliance-optimizer/index.html" class="project-btn">Open Tool</a>
+                        <a href="pitchsource/index.html" class="project-btn">Open Tool</a>
                     </div>
 
-                    <!-- Top right: Navy - Completed political intelligence tool -->
+                    <!-- Top right: Navy - LobbyMatch -->
                     <div class="project-box navy">
                         <div>
                             <h4>LobbyMatch</h4>
@@ -408,12 +378,13 @@
                         <a href="lobbymatch/index.html" class="project-btn">Open Tool</a>
                     </div>
 
-                    <!-- Bottom right: Sky blue - In-development political intelligence tool -->
-                    <div class="project-box skyblue">
+                    <!-- Bottom left: Red - Workflow Insights -->
+                    <div class="project-box red">
                         <div>
-                            <h4>PitchSource (coming soon)</h4>
-                            <p>Builds competitive positioning memos using comprehensive lobbying disclosure analysis, academic research, and authentic voices.</p>
+                            <h4>Workflow Insights</h4>
+                            <p>Analyzes compliance workflows and identifies automation opportunities.</p>
                         </div>
+                        <a href="compliance-optimizer/index.html" class="project-btn">Open Tool</a>
                     </div>
                 </div>
             </section>
