@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lobby Match – Find Your Advocate</title>
+  <title>LobbyMatch – Find Your Advocate</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
@@ -75,11 +75,21 @@
       font-weight: 700;
       letter-spacing: -0.5px;
       margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .logo-lobby {
+      color: var(--navy);
+    }
+
+    .logo-match {
+      color: #4DA8DA;
     }
 
     .tagline {
       font-size: 18px;
       color: var(--gray-mid);
+      text-align: center;
     }
 
     .intro {
@@ -1062,9 +1072,9 @@
 <body>
   <div class="container">
     <header>
-      <h1>Lobby Match</h1>
+      <h1><span class="logo-lobby">Lobby</span><span class="logo-match">Match</span></h1>
       <p class="tagline">Find the right advocate for your cause.</p>
-      <p class="intro">Washington runs on relationships and expertise — but finding the right lobbying firm shouldn't require being a Beltway insider yourself. Lobby Match analyzes thousands of Lobbying Disclosure Act filings to match you with firms that have <strong>proven track records</strong> in your policy area, <strong>relevant government experience</strong>, and <strong>clients like you</strong>. No more guesswork, cold calls, or relying on who-knows-who.</p>
+      <p class="intro">Washington runs on relationships and expertise — but finding the right lobbying firm shouldn't require being a Beltway insider yourself. LobbyMatch analyzes thousands of Lobbying Disclosure Act filings to match you with firms that have <strong>proven track records</strong> in your policy area, <strong>relevant government experience</strong>, and <strong>clients like you</strong>. No more guesswork, cold calls, or relying on who-knows-who.</p>
       <p class="intro intro-callout"><strong>Answer a few questions, and we'll show you who's actually been in the arena on issues that matter to you.</strong></p>
     </header>
 
@@ -1610,13 +1620,13 @@
     });
 
     function emailResults() {
-      const subject = encodeURIComponent('Lobby Match Results');
+      const subject = encodeURIComponent('LobbyMatch Results');
       const body = encodeURIComponent(buildResultsText());
       window.location.href = `mailto:?subject=${subject}&body=${body}`;
     }
 
     function buildResultsText() {
-      let text = 'LOBBY MATCH RESULTS\n\n';
+      let text = 'LOBBYMATCH RESULTS\n\n';
       const analysis = document.getElementById('analysisContent').textContent;
       if (analysis) text += 'EXECUTIVE SUMMARY\n' + analysis + '\n\n';
       const cards = document.querySelectorAll('.match-card');
@@ -1733,7 +1743,7 @@
       doc.setTextColor(0, 57, 166);
       doc.setFontSize(24);
       doc.setFont('helvetica', 'bold');
-      doc.text('Lobby Match Results', margin, y);
+      doc.text('LobbyMatch Results', margin, y);
       y += 10;
       doc.setTextColor(100, 100, 100);
       doc.setFontSize(10);
@@ -1813,7 +1823,7 @@
         doc.text(line, margin, y);
         y += 4;
       });
-      doc.save('Lobby Match-Results.pdf');
+      doc.save('LobbyMatch-Results.pdf');
     }
 
     function startOver() {
