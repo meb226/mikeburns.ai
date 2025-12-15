@@ -2,6 +2,9 @@
  * PitchSource - Frontend JavaScript
  */
 
+// API Base URL - use Vercel deployment for API calls
+const API_BASE = 'https://pitchsource.vercel.app';
+
 // Demo Scenarios
 const DEMO_SCENARIOS = {
   ai: {
@@ -84,7 +87,7 @@ async function init() {
 // Load firms for dropdown
 async function loadFirms() {
   try {
-    const response = await fetch('/api/firms');
+    const response = await fetch(`${API_BASE}/api/firms`);
     const data = await response.json();
     firms = data.firms;
     
@@ -104,7 +107,7 @@ async function loadFirms() {
 // Load issue codes
 async function loadIssues() {
   try {
-    const response = await fetch('/api/issues');
+    const response = await fetch(`${API_BASE}/api/issues`);
     const data = await response.json();
     issues = data.issues;
     
@@ -255,7 +258,7 @@ async function handleSubmit(e) {
   hideError();
   
   try {
-    const response = await fetch('/api/generate-memo', {
+    const response = await fetch(`${API_BASE}/api/generate-memo`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
