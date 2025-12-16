@@ -490,11 +490,24 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Hunt Shipman on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "Senate Appropriations Committee",
+              "Senate Appropriations"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Thad Cochran",
+              "Senior Ag Committee"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "staff director"
+          ],
+          "entitySummary": "Senate Appropriations Committee, Senate Appropriations"
         },
         {
           "name": "JOHN SANDELL",
@@ -851,11 +864,23 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Vernie Hubert on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "Senate Ag Committee",
+              "House Ag Committee"
+            ],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "chief counsel",
+            "legislative director"
+          ],
+          "entitySummary": "Senate Ag Committee, House Ag Committee"
         },
         {
           "name": "JOSEPH BISCHOFF",
@@ -1173,8 +1198,15 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Lizzie Imber on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Steven Palazzo"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -1268,8 +1300,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -1391,8 +1428,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -1872,8 +1914,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Tyler Dickerson on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -2405,7 +2452,7 @@
         },
         {
           "name": "CONSTELLATION ENERGY GENERATION, LLC",
-          "description": "&#226;\u20ac\u2039Energy generation",
+          "description": "&#226;€‹Energy generation",
           "filingCount": 22
         },
         {
@@ -2431,8 +2478,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -2565,11 +2617,24 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "BOTH",
+          "entities": {
+            "committees": [],
+            "agencies": [
+              "Department of Transportation",
+              "Department of Labor"
+            ],
+            "memberOffices": [
+              "Senior Legislative Officer"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "assistant secretary"
+          ],
+          "entitySummary": "Department of Transportation, Department of Labor"
         },
         {
           "name": "DAVID REID",
@@ -2598,10 +2663,21 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "BOTH",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Dan Boren",
+              "Rep. Brad Carson",
+              "Rep. Denice Majette"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff"
+          ],
           "entitySummary": null
         },
         {
@@ -2612,10 +2688,18 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "commissioner"
+          ],
           "entitySummary": null
         },
         {
@@ -2909,11 +2993,25 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "BOTH",
+          "entities": {
+            "committees": [],
+            "agencies": [
+              "HUD"
+            ],
+            "memberOffices": [
+              "Senior Mitch Mc",
+              "Senior Mc"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "staff director",
+            "assistant secretary"
+          ],
+          "entitySummary": "HUD"
         },
         {
           "name": "CARMENCITA WHONDER",
@@ -2990,11 +3088,21 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Full name is R. James Nicholson",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "EXECUTIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [
+              "Department of Veterans Affairs",
+              "Department of State"
+            ],
+            "memberOffices": [],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "secretary department"
+          ],
+          "entitySummary": "Department of Veterans Affairs, Department of State"
         },
         {
           "name": "DANIEL JOSEPH",
@@ -3023,11 +3131,25 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "House Sel Committee"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Jon Kyl",
+              "Senior Jon Kyl",
+              "Senior Policy Advisor"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "legislative director",
+            "senior policy advisor"
+          ],
+          "entitySummary": "House Sel Committee"
         },
         {
           "name": "RADHA MOHAN",
@@ -3155,8 +3277,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -3475,11 +3602,23 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Senior Advisor"
+            ],
+            "leadership": [
+              "House Majority Leader",
+              "Majority Leader"
+            ]
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "senior advisor"
+          ],
+          "entitySummary": "House Majority Leader, Majority Leader"
         },
         {
           "name": "GREGORY SUNSTRUM",
@@ -3534,11 +3673,21 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "BOTH",
+          "entities": {
+            "committees": [],
+            "agencies": [
+              "Department of Health and Human Services"
+            ],
+            "memberOffices": [
+              "Rep. Brian Fitzpatrick",
+              "Office of Rep. Brian"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
-          "entitySummary": null
+          "entitySummary": "Department of Health and Human Services"
         },
         {
           "name": "BRANDT ANDERSON",
@@ -3663,8 +3812,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -3677,8 +3831,17 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Brad Sherman",
+              "Rep. David Scott",
+              "Rep. Sanford Bishop"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -3735,11 +3898,30 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "Senate Appropriations Committee",
+              "Senate Appropriations",
+              "House Appropriations Committee",
+              "House Appropriations",
+              "Government Accountability Office"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Senior John Kennedy",
+              "Senior Policy Advisor",
+              "Senior Analyst"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "staff director",
+            "assistant secretary",
+            "senior policy advisor"
+          ],
+          "entitySummary": "Senate Appropriations Committee, Senate Appropriations, House Appropriations Committee, House Appropriations, Government Accountability Office"
         },
         {
           "name": "JOSEPH HOWELL",
@@ -3749,11 +3931,27 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "J. Brady Howell on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "House Administrator Committee"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Ed Royce",
+              "Rep. Jeff Miller",
+              "Rep. Burton",
+              "Senior Advisor"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "staff director",
+            "administrator",
+            "senior advisor"
+          ],
+          "entitySummary": "House Administrator Committee"
         },
         {
           "name": "ALEXIS ANICAMA",
@@ -3829,8 +4027,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -4017,11 +4220,21 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "Senate Judiciary Committee",
+              "Senate Judiciary"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Senior Schumer"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
-          "entitySummary": null
+          "entitySummary": "Senate Judiciary Committee, Senate Judiciary"
         },
         {
           "name": "SAPNA RAMPERSAUD",
@@ -4487,10 +4700,21 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Senior George Voinovich",
+              "Senior Norm Coleman",
+              "Senior Strom Thurmond"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "staff director"
+          ],
           "entitySummary": null
         },
         {
@@ -4529,8 +4753,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -4741,8 +4970,15 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Frank Wolf"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -4817,8 +5053,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -4947,8 +5188,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -5030,11 +5276,19 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "Senate Finance Committee",
+              "Senate Finance"
+            ],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
-          "entitySummary": null
+          "entitySummary": "Senate Finance Committee, Senate Finance"
         },
         {
           "name": "DANIEL SENNOTT",
@@ -5201,8 +5455,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -5632,8 +5891,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -5710,8 +5974,15 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Senior Susan Collins"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -5837,8 +6108,16 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Suzanne Bonamici",
+              "Rep. Madeleine Dean"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -5954,11 +6233,24 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "BOTH",
+          "entities": {
+            "committees": [],
+            "agencies": [
+              "Department of Education"
+            ],
+            "memberOffices": [
+              "Rep. Lisa Blunt",
+              "Senior Advisor",
+              "Senior Jim Webb"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "senior advisor"
+          ],
+          "entitySummary": "Department of Education"
         },
         {
           "name": "ANDREW SIRACUSE",
@@ -5994,8 +6286,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Robby Phillips on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -6300,8 +6597,19 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Mary Beth Stanton on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Weiner",
+              "Rep. Dick Gephardt",
+              "Rep. John",
+              "Senior Kohl",
+              "Senior Aging Committee"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -6413,11 +6721,22 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "Congressional Budget Office"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Representative Robert Matsui",
+              "Representative Earl Pomeroy",
+              "Sen. Bill Bradley"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
-          "entitySummary": null
+          "entitySummary": "Congressional Budget Office"
         },
         {
           "name": "NICOLE VENABLE",
@@ -6499,10 +6818,19 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Maya Hunt Estes on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Anthony Brown"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff"
+          ],
           "entitySummary": null
         },
         {
@@ -6962,11 +7290,25 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "BOTH",
+          "entities": {
+            "committees": [],
+            "agencies": [
+              "Department of Agriculture"
+            ],
+            "memberOffices": [
+              "Senior Advisor",
+              "Senior Policy Analyst"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "senior advisor",
+            "secretary of"
+          ],
+          "entitySummary": "Department of Agriculture"
         },
         {
           "name": "KEVIN DIESTELOW",
@@ -7727,11 +8069,23 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "G. Hunter Bates on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "Senate Rules Committee"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Senior Mc"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "chief counsel"
+          ],
+          "entitySummary": "Senate Rules Committee"
         },
         {
           "name": "VIRGIL MILLER",
@@ -7788,11 +8142,23 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "House Ways and Means",
+              "House Budget Committee"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Rand Paul"
+            ],
+            "leadership": [
+              "Speaker for"
+            ]
+          },
           "isSenior": false,
           "seniorTitles": [],
-          "entitySummary": null
+          "entitySummary": "House Ways and Means, House Budget Committee, Speaker for"
         },
         {
           "name": "JAMES TUCKER",
@@ -7908,8 +8274,15 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Robert Matsui"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -7965,11 +8338,22 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "House Energy and Commerce Committee",
+              "House Energy and Commerce"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Anne Northup",
+              "Rep. Bob Inglis"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
-          "entitySummary": null
+          "entitySummary": "House Energy and Commerce Committee, House Energy and Commerce"
         },
         {
           "name": "ROGER MURRY",
@@ -8001,11 +8385,18 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "Senate Finance"
+            ],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
-          "entitySummary": null
+          "entitySummary": "Senate Finance"
         },
         {
           "name": "GALEN ROEHL",
@@ -8178,8 +8569,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -8192,8 +8588,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -8254,8 +8655,16 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Now Caryn Dyson",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Senior Breaux",
+              "Senior Mikulski"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -8529,8 +8938,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "EXECUTIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -8583,8 +8997,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -8597,8 +9016,15 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Rosa De"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -8745,11 +9171,19 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "Senate Finance Committee",
+              "Senate Finance"
+            ],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
-          "entitySummary": null
+          "entitySummary": "Senate Finance Committee, Senate Finance"
         },
         {
           "name": "LAUREN RUBIN",
@@ -8759,10 +9193,19 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Suzan Del"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "legislative director"
+          ],
           "entitySummary": null
         },
         {
@@ -8880,11 +9323,24 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "Senate Finance Committee",
+              "Senate Finance"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Senior Senate Finance",
+              "Senior Advisor"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "senior advisor"
+          ],
+          "entitySummary": "Senate Finance Committee, Senate Finance"
         },
         {
           "name": "JOE DONNELLY",
@@ -9201,7 +9657,7 @@
         },
         {
           "name": "ADVANCED MEDICAL TECHNOLOGY ASSOCIATION",
-          "description": "&#226;\u20ac\u2039Trade association",
+          "description": "&#226;€‹Trade association",
           "filingCount": 21
         },
         {
@@ -9252,10 +9708,21 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "BOTH",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Bob Dornan",
+              "Rep. Study Committee",
+              "Rep. Jim Courter"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "legislative director"
+          ],
           "entitySummary": null
         },
         {
@@ -10059,11 +10526,26 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "BOTH",
+          "entities": {
+            "committees": [],
+            "agencies": [
+              "Department of Health and Human Services",
+              "White House"
+            ],
+            "memberOffices": [
+              "Senior Laphonza Butler",
+              "Senior Policy Advisor",
+              "Senior Mark Warner"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "senior policy advisor"
+          ],
+          "entitySummary": "Department of Health and Human Services, White House"
         },
         {
           "name": "CHRIS KELLY",
@@ -10768,10 +11250,23 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Senior Communications Indian",
+              "Senior Commerce Communications",
+              "Senior Communications Armed",
+              "Senior Mc"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "general counsel"
+          ],
           "entitySummary": null
         },
         {
@@ -10966,11 +11461,22 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "EXECUTIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [
+              "Department of Transportation",
+              "Federal Highway Administration"
+            ],
+            "memberOffices": [],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "administrator",
+            "secretary department"
+          ],
+          "entitySummary": "Department of Transportation, Federal Highway Administration"
         },
         {
           "name": "LUDMILLA KASULKE (NEE SAVELIEFF)",
@@ -11001,11 +11507,21 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "BOTH",
+          "entities": {
+            "committees": [],
+            "agencies": [
+              "Department of Homeland Security",
+              "White House"
+            ],
+            "memberOffices": [],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "inspector general"
+          ],
+          "entitySummary": "Department of Homeland Security, White House"
         },
         {
           "name": "JENNIFER HARPER",
@@ -11197,8 +11713,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -11302,8 +11823,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -11565,8 +12091,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -13007,8 +13538,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -13021,8 +13557,17 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Sen. Charles",
+              "Senior Legislative Assistant",
+              "Sen. Evan Bayh"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -13056,8 +13601,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -13139,11 +13689,23 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "House Science"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Ralph"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "staff director",
+            "legislative director"
+          ],
+          "entitySummary": "House Science"
         },
         {
           "name": "CAROLYN FULLER",
@@ -13279,8 +13841,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "H. Stewart Van Scoyoc on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -13530,8 +14097,18 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Representative Diana De",
+              "Senior Health Policy",
+              "Sen. Barbara Boxer",
+              "Sen. Ron Wyden"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -13639,11 +14216,25 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "BOTH",
+          "entities": {
+            "committees": [],
+            "agencies": [
+              "Department of Commerce",
+              "General Services Administration",
+              "International Trade Administration"
+            ],
+            "memberOffices": [
+              "Representative Steven Horsford"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "administrator"
+          ],
+          "entitySummary": "Department of Commerce, General Services Administration, International Trade Administration"
         }
       ],
       "coveredOfficialCount": 31,
@@ -13707,7 +14298,7 @@
         "positioning": "Largest independent lobbying firm combining personal attention and entrepreneurial spirit with deep policy expertise, serving Main Street as much as Wall Street.",
         "differentiators": [
           "Largest independent lobbying firm in DC (not owned by law firm or corporation)",
-          "Never hires former Members of Congress\u2014only senior staff policy experts",
+          "Never hires former Members of Congress—only senior staff policy experts",
           "Highest client retention rate per Bloomberg Government survey",
           "Founded 1990, grown from 3 employees to 60+ representing nearly 200 clients",
           "30+ years track record of adapting to political change",
@@ -13959,10 +14550,19 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Ryan Welch on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Senior Richard Shelby"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "legislative director"
+          ],
           "entitySummary": null
         },
         {
@@ -14037,8 +14637,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -14267,8 +14872,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -14307,8 +14917,15 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. John Boehner"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -14321,10 +14938,21 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Lucy Mc",
+              "Senior Brian Jones",
+              "Senior Doug Jones"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "legislative director"
+          ],
           "entitySummary": null
         },
         {
@@ -14376,8 +15004,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -14709,8 +15342,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Tami Jackson Buckner on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -14761,10 +15399,19 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Senior James Inhofe"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff"
+          ],
           "entitySummary": null
         },
         {
@@ -14891,8 +15538,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -14927,8 +15579,15 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Quigley"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -15000,11 +15659,23 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Lucy Mc",
+              "Rep. Pramila Jayapal",
+              "Senior Floor Advisor"
+            ],
+            "leadership": [
+              "Speaker Nancy",
+              "Democratic Whip"
+            ]
+          },
           "isSenior": false,
           "seniorTitles": [],
-          "entitySummary": null
+          "entitySummary": "Speaker Nancy, Democratic Whip"
         }
       ],
       "coveredOfficialCount": 24,
@@ -15159,7 +15830,7 @@
       "recentClients": [
         {
           "name": "TEXTRON INC.",
-          "description": "&#226;\u20ac\u2039Diversified manufacturer of commercial aviation, defense, and consumer products",
+          "description": "&#226;€‹Diversified manufacturer of commercial aviation, defense, and consumer products",
           "filingCount": 20
         },
         {
@@ -15292,10 +15963,23 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Denise Majette",
+              "Rep. John Lewis",
+              "Senior Bernie Sanders",
+              "Sen. Bernie Sanders"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "legislative director"
+          ],
           "entitySummary": null
         },
         {
@@ -16008,8 +16692,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Charlie King on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -16136,8 +16825,15 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Avery Rose Royster on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Sen. Chris Murphy"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -16289,8 +16985,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -16322,8 +17023,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Toby Moffett on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -16726,10 +17432,19 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "legislative director",
+            "commissioner"
+          ],
           "entitySummary": null
         },
         {
@@ -16740,8 +17455,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -16754,8 +17474,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -17068,7 +17793,7 @@
         },
         {
           "name": "SAGA EDUCATION",
-          "description": "&#226;\u20ac\u2039National consulting firm engaged in providing research and consulting support to clients",
+          "description": "&#226;€‹National consulting firm engaged in providing research and consulting support to clients",
           "filingCount": 24
         },
         {
@@ -17217,11 +17942,26 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Josie Villanueva on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "BOTH",
+          "entities": {
+            "committees": [],
+            "agencies": [
+              "Department of Health and Human Services"
+            ],
+            "memberOffices": [
+              "Rep. Steven Horsford",
+              "Rep. Tammy Duckworth",
+              "Senior Tammy Duckworth",
+              "Senior Richard Durbin"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "legislative director"
+          ],
+          "entitySummary": "Department of Health and Human Services"
         },
         {
           "name": "SASHA HERNANDEZ",
@@ -17231,10 +17971,26 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Del Bene",
+              "Rep. Suzan Del",
+              "Rep. David Schweikert",
+              "Senior Policy Advisor",
+              "Senior Maria Cantwell",
+              "Senior Legislative Assistant"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief of staff",
+            "legislative director",
+            "senior policy advisor"
+          ],
           "entitySummary": null
         },
         {
@@ -17290,11 +18046,23 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "Senate Finance Subcommittee",
+              "Senate Finance"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Senior Tim Scott"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "staff director"
+          ],
+          "entitySummary": "Senate Finance Subcommittee, Senate Finance"
         },
         {
           "name": "ZACHARY LAVEN",
@@ -17658,8 +18426,15 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [
+              "Senior Jeanne Shaheen"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -17826,8 +18601,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -17840,8 +18620,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -17854,8 +18639,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -17933,7 +18723,7 @@
           "generic"
         ]
       },
-      "firmIntro": "We named the company after a parking lot on Capitol Hill. It's a pretty unglamorous piece of pavement, but it's one of the places where the people who actually write legislation start and end their day. In a city full of show horses, Lot Sixteen offers a different profile: an energetic and fearless team of lobbying and communications professionals who dig deep on policy and work as hard as the staffers we're trying to persuade. We've seen first-hand how deep issue expertise, paired with creative communications, can break down walls and advance agendas. If you want a firm with the guts, perspective, and maturity to give you an honest assessment of when, where, and how to invest\u2014and where not to\u2014you've found it."
+      "firmIntro": "We named the company after a parking lot on Capitol Hill. It's a pretty unglamorous piece of pavement, but it's one of the places where the people who actually write legislation start and end their day. In a city full of show horses, Lot Sixteen offers a different profile: an energetic and fearless team of lobbying and communications professionals who dig deep on policy and work as hard as the staffers we're trying to persuade. We've seen first-hand how deep issue expertise, paired with creative communications, can break down walls and advance agendas. If you want a firm with the guts, perspective, and maturity to give you an honest assessment of when, where, and how to invest—and where not to—you've found it."
     },
     {
       "name": "FEROX STRATEGIES",
@@ -18055,7 +18845,7 @@
         },
         {
           "name": "THE GAP INC.",
-          "description": "&#226;\u20ac\u2039Global retailer of apparel and clothing items",
+          "description": "&#226;€‹Global retailer of apparel and clothing items",
           "filingCount": 20
         },
         {
@@ -18425,7 +19215,7 @@
         },
         {
           "name": "RELX INC.",
-          "description": "&#226;\u20ac\u2039Information and analytics provider.",
+          "description": "&#226;€‹Information and analytics provider.",
           "filingCount": 19
         },
         {
@@ -18477,11 +19267,24 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
-          "isSenior": false,
-          "seniorTitles": [],
-          "entitySummary": null
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "Senate Judiciary Committee",
+              "Senate Judiciary"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Senior John Cornyn",
+              "Sen. John Cornyn"
+            ],
+            "leadership": []
+          },
+          "isSenior": true,
+          "seniorTitles": [
+            "chief counsel"
+          ],
+          "entitySummary": "Senate Judiciary Committee, Senate Judiciary"
         },
         {
           "name": "IAN RAYDER",
@@ -18541,8 +19344,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Norman F. Lent III on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -18581,8 +19389,13 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "Kim Koontz Bayliss on website",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "UNKNOWN",
+          "entities": {
+            "committees": [],
+            "agencies": [],
+            "memberOffices": [],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
           "entitySummary": null
@@ -18778,7 +19591,7 @@
         },
         {
           "name": "AMERICAN FUEL & PETROCHEMICAL MANUFACTURERS (AFPM)",
-          "description": "&#226;\u20ac\u2039Trade association for U.S. fuels and petrochemical manufacturers.",
+          "description": "&#226;€‹Trade association for U.S. fuels and petrochemical manufacturers.",
           "filingCount": 20
         },
         {
@@ -19065,7 +19878,7 @@
         },
         {
           "name": "FIRST SOLAR INC.",
-          "description": "&#226;\u20ac\u2039Solar panel manufacturing and R&D",
+          "description": "&#226;€‹Solar panel manufacturing and R&D",
           "filingCount": 20
         },
         {
@@ -19232,11 +20045,20 @@
           "verificationDate": "2025-12-14",
           "manualNotes": "",
           "activityTier": null,
-          "branch": null,
-          "entities": null,
+          "branch": "LEGISLATIVE",
+          "entities": {
+            "committees": [
+              "House Agriculture Committee"
+            ],
+            "agencies": [],
+            "memberOffices": [
+              "Rep. Glenn"
+            ],
+            "leadership": []
+          },
           "isSenior": false,
           "seniorTitles": [],
-          "entitySummary": null
+          "entitySummary": "House Agriculture Committee"
         },
         {
           "name": "REGINA MAHONY",
