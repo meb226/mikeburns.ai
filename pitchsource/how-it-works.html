@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pitch Craft | Methodology</title>
+  <style>
+    :root {
+      --crimson: #DC143C;
+      --navy: #0039A6;
+      --sky: #4DA8DA;
+      --black: #1a1a1a;
+      --white: #ffffff;
+      --gray-light: #f5f5f5;
+      --gray-mid: #e0e0e0;
+      --gray-text: #666666;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--black);
+      background: var(--white);
+    }
+
+    /* Header */
+    .header {
+      background: var(--navy);
+      color: var(--white);
+      padding: 80px 0 60px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px;
+      position: relative;
+    }
+
+    .header-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--sky);
+      margin-bottom: 16px;
+    }
+
+    .header h1 {
+      font-size: 48px;
+      font-weight: 300;
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+
+    .header h1 strong {
+      font-weight: 600;
+    }
+
+    .header-subtitle {
+      font-size: 20px;
+      font-weight: 300;
+      max-width: 600px;
+      opacity: 0.9;
+    }
+
+    /* Section Styling */
+    .section {
+      padding: 80px 0;
+    }
+
+    .section-alt {
+      background: var(--gray-light);
+    }
+
+    .section-navy {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--crimson);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .section-navy .section-label {
+      color: var(--sky);
+    }
+
+    .section h2 {
+      font-size: 36px;
+      font-weight: 300;
+      margin-bottom: 24px;
+      line-height: 1.3;
+    }
+
+    .section h2 strong {
+      font-weight: 600;
+    }
+
+    .section-intro {
+      font-size: 18px;
+      color: var(--gray-text);
+      max-width: 700px;
+      margin-bottom: 48px;
+    }
+
+    .section-navy .section-intro {
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* Three Pillars */
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 48px;
+    }
+
+    .pillar {
+      padding: 28px;
+      border: 1px solid var(--gray-mid);
+      border-left: 6px solid;
+      text-align: left;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .pillar:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    .pillar:nth-child(1) {
+      border-left-color: var(--crimson);
+      background: rgba(220, 20, 60, 0.04);
+    }
+
+    .pillar:nth-child(2) {
+      border-left-color: var(--navy);
+      background: rgba(0, 57, 166, 0.04);
+    }
+
+    .pillar:nth-child(3) {
+      border-left-color: var(--sky);
+      background: rgba(77, 168, 218, 0.08);
+    }
+
+    .pillar-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--gray-mid);
+    }
+
+    .pillar-number {
+      font-size: 32px;
+      font-weight: 200;
+      opacity: 0.5;
+    }
+
+    .pillar h3 {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .pillar:nth-child(1) h3 { color: var(--crimson); }
+    .pillar:nth-child(2) h3 { color: var(--navy); }
+    .pillar:nth-child(3) h3 { color: var(--sky); }
+
+    .pillar p {
+      font-size: 14px;
+      color: var(--gray-text);
+      line-height: 1.7;
+    }
+
+    /* Architecture Diagram */
+    .architecture {
+      display: flex;
+      gap: 20px;
+      margin: 60px 0;
+    }
+
+    .arch-column {
+      flex: 1;
+      padding: 28px;
+      border: 1px solid var(--gray-mid);
+      border-left: 6px solid;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .arch-column:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    .arch-column:nth-child(1) { 
+      border-left-color: var(--crimson); 
+      background: rgba(220, 20, 60, 0.04);
+    }
+    .arch-column:nth-child(2) { 
+      border-left-color: var(--navy); 
+      background: rgba(0, 57, 166, 0.04);
+    }
+    .arch-column:nth-child(3) { 
+      border-left-color: var(--sky); 
+      background: rgba(77, 168, 218, 0.08);
+    }
+
+    .arch-header {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--gray-mid);
+    }
+
+    .arch-column:nth-child(1) .arch-header { color: var(--crimson); }
+    .arch-column:nth-child(2) .arch-header { color: var(--navy); }
+    .arch-column:nth-child(3) .arch-header { color: var(--sky); }
+
+    .arch-item {
+      padding: 12px 0;
+      font-size: 14px;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .arch-item:last-child {
+      border-bottom: none;
+    }
+
+    .arch-item-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .arch-item-desc {
+      font-size: 13px;
+      color: var(--gray-text);
+    }
+
+    /* Knowledge Layer Detail */
+    .knowledge-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: stretch;
+    }
+
+    .knowledge-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .knowledge-text .highlight-box {
+      margin-top: auto;
+      margin-bottom: 0;
+    }
+
+    .knowledge-text h3 {
+      font-size: 24px;
+      font-weight: 400;
+      margin-bottom: 20px;
+      color: var(--navy);
+    }
+
+    .knowledge-text p {
+      margin-bottom: 20px;
+      color: var(--gray-text);
+    }
+
+    /* Categories Sidebar */
+    .categories-sidebar {
+      background: var(--white);
+      border: 1px solid var(--gray-mid);
+      padding: 28px;
+    }
+
+    .categories-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--navy);
+    }
+
+    .categories-number {
+      font-size: 56px;
+      font-weight: 200;
+      color: var(--navy);
+      line-height: 1;
+    }
+
+    .categories-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--navy);
+    }
+
+    .cat-item {
+      padding: 14px 16px 14px 16px;
+      border-left: 4px solid var(--sky);
+      margin-bottom: 10px;
+      background: rgba(77, 168, 218, 0.08);
+    }
+
+    .cat-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .cat-item-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .cat-item-desc {
+      font-size: 13px;
+      color: var(--gray-text);
+      margin: 0;
+      padding-right: 12px;
+      line-height: 1.5;
+    }
+
+    /* Voice Profiles */
+    .voice-example {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--gray-mid);
+      margin: 48px 0;
+    }
+
+    .voice-input, .voice-output {
+      padding: 32px;
+    }
+
+    .voice-input {
+      background: var(--gray-light);
+      border-right: 1px solid var(--gray-mid);
+    }
+
+    .voice-output {
+      background: var(--white);
+    }
+
+    .voice-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gray-text);
+      margin-bottom: 16px;
+    }
+
+    .voice-quote {
+      font-size: 16px;
+      line-height: 1.8;
+      font-style: italic;
+      color: var(--black);
+    }
+
+    .voice-output .voice-quote {
+      font-style: normal;
+      font-weight: 400;
+    }
+
+
+    /* Synthesis Section */
+    .synthesis-diagram {
+      margin: 48px 0;
+    }
+
+    .synthesis-inputs {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .synth-input {
+      flex: 1;
+      padding: 24px;
+      border-left: 5px solid;
+      text-align: left;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .synth-input:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    .synth-input:nth-child(1) {
+      border-left-color: var(--crimson);
+      background: rgba(220, 20, 60, 0.05);
+    }
+
+    .synth-input:nth-child(2) {
+      border-left-color: var(--navy);
+      background: rgba(0, 57, 166, 0.05);
+    }
+
+    .synth-input:nth-child(3) {
+      border-left-color: var(--sky);
+      background: rgba(77, 168, 218, 0.1);
+    }
+
+    .synth-input h4 {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .synth-input:nth-child(1) h4 { color: var(--crimson); }
+    .synth-input:nth-child(2) h4 { color: var(--navy); }
+    .synth-input:nth-child(3) h4 { color: var(--sky); }
+
+    .synth-input p {
+      font-size: 13px;
+      color: var(--gray-text);
+      margin: 0;
+    }
+
+    .synthesis-arrow {
+      text-align: center;
+      font-size: 32px;
+      color: var(--crimson);
+      margin: 24px 0;
+    }
+
+    .synthesis-output {
+      background: var(--navy);
+      color: var(--white);
+      padding: 32px;
+      text-align: center;
+    }
+
+    .synthesis-output h4 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .synthesis-output p {
+      font-size: 14px;
+      opacity: 0.9;
+      margin: 0;
+    }
+
+    /* Footer CTA */
+    .cta-section {
+      background: var(--black);
+      color: var(--white);
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-size: 32px;
+      font-weight: 300;
+      margin-bottom: 24px;
+    }
+
+    .cta-text {
+      margin-bottom: 32px;
+      opacity: 0.8;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 16px 48px;
+      background: var(--crimson);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: background 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background: #b01030;
+    }
+
+    /* Highlight Box */
+    .highlight-box {
+      border-left: 4px solid var(--crimson);
+      padding: 24px 32px;
+      background: rgba(220, 20, 60, 0.05);
+      margin: 32px 0;
+    }
+
+    .highlight-box p {
+      font-size: 16px;
+      color: var(--black);
+      margin: 0;
+    }
+
+    .highlight-box strong {
+      color: var(--crimson);
+    }
+
+    .highlight-box.navy {
+      border-left-color: var(--navy);
+      background: rgba(0, 57, 166, 0.05);
+    }
+
+    .highlight-box.navy strong {
+      color: var(--navy);
+    }
+
+    /* Two Column */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+    }
+
+    .two-col h3 {
+      font-size: 22px;
+      font-weight: 400;
+      margin-bottom: 16px;
+    }
+
+    .two-col p {
+      margin-bottom: 16px;
+    }
+
+    /* List Styling */
+    .check-list {
+      list-style: none;
+      margin-top: 24px;
+    }
+
+    .check-list li {
+      padding: 12px 0;
+      padding-left: 32px;
+      position: relative;
+      border-bottom: 1px solid var(--gray-mid);
+      font-size: 15px;
+    }
+
+    .check-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--crimson);
+      font-weight: 600;
+    }
+
+    .section-navy .check-list li {
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .section-navy .check-list li::before {
+      color: var(--sky);
+    }
+
+    /* ========================================
+       RESPONSIVE BREAKPOINTS
+       ======================================== */
+
+    /* Tablet - 900px */
+    @media (max-width: 900px) {
+      .container {
+        padding: 0 32px;
+      }
+
+      .header h1 {
+        font-size: 40px;
+      }
+
+      .section h2 {
+        font-size: 30px;
+      }
+
+      .pillars {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .pillar {
+        padding: 24px;
+      }
+
+      .knowledge-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .architecture {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .arch-column {
+        border-left-width: 6px;
+      }
+
+      .voice-example {
+        grid-template-columns: 1fr;
+      }
+
+      .voice-input {
+        border-right: none;
+        border-bottom: 1px solid var(--gray-mid);
+      }
+
+      .two-col {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .synthesis-inputs {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .categories-sidebar {
+        padding: 24px;
+      }
+
+      .categories-number {
+        font-size: 48px;
+      }
+
+      .cat-item-name {
+        font-size: 13px;
+      }
+
+      .cat-item-desc {
+        font-size: 12px;
+      }
+    }
+
+    /* Mobile - 600px */
+    @media (max-width: 600px) {
+      .container {
+        padding: 0 20px;
+      }
+
+      .header {
+        padding: 60px 0 48px;
+      }
+
+      .header h1 {
+        font-size: 32px;
+      }
+
+      .header h1 br {
+        display: none;
+      }
+
+      .header-subtitle {
+        font-size: 17px;
+      }
+
+      .section {
+        padding: 60px 0;
+      }
+
+      .section h2 {
+        font-size: 26px;
+      }
+
+      .section-intro {
+        font-size: 16px;
+        margin-bottom: 36px;
+      }
+
+      .pillars {
+        margin-top: 36px;
+      }
+
+      .pillar {
+        padding: 20px;
+      }
+
+      .pillar-number {
+        font-size: 28px;
+      }
+
+      .pillar h3 {
+        font-size: 13px;
+      }
+
+      .pillar p {
+        font-size: 13px;
+      }
+
+      .arch-column {
+        padding: 24px 20px;
+      }
+
+      .voice-input, .voice-output {
+        padding: 24px 20px;
+      }
+
+      .voice-quote {
+        font-size: 15px;
+      }
+
+      .highlight-box {
+        padding: 20px 24px;
+      }
+
+      .highlight-box p {
+        font-size: 15px;
+      }
+
+      .synthesis-diagram {
+        margin: 36px 0;
+      }
+
+      .synth-input {
+        padding: 20px;
+      }
+
+      .synth-input h4 {
+        font-size: 13px;
+      }
+
+      .synth-input p {
+        font-size: 12px;
+      }
+
+      .synthesis-output {
+        padding: 24px 20px;
+      }
+
+      .synthesis-output h4 {
+        font-size: 16px;
+      }
+
+      .categories-sidebar {
+        padding: 20px;
+      }
+
+      .categories-number {
+        font-size: 44px;
+      }
+
+      .categories-title {
+        font-size: 12px;
+      }
+
+      .cat-item {
+        padding: 12px 0 12px 14px;
+        margin-bottom: 8px;
+      }
+
+      .cat-item-name {
+        font-size: 13px;
+      }
+
+      .cat-item-desc {
+        font-size: 12px;
+      }
+
+      .cta-section {
+        padding: 60px 0;
+      }
+
+      .cta-section h2 {
+        font-size: 26px;
+      }
+
+      .cta-button {
+        padding: 14px 32px;
+        font-size: 13px;
+      }
+
+      .knowledge-text h3 {
+        font-size: 20px;
+      }
+
+      .two-col h3 {
+        font-size: 20px;
+      }
+
+      .check-list li {
+        font-size: 14px;
+        padding-left: 28px;
+      }
+    }
+
+    /* Small Mobile - 400px */
+    @media (max-width: 400px) {
+      .container {
+        padding: 0 16px;
+      }
+
+      .header h1 {
+        font-size: 28px;
+      }
+
+      .header-label {
+        font-size: 10px;
+        letter-spacing: 2px;
+      }
+
+      .section h2 {
+        font-size: 24px;
+      }
+
+      .pillar {
+        padding: 28px 20px;
+      }
+
+
+      .arch-header {
+        font-size: 10px;
+      }
+
+      .arch-item-title {
+        font-size: 13px;
+      }
+
+      .arch-item-desc {
+        font-size: 12px;
+      }
+
+      .cat-block {
+        font-size: 10px;
+        padding: 10px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-label">Pitch Craft Methodology</div>
+      <h1>Built on <strong>Insider Knowledge</strong>,<br>Not AI Guesswork</h1>
+      <p class="header-subtitle">
+        How we synthesize academic research, practitioner wisdom, and verified lobbying disclosure data into strategic pitch intelligence.
+      </p>
+    </div>
+  </header>
+
+  <!-- Three Pillars -->
+  <section class="section">
+    <div class="container">
+      <div class="section-label">The Architecture</div>
+      <h2>Three Layers of <strong>Authentic Intelligence</strong></h2>
+      <p class="section-intro">
+        Every pitch memo draws from three proprietary layers: a knowledge framework distilled from how advocacy actually works, verified data from official disclosure filings, and authentic voice profiles extracted from your firm's own positioning.
+      </p>
+
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pillar-header">
+            <span class="pillar-number">01</span>
+            <h3>Knowledge Layer</h3>
+          </div>
+          <p>50 strategic principles derived from academic research on lobbying effectiveness and interviews with practicing advocates. The logic behind why certain approaches work in certain contexts.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-header">
+            <span class="pillar-number">02</span>
+            <h3>Data Layer</h3>
+          </div>
+          <p>Enriched profiles built from Senate LDA filings: verified lobbyist rosters, committee relationships, client portfolios, and engagement patterns. Every data point traced to official disclosure records.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-header">
+            <span class="pillar-number">03</span>
+            <h3>Voice Layer</h3>
+          </div>
+          <p>Firm-specific tone profiles extracted from your marketing and communications. Memos that sound like your firm wrote them, not a generic template.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Knowledge Layer Deep Dive -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-label">Layer 01</div>
+      <h2>The Knowledge Framework</h2>
+      <p class="section-intro">
+        Not a list of tactics. A structured understanding of how advocacy outcomes actually unfold, drawn from the peer-reviewed research and hard-won practitioner experience that most AI systems have never seen.
+      </p>
+
+      <div class="knowledge-grid">
+        <div class="knowledge-text">
+          <h3>Consolidated from Real Expertise</h3>
+          <p>
+            We distilled 50 strategic principles from peer-reviewed research on lobbying effectiveness and interviews with senior practitioners. This isn't a list of tactics; it's a decision framework that understands context.
+          </p>
+          <p>
+            The principles encode hard-won lessons: why 60% of lobbying campaigns fail to change policy, how defenders hold structural advantages, when coalition diversity matters more than size, and why resources alone explain less than 5% of success.
+          </p>
+          <p>
+            Each principle includes conditional logic. Status quo defense requires different positioning than offensive campaigns. High-salience issues demand different tool selection than quiet regulatory fights. The framework adapts recommendations to your prospect's specific situation.
+          </p>
+          <p>
+            Most importantly, these principles stay invisible in your output. The memo doesn't cite research or drop academic jargon. It applies the insights naturally, the way a seasoned BD partner would: informed by deep knowledge, but speaking the language of your prospect.
+          </p>
+          <p>
+            The framework draws from foundational work on legislative subsidy theory, policy window dynamics, and coalition formation research. It incorporates practitioner insights on venue shopping, competitive response patterns, and the counterintuitive finding that money matters far less than strategic positioning.
+          </p>
+
+          <div class="highlight-box">
+            <p><strong>The difference:</strong> Generic AI summarizes what lobbying is. Pitch Craft knows when to recommend grasstops mobilization versus quiet inside-game engagement, when to emphasize coalition breadth versus depth, and how to position defensive versus offensive campaigns.</p>
+          </div>
+        </div>
+
+        <div class="categories-sidebar">
+          <div class="categories-header">
+            <span class="categories-number">50</span>
+            <span class="categories-title">Strategic Principles</span>
+          </div>
+          
+          <div class="cat-item">
+            <div class="cat-item-name">Coalition Dynamics</div>
+            <p class="cat-item-desc">Coalition composition, strange bedfellows, broker function, business unity effects</p>
+          </div>
+          
+          <div class="cat-item">
+            <div class="cat-item-name">Competitive Dynamics</div>
+            <p class="cat-item-desc">Counteractive lobbying, salience management, access depreciation, response imperatives</p>
+          </div>
+          
+          <div class="cat-item">
+            <div class="cat-item-name">Information & Intelligence</div>
+            <p class="cat-item-desc">Credibility dynamics, agenda setting, issue framing, pre-proposal engagement</p>
+          </div>
+          
+          <div class="cat-item">
+            <div class="cat-item-name">Strategic Positioning</div>
+            <p class="cat-item-desc">Venue shopping, visibility calibration, inside vs. outside game, regulatory vs. legislative</p>
+          </div>
+          
+          <div class="cat-item">
+            <div class="cat-item-name">Structural Context</div>
+            <p class="cat-item-desc">Status quo advantage, offense vs. defense asymmetry, resource limitations, partisan environment</p>
+          </div>
+          
+          <div class="cat-item">
+            <div class="cat-item-name">Tactical Execution</div>
+            <p class="cat-item-desc">Tool selection matrix, grassroots vs. grasstops, research validation, preparation dominance</p>
+          </div>
+          
+          <div class="cat-item">
+            <div class="cat-item-name">Timing & Rhythm</div>
+            <p class="cat-item-desc">Policy windows, legislative rhythm, crisis response, budget cycle leverage</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Data Layer -->
+  <section class="section">
+    <div class="container">
+      <div class="section-label">Layer 02</div>
+      <h2>Verified Data, Not Guesswork</h2>
+      <p class="section-intro">
+        Every lobbyist name, client relationship, and committee connection traced to official Lobbying Disclosure Act filings. Multi-stage verification ensures you're never pitching with outdated or fabricated credentials.
+      </p>
+
+      <div class="architecture">
+        <div class="arch-column">
+          <div class="arch-header">Lobbyist Credentials</div>
+          <div class="arch-item">
+            <div class="arch-item-title">Verified Names</div>
+            <div class="arch-item-desc">Cross-referenced against LD-203 filings to eliminate departed staff</div>
+          </div>
+          <div class="arch-item">
+            <div class="arch-item-title">Covered Positions</div>
+            <div class="arch-item-desc">Former government roles extracted with entity recognition</div>
+          </div>
+          <div class="arch-item">
+            <div class="arch-item-title">Seniority Detection</div>
+            <div class="arch-item-desc">Partner, Principal, VP flagged for team highlights</div>
+          </div>
+        </div>
+        <div class="arch-column">
+          <div class="arch-header">Client Intelligence</div>
+          <div class="arch-item">
+            <div class="arch-item-title">Portfolio Analysis</div>
+            <div class="arch-item-desc">Active clients from LD-2 quarterly reports</div>
+          </div>
+          <div class="arch-item">
+            <div class="arch-item-title">Industry Classification</div>
+            <div class="arch-item-desc">Sector alignment for prospect matching</div>
+          </div>
+          <div class="arch-item">
+            <div class="arch-item-title">Issue Mapping</div>
+            <div class="arch-item-desc">79 LDA codes linked to committee jurisdiction</div>
+          </div>
+        </div>
+        <div class="arch-column">
+          <div class="arch-header">Relationship Context</div>
+          <div class="arch-item">
+            <div class="arch-item-title">Committee Connections</div>
+            <div class="arch-item-desc">Jurisdiction mapped to prospect's issue areas</div>
+          </div>
+          <div class="arch-item">
+            <div class="arch-item-title">Engagement Patterns</div>
+            <div class="arch-item-desc">Filing frequency, activity levels, focus areas</div>
+          </div>
+          <div class="arch-item">
+            <div class="arch-item-title">Billing Context</div>
+            <div class="arch-item-desc">Income ranges from disclosure for fee positioning</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Voice Layer -->
+  <section class="section section-navy">
+    <div class="container">
+      <div class="section-label">Layer 03</div>
+      <h2>Your Voice, Not Ours</h2>
+      <p class="section-intro">
+        Every firm has a distinct way of positioning itself. We extract those patterns from your existing marketing and ensure generated memos maintain your authentic tone, not generic AI prose.
+      </p>
+
+      <div class="voice-example">
+        <div class="voice-input">
+          <div class="voice-label">Extracted From Firm Website</div>
+          <p class="voice-quote">
+            "We don't just advocate; we architect outcomes. Our approach combines deep policy expertise with strategic communications that move markets and shape legislation."
+          </p>
+        </div>
+        <div class="voice-output">
+          <div class="voice-label">Applied In Generated Memo</div>
+          <p class="voice-quote">
+            "For [Prospect], we would architect a multi-track engagement that combines direct legislative outreach with strategic communications designed to shift the policy environment in your favor."
+          </p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <h3 style="color: var(--sky);">What We Extract</h3>
+          <p style="color: rgba(255,255,255,0.8);">
+            Tone markers, signature phrases, positioning language, value proposition framing, competitive differentiation themes.
+          </p>
+          <ul class="check-list">
+            <li>Action verbs and intensity levels</li>
+            <li>Relationship vs. results emphasis</li>
+            <li>Formal vs. conversational register</li>
+            <li>Unique selling propositions</li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="color: var(--sky);">What We Avoid</h3>
+          <p style="color: rgba(255,255,255,0.8);">
+            Generic AI tells that undermine credibility: em-dashes, passive constructions, hedging language, obvious template patterns.
+          </p>
+          <ul class="check-list">
+            <li>No em-dashes (strong AI indicator)</li>
+            <li>No academic citations in client output</li>
+            <li>No "leverage synergies" boilerplate</li>
+            <li>No generic paragraph templates</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Synthesis -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-label">The Synthesis</div>
+      <h2>How It Comes Together</h2>
+      <p class="section-intro">
+        When you enter a prospect, Pitch Craft doesn't just fill in blanks. It reasons through which principles apply, which team members and clients to highlight, and how to frame the pitch in your firm's authentic voice.
+      </p>
+
+      <div class="synthesis-diagram">
+        <div class="synthesis-inputs">
+          <div class="synth-input">
+            <h4>Prospect Context</h4>
+            <p>Industry, issues, goals, venue, timeline, competitive situation</p>
+          </div>
+          <div class="synth-input">
+            <h4>Firm Profile</h4>
+            <p>Verified lobbyists, client portfolio, issue expertise, committee access</p>
+          </div>
+          <div class="synth-input">
+            <h4>Strategic Logic</h4>
+            <p>Which of 50 principles apply based on prospect's specific conditions</p>
+          </div>
+        </div>
+        <div class="synthesis-arrow">↓</div>
+        <div class="synthesis-output">
+          <h4>Strategic Pitch Memo</h4>
+          <p>Tailored positioning that demonstrates fit, highlights relevant experience, and makes the case for why your firm wins this business.</p>
+        </div>
+      </div>
+
+      <div class="highlight-box navy">
+        <p>
+          <strong>The result:</strong> A pitch memo that sounds like it was written by a senior BD partner who has studied the prospect, knows the firm's strengths deeply, and understands advocacy strategy at a level most competitors don't.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Ready to See It in Action?</h2>
+      <p class="cta-text">
+        Generate a pitch memo for a real prospect and see how authentic insider knowledge translates into competitive advantage.
+      </p>
+      <a href="#" class="cta-button">Generate a Memo</a>
+    </div>
+  </section>
+
+</body>
+</html>
