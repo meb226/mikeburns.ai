@@ -1,8 +1,11 @@
 /**
- * Pitch Craft - Server
+ * Pitch Craft - Server (Opus Demo Version)
  * 
  * AI-powered pitch memo generator for lobbying firms
  * Reuses LobbyMatch firm data, generates strategic pitch memos
+ * 
+ * This is the original prompt structure that produced the 8.4-scoring
+ * Opus memos, with rate limiting for demo period.
  */
 
 const express = require('express');
@@ -35,9 +38,6 @@ try {
   console.error('Error loading firm data:', err.message);
 }
 
-// Client lookup disabled - see product notes
-// let clientLookup = {};
-
 // Load 50 principles
 let principles = '';
 try {
@@ -51,6 +51,10 @@ try {
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
 });
+
+// === DEMO RATE LIMITING ===
+let memoCount = 0;
+const MEMO_LIMIT = 20;
 
 // === ISSUE CODES ===
 const ISSUE_CODES = {
@@ -105,11 +109,17 @@ app.get('/api/issues', (req, res) => {
   res.json({ issues: ISSUE_CODES });
 });
 
-// Client search endpoint DISABLED - see product notes
-// app.get('/api/clients/search', (req, res) => { ... });
-
 // Generate pitch memo
 app.post('/api/generate-memo', async (req, res) => {
+  // Demo rate limiting
+  if (memoCount >= MEMO_LIMIT) {
+    return res.status(429).json({ 
+      error: `Demo limit reached (${MEMO_LIMIT} memos). Contact Mike for additional access.`,
+      memosUsed: memoCount,
+      limit: MEMO_LIMIT
+    });
+  }
+  
   const {
     firmName,
     prospectName,
@@ -157,7 +167,9 @@ app.post('/api/generate-memo', async (req, res) => {
   // Generate memo
   try {
     const memo = await generateMemo(firmProfile, prospectProfile);
-    res.json({ memo, firm: firmProfile, prospect: prospectProfile });
+    memoCount++;
+    console.log(`Memo ${memoCount}/${MEMO_LIMIT} generated for ${firmName} → ${prospectName}`);
+    res.json({ memo, firm: firmProfile, prospect: prospectProfile, memosRemaining: MEMO_LIMIT - memoCount });
   } catch (err) {
     console.error('Error generating memo:', err);
     res.status(500).json({ error: 'Failed to generate memo' });
@@ -194,7 +206,7 @@ function buildFirmProfile(firm) {
     
     // Tier 1 enhanced lobbyist data
     verifiedLobbyists: prioritizedLobbyists,
-    seniorLobbyistCount: firm.seniorLobbyistCount || seniorLobbyists.length,
+    seniorLobbyistCount: firm.seniorLobbyistCount || 0,
     
     // Tier 1 firm-level aggregates
     stats: firm.stats || null,
@@ -521,6 +533,7 @@ VOICE REMINDER: Embody the firm's voice profile throughout. Echo the key phrases
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Pitch Craft server running on port ${PORT}`);
+  console.log(`Demo mode: ${MEMO_LIMIT} memo limit`);
 });
 
 module.exports = app;
