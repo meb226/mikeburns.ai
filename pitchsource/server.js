@@ -167,24 +167,18 @@ app.post('/api/generate-memo', async (req, res) => {
 // === HELPER FUNCTIONS ===
 
 function buildFirmProfile(firm) {
-  // Include lobbyists with EITHER covered positions OR client experience
+  // Helper to check if covered position is meaningful (not "(none)" or empty)
+  const hasMeaningfulPosition = (l) => l.coveredPosition && l.coveredPosition !== '(none)';
+  const hasClientExperience = (l) => l.clientExperience && l.clientExperience.length > 0;
+  
+  // Include lobbyists with EITHER meaningful covered positions OR client experience
+  // No prioritization by seniority or type - let AI decide based on prospect relevance
   const allLobbyists = (firm.verifiedLobbyists || []).filter(l => 
-    l.coveredPosition || (l.clientExperience && l.clientExperience.length > 0)
+    hasMeaningfulPosition(l) || hasClientExperience(l)
   );
   
-  // Separate by priority: senior > covered position > client experience only
-  const seniorLobbyists = allLobbyists.filter(l => l.isSenior);
-  const coveredLobbyists = allLobbyists.filter(l => !l.isSenior && l.coveredPosition);
-  const clientOnlyLobbyists = allLobbyists.filter(l => 
-    !l.isSenior && !l.coveredPosition && l.clientExperience?.length > 0
-  );
-  
-  // Prioritize: senior first, then covered positions, then client-experience-only (max 25 total)
-  const prioritizedLobbyists = [
-    ...seniorLobbyists.slice(0, 15),
-    ...coveredLobbyists.slice(0, Math.max(0, 20 - seniorLobbyists.length)),
-    ...clientOnlyLobbyists.slice(0, Math.max(0, 25 - seniorLobbyists.length - coveredLobbyists.length))
-  ];
+  // Include all relevant lobbyists (max 25)
+  const prioritizedLobbyists = allLobbyists.slice(0, 25);
 
   return {
     name: firm.name,
@@ -272,22 +266,21 @@ IMPORTANT: Only make substantive claims you can ground in the provided data (cli
 Highlight similar organizations in the firm's portfolio. Write 2-3 sentences per client showing issue overlap and organizational fit. Each bullet should be substantive (not just a client name and tagline) and end with proper punctuation. Explain WHY this client experience matters for the prospect's specific situation.
 
 ### 5. TEAM HIGHLIGHTS (Include if firm has relevant team members)
-This section showcases the firm's team. You will receive lobbyist data with TWO types of relevant experience:
+This section showcases the firm's team. Lobbyists bring value through TWO equally important types of experience:
 
 **A. GOVERNMENT EXPERIENCE (covered positions):**
-- **SENIOR LOBBYISTS (isSenior: true):** Former chiefs of staff, staff directors, senior agency officials, etc. PRIORITIZE these. Their "seniorTitles" field tells you what senior roles they held. Their "entitySummary" provides pre-extracted committees/agencies.
-- **OTHER COVERED OFFICIALS:** Include if their specific government experience is relevant to this prospect's issues.
+Prior service in Congress, executive agencies, or the White House. The "entitySummary" field provides pre-extracted committees and agencies. This experience provides institutional knowledge of how policy is made.
 
-**B. CLIENT EXPERIENCE (clientExperience field):**
-Some lobbyists may not have government positions but have lobbied on similar issues for similar clients. This is EQUALLY VALUABLE for demonstrating relevant expertise. Look at:
-- "Client experience" field: Shows specific clients they've lobbied for and the issue areas
-- "Issue areas lobbied" field: Shows all issue codes they've worked on
+**B. SECTOR EXPERIENCE (clientExperience field):**
+Direct lobbying experience in the prospect's industry or issue areas. This demonstrates hands-on understanding of the regulatory landscape, key stakeholders, and effective strategies for similar organizations. Note: LDA disclosure only requires reporting "covered positions" (prior government service), so lobbyists without covered positions may have extensive and highly relevant sector expertise that simply falls outside reporting requirements.
 
-**MATCHING LOGIC:** A lobbyist is relevant if EITHER:
-1. Their government experience (entities/committees) relates to the prospect's issues, OR
-2. Their client experience includes similar organizations or the same issue areas as the prospect
+**SELECTION CRITERIA:** Choose the 3-4 team members MOST RELEVANT to this specific prospect. Relevance is determined by:
+1. Government experience in committees/agencies with jurisdiction over the prospect's issues, OR
+2. Client experience representing similar organizations or working on the same issue areas
 
-Example: For a crypto/fintech prospect, a lobbyist who worked for "Satoshi Action Fund" on Financial Services issues is highly relevant even without government experience.
+Both types of experience are equally valuable. A lobbyist who has represented multiple crypto clients is just as relevant to a crypto prospect as one who served on the Senate Banking Committee. Often, sector experience is MORE directly applicable.
+
+Example: For a crypto/fintech prospect, a lobbyist who represented "Satoshi Action Fund" and "Cryptex Finance" on banking and financial services issues brings directly transferable expertise, regardless of whether they have a covered position.
 
 **FORMAT:** Start with an introductory paragraph (2-3 sentences) that frames the team's collective strengths for this prospect. Then provide up to 4 bullet points highlighting specific team members. Each bullet should:
 - Start with the lobbyist's name in bold (use **Name**)
@@ -303,14 +296,14 @@ Example format:
 **TERMINOLOGY:** When referring to team members who previously served in government, use phrases like "team members with prior government service" or "former officials on the team." Do NOT use "alumni network": it's unclear and sounds like a university reference.
 
 **WRITING GUIDELINES:**
-- Prioritize senior lobbyists with experience relevant to the prospect's issues
-- Include lobbyists with relevant CLIENT experience even if they lack government positions
-- Use the "entitySummary" field when available; it contains pre-extracted committees and agencies
+- Select team members based on RELEVANCE TO THIS PROSPECT, not seniority or title
+- Government experience and sector experience are equally valuable; choose based on fit
+- Use the "entitySummary" field when available for cleaner committee/agency references
 - Use the "branch" field to match prospect's venue: LEGISLATIVE experience for Hill work, EXECUTIVE for regulatory
 - Frame government experience in terms of institutional knowledge, NOT access
-- Frame client experience in terms of understanding the prospect's industry and regulatory landscape
+- Frame sector experience in terms of understanding the prospect's industry, stakeholders, and regulatory landscape
 - Use libel-safe language: "established relationships" not "connections to"
-- Weave committee relationships INTO this section and the Strategic Approach: do NOT create a separate "Committee Relationships" header. Committee experience should be mentioned in the context of specific team members or strategic recommendations, not as a standalone list.
+- Weave committee relationships INTO this section and the Strategic Approach: do NOT create a separate "Committee Relationships" header
 
 ### 6. STRATEGIC APPROACH (Always include)
 - Apply relevant insights from the knowledge layer: but DO NOT name or number them
@@ -406,10 +399,11 @@ function buildUserPrompt(firmProfile, prospectProfile) {
           ? `Issue areas lobbied: ${l.issueExperience.slice(0, 8).map(i => ISSUE_CODES[i] || i).join(', ')}`
           : '';
         
-        // Position line (may be "(none)" for client-experience-only lobbyists)
-        const positionLine = l.coveredPosition 
-          ? `Raw position: ${l.coveredPosition}`
-          : '[No government position - see client experience]';
+        // Position line - neutral framing for those without covered positions
+        const hasMeaningfulPosition = l.coveredPosition && l.coveredPosition !== '(none)';
+        const positionLine = hasMeaningfulPosition
+          ? `Government service: ${l.coveredPosition}`
+          : '(No covered position on file)';
         
         return `- ${l.name} ${seniorTag} ${branchTag}
     Entities: ${entities}
@@ -518,7 +512,7 @@ ${committeeSection}
 
 Generate the pitch memo now. Apply strategic insights based on the prospect's specific situation. Be specific and strategic, not generic. Do not reference principles, academic sources, or research: just deliver the strategic wisdom naturally.
 
-REMINDER: Prioritize [SENIOR] lobbyists in Team Highlights. Also include lobbyists with relevant CLIENT EXPERIENCE in the prospect's issue areas, even if they lack government positions. Use the "Entities" field for cleaner committee/agency references. Only mention committees relevant to this prospect's issues.
+REMINDER: Select team members for Team Highlights based on RELEVANCE to this prospect, not seniority. Government experience and sector/client experience are equally valuable. A lobbyist with direct client experience in the prospect's industry may be MORE relevant than one with a senior government title in an unrelated area. Use the "Entities" field for cleaner committee/agency references. Only mention committees relevant to this prospect's issues.
 
 VOICE REMINDER: Embody the firm's voice profile throughout. Echo the key phrases naturally (especially in Executive Summary and Strategic Approach). Match the tone adjectives. If this firm positions itself as innovative or unconventional, the memo must feel that way, not like a traditional pitch.`;
 }
