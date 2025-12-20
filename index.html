@@ -225,18 +225,25 @@
             line-height: 1.7;
         }
 
-        /* Updated button styling - 18px font */
+        /* Button container for dual buttons */
+        .project-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* Primary button - Open Tool (solid white) */
         .project-btn {
             display: inline-block;
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 400;
             color: #000000;
             text-decoration: none;
             border: 1px solid white;
-            padding: 12px 24px;
+            padding: 10px 18px;
             transition: all 0.2s;
             background: white;
-            align-self: flex-start;
         }
 
         .project-btn:hover {
@@ -255,6 +262,24 @@
             background: #0039A6;
             border-color: #0039A6;
             color: white;
+        }
+
+        /* Secondary button - Case Study (ghost/outline) */
+        .project-btn-ghost {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 400;
+            color: white;
+            text-decoration: none;
+            border: 1px solid white;
+            padding: 10px 18px;
+            transition: all 0.2s;
+            background: transparent;
+        }
+
+        .project-btn-ghost:hover {
+            background: white;
+            color: #000000;
         }
 
         footer {
@@ -324,6 +349,11 @@
                 border-color: white;
                 color: #000000;
             }
+
+            .project-btn-ghost:hover {
+                background: transparent;
+                color: white;
+            }
         }
     </style>
 </head>
@@ -366,7 +396,10 @@
                             <h4>PitchSource</h4>
                             <p>Build lobbying pitch memos with curated lobbying disclosure data, research-based strategies, and brand positioning.</p>
                         </div>
-                        <a href="pitchsource/index.html" class="project-btn">Open Tool</a>
+                        <div class="project-buttons">
+                            <a href="pitchsource/index.html" class="project-btn">Open Tool</a>
+                            <a href="pitchsource/case-study.html" class="project-btn-ghost">Case Study</a>
+                        </div>
                     </div>
 
                     <!-- Top right: Navy - LobbyMatch -->
@@ -375,7 +408,10 @@
                             <h4>LobbyMatch</h4>
                             <p>Matches organizations with lobbying firms with AI-powered insights derived from Lobbying Disclosure Act data.</p>
                         </div>
-                        <a href="lobbymatch/index.html" class="project-btn">Open Tool</a>
+                        <div class="project-buttons">
+                            <a href="lobbymatch/index.html" class="project-btn">Open Tool</a>
+                            <a href="lobbymatch/case-study.html" class="project-btn-ghost">Case Study</a>
+                        </div>
                     </div>
 
                     <!-- Bottom left: Red - Workflow Insights -->
@@ -384,7 +420,10 @@
                             <h4>Workflow Insights</h4>
                             <p>Analyzes compliance workflows and identifies automation opportunities.</p>
                         </div>
-                        <a href="compliance-optimizer/index.html" class="project-btn">Open Tool</a>
+                        <div class="project-buttons">
+                            <a href="compliance-optimizer/index.html" class="project-btn">Open Tool</a>
+                            <a href="compliance-optimizer/case-study.html" class="project-btn-ghost">Case Study</a>
+                        </div>
                     </div>
 
                     <!-- Bottom right: Red - Compliance Lens -->
@@ -393,7 +432,10 @@
                             <h4>Compliance Lens</h4>
                             <p>AI-powered gap analysis for regulatory policies with detailed findings and compliance recommendations.</p>
                         </div>
-                        <a href="compliance-lens/index.html" class="project-btn">Open Tool</a>
+                        <div class="project-buttons">
+                            <a href="compliance-lens/index.html" class="project-btn">Open Tool</a>
+                            <a href="compliance-lens/case-study.html" class="project-btn-ghost">Case Study</a>
+                        </div>
                     </div>
                 </div>
             </section>
