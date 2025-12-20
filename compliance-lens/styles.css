@@ -59,6 +59,19 @@ body {
     opacity: 0.6;
 }
 
+/* Back Link */
+.back-link {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.back-link:hover {
+    color: #ffffff;
+}
+
 /* Main Container */
 .container {
     max-width: 1400px;
