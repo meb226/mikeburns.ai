@@ -12,6 +12,13 @@ const express = require('express');
 const Anthropic = require('@anthropic-ai/sdk');
 const path = require('path');
 const fs = require('fs');
+const { Redis } = require('@upstash/redis');
+
+// Initialize Upstash Redis (for usage logging)
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 const app = express();
 app.use(express.json());
@@ -109,6 +116,32 @@ app.get('/api/issues', (req, res) => {
   res.json({ issues: ISSUE_CODES });
 });
 
+// Get usage logs (protected with simple key)
+app.get('/api/usage-logs', async (req, res) => {
+  const authKey = req.query.key;
+  if (authKey !== process.env.USAGE_LOG_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  try {
+    const logs = await redis.lrange('pitchsource:usage', 0, 99); // Last 100 entries
+    const parsed = logs.map(log => {
+      try {
+        return JSON.parse(log);
+      } catch {
+        return log;
+      }
+    });
+    res.json({ 
+      count: parsed.length,
+      logs: parsed 
+    });
+  } catch (err) {
+    console.error('Failed to fetch logs:', err);
+    res.status(500).json({ error: 'Failed to fetch logs' });
+  }
+});
+
 // Generate pitch memo
 app.post('/api/generate-memo', async (req, res) => {
   // Demo rate limiting
@@ -169,6 +202,22 @@ app.post('/api/generate-memo', async (req, res) => {
     const memo = await generateMemo(firmProfile, prospectProfile);
     memoCount++;
     console.log(`Memo ${memoCount}/${MEMO_LIMIT} generated for ${firmName} → ${prospectName}`);
+    
+    // Log usage to Upstash Redis
+    try {
+      await redis.lpush('pitchsource:usage', JSON.stringify({
+        timestamp: new Date().toISOString(),
+        firm: firmName,
+        prospect: prospectName,
+        industry: prospectIndustry || 'Not specified',
+        issues: prospectIssues,
+        memoNumber: memoCount
+      }));
+    } catch (logErr) {
+      console.error('Failed to log usage:', logErr.message);
+      // Don't fail the request if logging fails
+    }
+    
     res.json({ memo, firm: firmProfile, prospect: prospectProfile, memosRemaining: MEMO_LIMIT - memoCount });
   } catch (err) {
     console.error('Error generating memo:', err);
