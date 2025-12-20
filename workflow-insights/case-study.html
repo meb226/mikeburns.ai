@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Insights Case Study - Mike Burns</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #FAFAFA;
+            color: #000000;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* Fixed top navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #FAFAFA;
+            border-bottom: 1px solid #E0E0E0;
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        nav h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        nav h1 a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 16px;
+            font-weight: 300;
+            transition: opacity 0.2s;
+        }
+
+        nav a:hover {
+            opacity: 0.6;
+        }
+
+        /* Hero section */
+        .hero {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 140px 48px 48px 48px;
+        }
+
+        .hero-label {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #DC143C;
+            margin-bottom: 16px;
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            margin-bottom: 24px;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 32px;
+        }
+
+        .hero-meta-item {
+            font-size: 15px;
+        }
+
+        .hero-meta-item strong {
+            font-weight: 700;
+        }
+
+        /* Content sections */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 48px 80px 48px;
+        }
+
+        .section {
+            margin-bottom: 64px;
+        }
+
+        .section-label {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #666666;
+            margin-bottom: 16px;
+        }
+
+        .section h3 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            line-height: 1.3;
+        }
+
+        .section p {
+            font-size: 18px;
+            font-weight: 300;
+            line-height: 1.7;
+            margin-bottom: 16px;
+            color: #000000;
+        }
+
+        .section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .section strong {
+            font-weight: 700;
+        }
+
+        /* Decision cards */
+        .decisions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .decision-card {
+            background: white;
+            border: 1px solid #E0E0E0;
+            padding: 28px;
+        }
+
+        .decision-card h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .decision-card p {
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 1.6;
+            color: #333333;
+            margin-bottom: 0;
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 4px 10px;
+            margin-bottom: 12px;
+        }
+
+        .tag-kept {
+            background: #000000;
+            color: white;
+            border: 1px solid #000000;
+        }
+
+        .tag-cut {
+            background: transparent;
+            color: #000000;
+            border: 1px solid #000000;
+        }
+
+        /* Screenshot section */
+        .screenshot-container {
+            margin-top: 32px;
+            border: 1px solid #E0E0E0;
+            background: white;
+            padding: 24px;
+        }
+
+        .screenshot-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .screenshot-caption {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        /* Lessons list */
+        .lessons-list {
+            margin-top: 24px;
+        }
+
+        .lesson-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            align-items: flex-start;
+        }
+
+        .lesson-number {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            background: #000000;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lesson-content h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .lesson-content p {
+            font-size: 16px;
+            margin-bottom: 0;
+        }
+
+        /* What's next */
+        .next-items {
+            margin-top: 24px;
+        }
+
+        .next-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: flex-start;
+        }
+
+        .next-item::before {
+            content: "→";
+            font-weight: 700;
+            color: #DC143C;
+        }
+
+        .next-item p {
+            margin-bottom: 0;
+        }
+
+        /* Back link */
+        .back-link {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 48px 48px 48px;
+        }
+
+        .back-link a {
+            font-size: 16px;
+            font-weight: 400;
+            color: #000000;
+            text-decoration: none;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 2px;
+            transition: opacity 0.2s;
+        }
+
+        .back-link a:hover {
+            opacity: 0.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 48px;
+            font-size: 14px;
+            font-weight: 300;
+            color: #666666;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 16px;
+                padding: 20px 24px;
+            }
+
+            nav ul {
+                gap: 24px;
+            }
+
+            .hero {
+                padding: 160px 24px 32px 24px;
+            }
+
+            .hero h2 {
+                font-size: 32px;
+            }
+
+            .hero-meta {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .content {
+                padding: 0 24px 60px 24px;
+            }
+
+            .section h3 {
+                font-size: 24px;
+            }
+
+            .decisions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-link {
+                padding: 0 24px 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1><a href="../index.html">Mike Burns</a></h1>
+        <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-label">Compliance Tool</div>
+        <h2>Workflow Insights</h2>
+        <div class="hero-meta">
+            <div class="hero-meta-item"><strong>Timeline:</strong> 3 weeks</div>
+            <div class="hero-meta-item"><strong>Status:</strong> Live</div>
+            <div class="hero-meta-item"><strong>Stack:</strong> JavaScript, Claude API, Vercel</div>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- THE PROBLEM -->
+        <section class="section">
+            <div class="section-label">01 — The Problem</div>
+            <h3>Compliance teams can't evaluate their own workflows for automation potential.</h3>
+            <p>Evaluating automation potential requires both deep process knowledge (what actually happens, what can go wrong, what regulators expect) and technical understanding (what's feasible, what tools exist, what the ROI looks like). That combination is rare. Compliance professionals lack the technical lens; engineering teams lack the regulatory context.</p>
+            <p>Current workarounds: gut instinct, expensive consultants, or nothing at all. Most compliance teams don't systematically evaluate their workflows for automation potential. They just keep doing things the way they've always done them.</p>
+        </section>
+
+        <!-- KEY DECISIONS -->
+        <section class="section">
+            <div class="section-label">02 — Key Decisions</div>
+            <h3>What I prioritized, what I cut, and why</h3>
+            <p>A 3-week build forces ruthless prioritization. Here's how I scoped:</p>
+            
+            <div class="decisions-grid">
+                <div class="decision-card">
+                    <span class="tag tag-kept">Kept</span>
+                    <h4>Pre-built workflow templates</h4>
+                    <p>10 example workflows from real compliance scenarios. Templates lower friction and demonstrate domain expertise to hiring managers.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-cut">Cut</span>
+                    <h4>Workflow visualization</h4>
+                    <p>Process flowcharts would add complexity without proving the core value prop. The AI analysis is the differentiator, not diagrams.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-kept">Kept</span>
+                    <h4>Categorized AI output</h4>
+                    <p>Results organized into Quick Wins, High Impact, Process Improvement, Data Quality, and Strategic Value. Mirrors how teams actually prioritize.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-cut">Cut</span>
+                    <h4>Cost-benefit calculator</h4>
+                    <p>Nice-to-have for production, but not essential for demonstrating product thinking. Users can do their own math.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-kept">Kept</span>
+                    <h4>Professional PDF export</h4>
+                    <p>Export functionality signals "real tool" rather than "demo toy." Compliance teams need to share recommendations with stakeholders.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-cut">Cut</span>
+                    <h4>Multi-workflow comparison</h4>
+                    <p>Single-workflow analysis proves the concept. Comparison features can come later once the core experience is validated.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section class="section">
+            <div class="section-label">03 — How It Works</div>
+            <h3>Select a template or describe your workflow, get prioritized recommendations.</h3>
+            <p>Users pick from 10 pre-built compliance workflow templates (lobbying disclosure, insider trading pre-clearance, SAR filing review, etc.) or describe their own process. They add time estimates, click analyze, and receive AI-generated automation opportunities organized by category and complexity.</p>
+            <p>Results display in a carousel with color-coded cards. Users can export the analysis as a PDF to share with leadership or include in a business case.</p>
+        </section>
+
+        <!-- WHAT I LEARNED -->
+        <section class="section">
+            <div class="section-label">04 — What I Learned</div>
+            <h3>Technical and product insights</h3>
+            
+            <div class="lessons-list">
+                <div class="lesson-item">
+                    <div class="lesson-number">1</div>
+                    <div class="lesson-content">
+                        <h4>Serverless functions solve the CORS problem</h4>
+                        <p>My first attempt called Claude directly from the frontend. CORS blocked it immediately. Vercel serverless functions handle API calls server-side, keeping credentials secure and eliminating cross-origin issues entirely.</p>
+                    </div>
+                </div>
+                <div class="lesson-item">
+                    <div class="lesson-number">2</div>
+                    <div class="lesson-content">
+                        <h4>Native browser printing beats PDF libraries</h4>
+                        <p>Instead of jsPDF, I used native browser printing with @media print CSS. The trick: print-color-adjust: exact preserves background colors. Cleaner code, no dependencies, better output.</p>
+                    </div>
+                </div>
+                <div class="lesson-item">
+                    <div class="lesson-number">3</div>
+                    <div class="lesson-content">
+                        <h4>Scope discipline is the hardest part</h4>
+                        <p>I score at the 99th percentile for Idea Productivity, which means I generate ideas constantly. The solution: strict timeboxes and a rule that no new features ship until the current version is live.</p>
+                    </div>
+                </div>
+                <div class="lesson-item">
+                    <div class="lesson-number">4</div>
+                    <div class="lesson-content">
+                        <h4>Design system consistency builds trust</h4>
+                        <p>Keeping every page consistent (same typography, same colors, same spacing) made the whole portfolio feel intentional. Inconsistency signals carelessness.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHAT'S NEXT -->
+        <section class="section">
+            <div class="section-label">05 — Future</div>
+            <h3>What's next</h3>
+            <p>If I continued development, these are the natural extensions:</p>
+            
+            <div class="next-items">
+                <div class="next-item">
+                    <p><strong>Voice input:</strong> Typing workflow descriptions is cumbersome. Web Speech API could capture descriptions more naturally, then let users edit before submitting.</p>
+                </div>
+                <div class="next-item">
+                    <p><strong>Historical tracking:</strong> Track which recommendations were implemented and their outcomes. Turns one-time analysis into ongoing optimization.</p>
+                </div>
+                <div class="next-item">
+                    <p><strong>Integration with GRC platforms:</strong> Real enterprise products connect to case management systems and document repositories. Logical next step for production.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="back-link">
+        <a href="../index.html">← Back to all projects</a>
+    </div>
+
+    <footer>
+        <p>© 2025 Mike Burns</p>
+    </footer>
+</body>
+</html>

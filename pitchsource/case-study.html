@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PitchSource Case Study - Mike Burns</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #FAFAFA;
+            color: #000000;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* Fixed top navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #FAFAFA;
+            border-bottom: 1px solid #E0E0E0;
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        nav h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        nav h1 a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 16px;
+            font-weight: 300;
+            transition: opacity 0.2s;
+        }
+
+        nav a:hover {
+            opacity: 0.6;
+        }
+
+        /* Hero section */
+        .hero {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 140px 48px 48px 48px;
+        }
+
+        .hero-label {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #0039A6;
+            margin-bottom: 16px;
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            margin-bottom: 24px;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 32px;
+        }
+
+        .hero-meta-item {
+            font-size: 15px;
+        }
+
+        .hero-meta-item strong {
+            font-weight: 700;
+        }
+
+        /* Content sections */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 48px 80px 48px;
+        }
+
+        .section {
+            margin-bottom: 64px;
+        }
+
+        .section-label {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #666666;
+            margin-bottom: 16px;
+        }
+
+        .section h3 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            line-height: 1.3;
+        }
+
+        .section p {
+            font-size: 18px;
+            font-weight: 300;
+            line-height: 1.7;
+            margin-bottom: 16px;
+            color: #000000;
+        }
+
+        .section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .section strong {
+            font-weight: 700;
+        }
+
+        /* Decision cards */
+        .decisions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .decision-card {
+            background: white;
+            border: 1px solid #E0E0E0;
+            padding: 28px;
+        }
+
+        .decision-card h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .decision-card p {
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 1.6;
+            color: #333333;
+            margin-bottom: 0;
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 4px 10px;
+            margin-bottom: 12px;
+        }
+
+        .tag-kept {
+            background: #000000;
+            color: white;
+            border: 1px solid #000000;
+        }
+
+        .tag-cut {
+            background: transparent;
+            color: #000000;
+            border: 1px solid #000000;
+        }
+
+        /* Lessons list */
+        .lessons-list {
+            margin-top: 24px;
+        }
+
+        .lesson-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            align-items: flex-start;
+        }
+
+        .lesson-number {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            background: #000000;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lesson-content h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .lesson-content p {
+            font-size: 16px;
+            margin-bottom: 0;
+        }
+
+        /* What's next */
+        .next-items {
+            margin-top: 24px;
+        }
+
+        .next-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: flex-start;
+        }
+
+        .next-item::before {
+            content: "→";
+            font-weight: 700;
+            color: #0039A6;
+        }
+
+        .next-item p {
+            margin-bottom: 0;
+        }
+
+        /* Back link */
+        .back-link {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 48px 48px 48px;
+        }
+
+        .back-link a {
+            font-size: 16px;
+            font-weight: 400;
+            color: #000000;
+            text-decoration: none;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 2px;
+            transition: opacity 0.2s;
+        }
+
+        .back-link a:hover {
+            opacity: 0.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 48px;
+            font-size: 14px;
+            font-weight: 300;
+            color: #666666;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 16px;
+                padding: 20px 24px;
+            }
+
+            nav ul {
+                gap: 24px;
+            }
+
+            .hero {
+                padding: 160px 24px 32px 24px;
+            }
+
+            .hero h2 {
+                font-size: 32px;
+            }
+
+            .hero-meta {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .content {
+                padding: 0 24px 60px 24px;
+            }
+
+            .section h3 {
+                font-size: 24px;
+            }
+
+            .decisions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-link {
+                padding: 0 24px 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1><a href="../index.html">Mike Burns</a></h1>
+        <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-label">Political Intelligence Tool</div>
+        <h2>PitchSource</h2>
+        <div class="hero-meta">
+            <div class="hero-meta-item"><strong>Timeline:</strong> 4 weeks</div>
+            <div class="hero-meta-item"><strong>Status:</strong> Live</div>
+            <div class="hero-meta-item"><strong>Stack:</strong> JavaScript, LDA API, Claude API, Vercel</div>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- THE PROBLEM -->
+        <section class="section">
+            <div class="section-label">01 — The Problem</div>
+            <h3>Lobbying firms spend 4-6 hours researching and writing pitch memos for each potential client.</h3>
+            <p>Business development at lobbying firms requires deep knowledge of LDA filing systems, competitor analysis, and strategic positioning—all while racing against tight RFP deadlines. Current workarounds: junior staff manually pulling LDA data, partners drafting from memory, and recycled boilerplate that doesn't differentiate the firm for each prospect.</p>
+            <p>The target users are BD professionals at mid-market lobbying firms (11-50 lobbyists) who need to produce competitive pitch memos quickly.</p>
+        </section>
+
+        <!-- KEY DECISIONS -->
+        <section class="section">
+            <div class="section-label">02 — Key Decisions</div>
+            <h3>What I prioritized, what I cut, and why</h3>
+            <p>This was the most complex build in the portfolio. Every decision traded off depth against shipping speed:</p>
+            
+            <div class="decisions-grid">
+                <div class="decision-card">
+                    <span class="tag tag-kept">Kept</span>
+                    <h4>50 evidence-based principles, invisible to users</h4>
+                    <p>Consolidated academic research (Baumgartner, Hall & Deardorff, Kingdon) into actionable principles. Claude applies them naturally but never cites them. The evidence is built into the product, not its outputs.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-cut">Cut</span>
+                    <h4>Current representation lookup</h4>
+                    <p>Built but disabled. With only 20 curated firms, returning "no representation found" when the prospect actually has lobbyists is worse than not having the feature.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-kept">Kept</span>
+                    <h4>Authentic firm voice profiles</h4>
+                    <p>Manually curated voice profiles for each firm by analyzing their website copy: tone markers, signature phrases, positioning language. Prevents memos from sounding like generic AI output.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-cut">Cut</span>
+                    <h4>Pricing engine</h4>
+                    <p>Scoped a hybrid system using LDA comparables plus cost-plus modeling. Deferred because the core value prop doesn't depend on it, and 8-10 hours was better spent on memo quality.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-kept">Kept</span>
+                    <h4>4-stage lobbyist verification</h4>
+                    <p>Verified 704 lobbyists via LD-203 contributions, Q3 LD-2 reports, historical filings, and web scraping. 70.8% verification rate. Prevents recommending lobbyists who've left the firm.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-cut">Cut</span>
+                    <h4>Two-stage Haiku-to-Sonnet pipeline</h4>
+                    <p>Designed for 75-80% cost savings, but shipped with Opus plus prompt caching for demo quality. Architecture documented for production scaling later.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section class="section">
+            <div class="section-label">03 — How It Works</div>
+            <h3>Select your firm, describe the prospect, get a pitch memo in your voice.</h3>
+            <p>Users select from 20 curated lobbying firms, then input prospect details: company name, industry, and lobbying objectives. The system pulls verified lobbyist rosters, analyzes competitor positioning, and generates a pitch memo that sounds like the firm wrote it.</p>
+            <p>Behind the scenes, 50 research-backed principles guide the AI without being visible in the output. The memo includes team highlights with verified lobbyists, strategic recommendations grounded in political science, and positioning language matched to the firm's actual marketing voice.</p>
+        </section>
+
+        <!-- WHAT I LEARNED -->
+        <section class="section">
+            <div class="section-label">04 — What I Learned</div>
+            <h3>Technical and product insights</h3>
+            
+            <div class="lessons-list">
+                <div class="lesson-item">
+                    <div class="lesson-number">1</div>
+                    <div class="lesson-content">
+                        <h4>Nested API structures require careful inspection</h4>
+                        <p>Lobbyist names in LD-2 filings are nested in lobbying_activities[].lobbyists[].lobbyist{}, not at the top level. Hours of debugging when verification returned zero results. Lesson: always inspect actual API responses before writing extraction logic.</p>
+                    </div>
+                </div>
+                <div class="lesson-item">
+                    <div class="lesson-number">2</div>
+                    <div class="lesson-content">
+                        <h4>Prompt caching is an easy win</h4>
+                        <p>Adding cache_control to the system prompt cuts Opus costs by 30-40% on subsequent calls within the 5-minute TTL. The 50 principles are static, so they cache automatically. Zero prompt changes required.</p>
+                    </div>
+                </div>
+                <div class="lesson-item">
+                    <div class="lesson-number">3</div>
+                    <div class="lesson-content">
+                        <h4>Data quality trumps feature completeness</h4>
+                        <p>Disabling the representation lookup rather than shipping misleading results was the right call. Users will forgive missing features; they won't forgive wrong data.</p>
+                    </div>
+                </div>
+                <div class="lesson-item">
+                    <div class="lesson-number">4</div>
+                    <div class="lesson-content">
+                        <h4>Market math matters early</h4>
+                        <p>With only 885 total lobbying firms, traditional SaaS economics are challenging. This realization helped reposition PitchSource as portfolio collateral rather than a revenue-generating business.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHAT'S NEXT -->
+        <section class="section">
+            <div class="section-label">05 — Future</div>
+            <h3>What's next</h3>
+            <p>If I continued development, these are the natural extensions:</p>
+            
+            <div class="next-items">
+                <div class="next-item">
+                    <p><strong>Two-stage AI pipeline:</strong> Haiku analyzes the prospect and filters to 5-8 relevant principles; Sonnet generates the memo with focused inputs. Expected savings: 75-80% cost reduction at 85-90% quality retention.</p>
+                </div>
+                <div class="next-item">
+                    <p><strong>Comprehensive client-representation lookup:</strong> Build complete client-to-registrant mapping from all 2024-2025 LD-2 filings. Would enable the "does this prospect already have lobbyists?" feature with actual coverage.</p>
+                </div>
+                <div class="next-item">
+                    <p><strong>Marquee lobbyist profiles:</strong> Manual curation of 2-8 "marquee" lobbyists per firm: former Members of Congress, senior executive branch officials. One-sentence credentials for each, adding credibility to Team Highlights.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="back-link">
+        <a href="../index.html">← Back to all projects</a>
+    </div>
+
+    <footer>
+        <p>© 2025 Mike Burns</p>
+    </footer>
+</body>
+</html>

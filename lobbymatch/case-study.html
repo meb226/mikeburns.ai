@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LobbyMatch Case Study - Mike Burns</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #FAFAFA;
+            color: #000000;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* Fixed top navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #FAFAFA;
+            border-bottom: 1px solid #E0E0E0;
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        nav h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        nav h1 a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 16px;
+            font-weight: 300;
+            transition: opacity 0.2s;
+        }
+
+        nav a:hover {
+            opacity: 0.6;
+        }
+
+        /* Hero section */
+        .hero {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 140px 48px 48px 48px;
+        }
+
+        .hero-label {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #0039A6;
+            margin-bottom: 16px;
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            margin-bottom: 24px;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 32px;
+        }
+
+        .hero-meta-item {
+            font-size: 15px;
+        }
+
+        .hero-meta-item strong {
+            font-weight: 700;
+        }
+
+        /* Content sections */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 48px 80px 48px;
+        }
+
+        .section {
+            margin-bottom: 64px;
+        }
+
+        .section-label {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #666666;
+            margin-bottom: 16px;
+        }
+
+        .section h3 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            line-height: 1.3;
+        }
+
+        .section p {
+            font-size: 18px;
+            font-weight: 300;
+            line-height: 1.7;
+            margin-bottom: 16px;
+            color: #000000;
+        }
+
+        .section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .section strong {
+            font-weight: 700;
+        }
+
+        /* Decision cards */
+        .decisions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .decision-card {
+            background: white;
+            border: 1px solid #E0E0E0;
+            padding: 28px;
+        }
+
+        .decision-card h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .decision-card p {
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 1.6;
+            color: #333333;
+            margin-bottom: 0;
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 4px 10px;
+            margin-bottom: 12px;
+        }
+
+        .tag-kept {
+            background: #000000;
+            color: white;
+            border: 1px solid #000000;
+        }
+
+        .tag-cut {
+            background: transparent;
+            color: #000000;
+            border: 1px solid #000000;
+        }
+
+        /* Lessons list */
+        .lessons-list {
+            margin-top: 24px;
+        }
+
+        .lesson-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            align-items: flex-start;
+        }
+
+        .lesson-number {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            background: #000000;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lesson-content h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .lesson-content p {
+            font-size: 16px;
+            margin-bottom: 0;
+        }
+
+        /* What's next */
+        .next-items {
+            margin-top: 24px;
+        }
+
+        .next-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: flex-start;
+        }
+
+        .next-item::before {
+            content: "→";
+            font-weight: 700;
+            color: #0039A6;
+        }
+
+        .next-item p {
+            margin-bottom: 0;
+        }
+
+        /* Back link */
+        .back-link {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 48px 48px 48px;
+        }
+
+        .back-link a {
+            font-size: 16px;
+            font-weight: 400;
+            color: #000000;
+            text-decoration: none;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 2px;
+            transition: opacity 0.2s;
+        }
+
+        .back-link a:hover {
+            opacity: 0.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 48px;
+            font-size: 14px;
+            font-weight: 300;
+            color: #666666;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 16px;
+                padding: 20px 24px;
+            }
+
+            nav ul {
+                gap: 24px;
+            }
+
+            .hero {
+                padding: 160px 24px 32px 24px;
+            }
+
+            .hero h2 {
+                font-size: 32px;
+            }
+
+            .hero-meta {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .content {
+                padding: 0 24px 60px 24px;
+            }
+
+            .section h3 {
+                font-size: 24px;
+            }
+
+            .decisions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-link {
+                padding: 0 24px 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1><a href="../index.html">Mike Burns</a></h1>
+        <ul>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-label">Political Intelligence Tool</div>
+        <h2>LobbyMatch</h2>
+        <div class="hero-meta">
+            <div class="hero-meta-item"><strong>Timeline:</strong> 3 weeks</div>
+            <div class="hero-meta-item"><strong>Status:</strong> Live</div>
+            <div class="hero-meta-item"><strong>Stack:</strong> JavaScript, LDA API, Claude API, Vercel</div>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- THE PROBLEM -->
+        <section class="section">
+            <div class="section-label">01 — The Problem</div>
+            <h3>Picking a lobbying firm is guesswork for outsiders.</h3>
+            <p>Directories like Leadership Directories list firms, but they don't help with fit. Small businesses, nonprofits, and individuals face a steep learning curve when seeking representation, while large corporations have in-house expertise and established relationships. Matchmaking relies on social or political connections, not merit.</p>
+            <p>Information asymmetry favors those already in the system. Decades of public Lobbying Disclosure Act filings sit in government databases, but nobody has turned that data into a tool that evaluates which firm is right for a specific client's needs.</p>
+        </section>
+
+        <!-- KEY DECISIONS -->
+        <section class="section">
+            <div class="section-label">02 — Key Decisions</div>
+            <h3>What I prioritized, what I cut, and why</h3>
+            <p>Building on public disclosure data required careful scoping to ship a working prototype:</p>
+            
+            <div class="decisions-grid">
+                <div class="decision-card">
+                    <span class="tag tag-kept">Kept</span>
+                    <h4>client_self_select classification</h4>
+                    <p>A single field in LD-1 filings reliably distinguishes lobbying firms from self-filing corporations. Prevented weeks of false starts with keyword-based approaches.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-cut">Cut</span>
+                    <h4>Activity description parsing</h4>
+                    <p>Extracting freeform lobbying descriptions and matching bill numbers to user inputs. Parked because the structure and use case weren't clear yet.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-kept">Kept</span>
+                    <h4>Percentile-based relative scoring</h4>
+                    <p>Early versions used absolute thresholds where top firms all scored identically. Relative ranking exposes why one firm wins on Experience despite fewer filings.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-cut">Cut</span>
+                    <h4>Covered position text extraction</h4>
+                    <p>The count exists but not the actual descriptions (e.g., "Former Chief of Staff, Senate Finance"). Identified as a data gap, deferred rather than blocking launch.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-kept">Kept</span>
+                    <h4>Two-phase architecture</h4>
+                    <p>Server-side pre-computation of match scores paired with AI-generated narratives. This decision drove the 10x performance improvement.</p>
+                </div>
+                <div class="decision-card">
+                    <span class="tag tag-cut">Cut</span>
+                    <h4>Full committee validation</h4>
+                    <p>Current logic infers relationships from issue codes rather than parsing contribution recipients. Proper implementation would cross-reference Congress member databases.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section class="section">
+            <div class="section-label">03 — How It Works</div>
+            <h3>Enter your issue area, get ranked firm recommendations with AI-generated rationale.</h3>
+            <p>Users describe their organization and lobbying needs. The system matches against an enriched dataset of lobbying firms derived from public LDA filings, scoring each firm on experience, committee relationships, and issue relevance.</p>
+            <p>Results display with component scores that reveal tradeoffs: one firm might win on Experience (95) because they have 51 former officials with strong committee relationships for the user's specific issue, while another has higher volume but less targeted relationships.</p>
+        </section>
+
+        <!-- WHAT I LEARNED -->
+        <section class="section">
+            <div class="section-label">04 — What I Learned</div>
+            <h3>Technical and product insights</h3>
+            
+            <div class="lessons-list">
+                <div class="lesson-item">
+                    <div class="lesson-number">1</div>
+                    <div class="lesson-content">
+                        <h4>Architecture decisions matter more than optimization</h4>
+                        <p>Initial response times were 45-76 seconds. The breakthrough came from rethinking the processing model (deterministic analytics + AI narrative), not from tweaking existing code. Result: 5-10 second responses.</p>
+                    </div>
+                </div>
+                <div class="lesson-item">
+                    <div class="lesson-number">2</div>
+                    <div class="lesson-content">
+                        <h4>Early exit logic transforms data pipelines</h4>
+                        <p>Classification script went from 24+ hours to 2-3 hours by adding "stop counting after 10 clients" and a 2025-only activity cutoff. Large firms with 1,000+ clients no longer require paginating through all filings.</p>
+                    </div>
+                </div>
+                <div class="lesson-item">
+                    <div class="lesson-number">3</div>
+                    <div class="lesson-content">
+                        <h4>Domain knowledge compounds</h4>
+                        <p>Understanding that client_self_select reliably classifies firms came from knowing how LD-1 forms work. This prevented weeks of false starts with keyword-based or name-matching approaches.</p>
+                    </div>
+                </div>
+                <div class="lesson-item">
+                    <div class="lesson-number">4</div>
+                    <div class="lesson-content">
+                        <h4>Honest scoring beats cosmetic scoring</h4>
+                        <p>Early versions used absolute thresholds where top firms all maxed out identically. Percentile ranking exposed underlying tradeoffs and made the recommendations genuinely useful.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHAT'S NEXT -->
+        <section class="section">
+            <div class="section-label">05 — Future</div>
+            <h3>What's next</h3>
+            <p>If I continued development, these are the natural extensions:</p>
+            
+            <div class="next-items">
+                <div class="next-item">
+                    <p><strong>Covered position text enrichment:</strong> Populate actual position descriptions ("Former Senate Finance Committee staffer on team") rather than just counts. High value for both matching and pitch generation.</p>
+                </div>
+                <div class="next-item">
+                    <p><strong>Committee relationship validation:</strong> Move from issue-code inference to actual contribution parsing. Cross-reference against Congress member databases and look up actual committee assignments.</p>
+                </div>
+                <div class="next-item">
+                    <p><strong>PitchSource integration:</strong> Already built. Flipped the model to help lobbying firms generate pitches to potential clients. Same enriched dataset, different interface. Validates B2B potential.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="back-link">
+        <a href="../index.html">← Back to all projects</a>
+    </div>
+
+    <footer>
+        <p>© 2025 Mike Burns</p>
+    </footer>
+</body>
+</html>
