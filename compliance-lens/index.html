@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered regulatory gap analysis tool for compliance professionals. Upload policies and get instant BSA/AML and FCPA compliance assessments.">
+    <meta name="keywords" content="compliance, regulatory analysis, BSA/AML, FCPA, AI compliance, policy analysis">
+    <meta name="author" content="Mike Burns">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Compliance Lens - AI Regulatory Gap Analysis">
+    <meta property="og:description" content="Upload compliance policies and receive AI-powered gap analysis against BSA/AML and FCPA requirements.">
+    
+    <title>Compliance Lens | Mike Burns</title>
+    
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Header -->
+    <div class="header">
+        <div class="header-left">
+            <h1>Compliance Lens</h1>
+            <p>Identify compliance gaps in your regulatory policies.</p>
+        </div>
+        <div class="header-right">
+            <span>Built by Mike Burns</span>
+            <div>
+                <a href="https://linkedin.com/in/yourprofile" target="_blank">LinkedIn</a>
+                <span> | </span>
+                <a href="https://github.com/yourprofile" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="main-layout">
+            <!-- Left Panel - Input -->
+            <div class="input-panel" id="inputPanel">
+                <h2 class="panel-title">Input Policy</h2>
+
+                <form id="analysisForm">
+                    <label for="policyTemplate">Select a Template:</label>
+                    <select id="policyTemplate" name="policyTemplate">
+                        <option value="">-- Choose a sample policy --</option>
+                        <option value="bsa-weak">Sample: Weak BSA/AML Policy</option>
+                        <option value="fcpa-flawed">Sample: Flawed FCPA Policy</option>
+                        <option value="bsa-strong">Sample: Comprehensive BSA/AML Policy</option>
+                    </select>
+
+                    <div class="or-divider">
+                        <span>or</span>
+                    </div>
+
+                    <label for="policyFile">Upload Your Policy Document:</label>
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <input type="file" id="policyFile" name="policy" accept=".pdf,.docx">
+                        <div class="upload-prompt">
+                            <p>Click or drag and drop</p>
+                            <p class="file-types">PDF or DOCX files accepted</p>
+                        </div>
+                    </div>
+                    <p class="file-name" id="fileName"></p>
+
+                    <label for="framework">Regulatory Framework:</label>
+                    <select id="framework" name="framework">
+                        <option value="">-- Auto-detect from template --</option>
+                        <option value="BSA/AML">BSA/AML (Bank Secrecy Act / Anti-Money Laundering)</option>
+                        <option value="FCPA">FCPA (Foreign Corrupt Practices Act)</option>
+                    </select>
+
+                    <button type="submit" id="analyzeBtn">Analyze Policy</button>
+                </form>
+
+                <!-- Analyze Another + Export Buttons (shown after analysis) -->
+                <div id="postAnalysisActions" style="display: none;">
+                    <button id="newAnalysisBtn" class="btn-secondary">Analyze Another</button>
+                    
+                    <div class="export-section">
+                        <h3 class="export-title">Export Analysis</h3>
+                        <div class="export-buttons">
+                            <button class="btn-export" onclick="exportToPDF()">PDF</button>
+                            <button class="btn-export" onclick="copyToClipboard()">Copy to Clipboard</button>
+                            <button class="btn-export" onclick="emailAnalysis()">Email</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Results -->
+            <div class="results-panel" id="resultsPanel">
+                <!-- Initial Placeholder -->
+                <div class="empty-state" id="emptyState">
+                    <h2 class="panel-title">AI-Powered Gap Analysis</h2>
+                    
+                    <!-- Magnifying Glass Graphic -->
+                    <svg class="magnifying-glass" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Document -->
+                        <rect x="40" y="30" width="90" height="110" fill="#fff" stroke="#0039A6" stroke-width="2" rx="4"/>
+                        <line x1="55" y1="50" x2="115" y2="50" stroke="#0039A6" stroke-width="2"/>
+                        <line x1="55" y1="65" x2="115" y2="65" stroke="#0039A6" stroke-width="2"/>
+                        <line x1="55" y1="80" x2="100" y2="80" stroke="#0039A6" stroke-width="2"/>
+                        <line x1="55" y1="95" x2="115" y2="95" stroke="#DC143C" stroke-width="2"/>
+                        <line x1="55" y1="110" x2="90" y2="110" stroke="#28a745" stroke-width="2"/>
+                        
+                        <!-- Magnifying glass circle -->
+                        <circle cx="130" cy="120" r="35" fill="none" stroke="#000" stroke-width="4"/>
+                        <circle cx="130" cy="120" r="28" fill="rgba(0,57,166,0.1)"/>
+                        
+                        <!-- Magnifying glass handle -->
+                        <line x1="155" y1="145" x2="175" y2="165" stroke="#000" stroke-width="6" stroke-linecap="round"/>
+                    </svg>
+                    
+                    <p class="empty-state-text">
+                        Select a sample policy template or upload your own document to receive comprehensive gap analysis.
+                    </p>
+                    <p class="empty-state-subtext">
+                        AI-powered analysis identifies deficiencies, suggests compliance improvements, and highlights regulatory citations.
+                    </p>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing policy...</p>
+                </div>
+
+                <!-- Document Preview -->
+                <div class="document-preview" id="documentPreview" style="display: none;">
+                    <h2 class="panel-title">Document Preview</h2>
+                    <div class="preview-box">
+                        <div class="preview-header">
+                            <span class="preview-filename" id="previewFilename"></span>
+                            <span class="preview-filesize" id="previewFilesize"></span>
+                        </div>
+                        <div class="preview-text" id="previewText"></div>
+                    </div>
+                    <p class="preview-note">Click "Analyze Policy" to begin gap analysis</p>
+                </div>
+
+                <!-- Analysis Results -->
+                <div class="results" id="results" style="display: none;">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
