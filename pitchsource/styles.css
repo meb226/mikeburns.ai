@@ -69,7 +69,7 @@ body {
 
 .header {
   text-align: center;
-  padding: var(--space-3xl) 0 var(--space-xl);
+  padding: 0 0 var(--space-xl);
   margin-bottom: var(--space-xl);
   border-bottom: 3px solid var(--red);
 }
