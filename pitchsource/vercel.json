@@ -1,13 +1,23 @@
 {
   "version": 2,
-  "headers": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
-      ]
+      "src": "/api/(.*)",
+      "methods": ["GET", "POST", "OPTIONS"],
+      "dest": "server.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type"
+      }
+    },
+    {
+      "src": "/(.*\\.(html|css|js))$",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
     }
   ],
   "builds": [
@@ -30,20 +40,6 @@
     {
       "src": "under-the-hood.html",
       "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "server.js"
-    },
-    {
-      "src": "/(.*\\.(html|css|js))$",
-      "dest": "/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "server.js"
     }
   ]
 }
