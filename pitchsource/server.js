@@ -12,7 +12,6 @@ const express = require('express');
 const Anthropic = require('@anthropic-ai/sdk');
 const path = require('path');
 const fs = require('fs');
-require('dotenv').config();
 const { Redis } = require('@upstash/redis');
 
 // Initialize Upstash Redis (for usage logging) - DISABLED FOR LOCAL TESTING
