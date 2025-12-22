@@ -67,7 +67,7 @@ const MODEL_CONFIG = {
 };
 
 // SET THIS TO 'testing' OR 'production'
-const CURRENT_MODE = 'testing';
+const CURRENT_MODE = 'production';
 const ACTIVE_MODEL = MODEL_CONFIG[CURRENT_MODE];
 
 // === DEMO RATE LIMITING ===
