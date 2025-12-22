@@ -1,20 +1,21 @@
 /**
- * Pitch Craft - Server (Opus Demo Version)
+ * Pitch Craft - Server (Streaming Version)
  * 
  * AI-powered pitch memo generator for lobbying firms
  * Reuses LobbyMatch firm data, generates strategic pitch memos
  * 
- * This is the original prompt structure that produced the 8.4-scoring
- * Opus memos, with rate limiting for demo period.
+ * STREAMING: Uses SSE to stream memo as it's generated
+ * MODEL: Set to Haiku for testing, change to Opus for production
  */
 
 const express = require('express');
 const Anthropic = require('@anthropic-ai/sdk');
 const path = require('path');
 const fs = require('fs');
-const { Redis } = require('@upstash/redis');
+require('dotenv').config();
+// const { Redis } = require('@upstash/redis');
 
-// Initialize Upstash Redis (for usage logging)
+// Initialize Upstash Redis (for usage logging) - DISABLED FOR LOCAL TESTING
 const redis = new Redis({
   url: process.env.KV_REST_API_URL,
   token: process.env.KV_REST_API_TOKEN,
@@ -58,6 +59,17 @@ try {
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
 });
+
+// === MODEL CONFIGURATION ===
+// Switch between models for testing vs production
+const MODEL_CONFIG = {
+  testing: 'claude-3-5-haiku-20241022',  // ~$0.02 per memo
+  production: 'claude-opus-4-20250514'    // ~$0.40 per memo
+};
+
+// SET THIS TO 'testing' OR 'production'
+const CURRENT_MODE = 'testing';
+const ACTIVE_MODEL = MODEL_CONFIG[CURRENT_MODE];
 
 // === DEMO RATE LIMITING ===
 let memoCount = 0;
@@ -142,7 +154,7 @@ app.get('/api/usage-logs', async (req, res) => {
   }
 });
 
-// Generate pitch memo
+// Generate pitch memo - STREAMING VERSION
 app.post('/api/generate-memo', async (req, res) => {
   // Demo rate limiting
   if (memoCount >= MEMO_LIMIT) {
@@ -197,13 +209,53 @@ app.post('/api/generate-memo', async (req, res) => {
     context: additionalContext || ''
   };
   
-  // Generate memo
+  // Set headers for Server-Sent Events
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  
+  // Send initial metadata
+  res.write(`data: ${JSON.stringify({ 
+    type: 'meta', 
+    firm: { name: firmProfile.name },
+    prospect: { name: prospectProfile.name },
+    model: ACTIVE_MODEL
+  })}\n\n`);
+  
   try {
-    const memo = await generateMemo(firmProfile, prospectProfile);
+    const systemPromptText = buildSystemPrompt();
+    const userPrompt = buildUserPrompt(firmProfile, prospectProfile);
+    
+    console.log(`[${CURRENT_MODE.toUpperCase()}] Streaming memo with ${ACTIVE_MODEL}`);
+    
+    // Use streaming API
+    const stream = await anthropic.messages.stream({
+      model: ACTIVE_MODEL,
+      max_tokens: 4000,
+      system: [
+        {
+          type: 'text',
+          text: systemPromptText,
+          cache_control: { type: 'ephemeral' }
+        }
+      ],
+      messages: [{ role: 'user', content: userPrompt }]
+    });
+    
+    // Stream each chunk to client
+    for await (const event of stream) {
+      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+        res.write(`data: ${JSON.stringify({ type: 'text', content: event.delta.text })}\n\n`);
+      }
+    }
+    
+    // Increment count and log after successful generation
     memoCount++;
     console.log(`Memo ${memoCount}/${MEMO_LIMIT} generated for ${firmName} → ${prospectName}`);
     
     // Log usage to Upstash Redis
+    if(redis) {
     try {
       await redis.lpush('pitchsource:usage', JSON.stringify({
         timestamp: new Date().toISOString(),
@@ -211,17 +263,25 @@ app.post('/api/generate-memo', async (req, res) => {
         prospect: prospectName,
         industry: prospectIndustry || 'Not specified',
         issues: prospectIssues,
-        memoNumber: memoCount
+        memoNumber: memoCount,
+        model: ACTIVE_MODEL
       }));
     } catch (logErr) {
       console.error('Failed to log usage:', logErr.message);
-      // Don't fail the request if logging fails
     }
+  }
     
-    res.json({ memo, firm: firmProfile, prospect: prospectProfile, memosRemaining: MEMO_LIMIT - memoCount });
+    // Send completion signal
+    res.write(`data: ${JSON.stringify({ 
+      type: 'done', 
+      memosRemaining: MEMO_LIMIT - memoCount 
+    })}\n\n`);
+    res.end();
+    
   } catch (err) {
     console.error('Error generating memo:', err);
-    res.status(500).json({ error: 'Failed to generate memo' });
+    res.write(`data: ${JSON.stringify({ type: 'error', message: err.message })}\n\n`);
+    res.end();
   }
 });
 
@@ -269,28 +329,6 @@ function buildFirmProfile(firm) {
     // Pre-crafted firm introduction paragraph
     firmIntro: firm.firmIntro || null
   };
-}
-
-async function generateMemo(firmProfile, prospectProfile) {
-  const systemPromptText = buildSystemPrompt();
-  const userPrompt = buildUserPrompt(firmProfile, prospectProfile);
-  
-  // Use prompt caching for the static system prompt (50 principles)
-  // This gives 90% discount on cached tokens after first request
-  const response = await anthropic.messages.create({
-    model: 'claude-opus-4-20250514',
-    max_tokens: 4000,
-    system: [
-      {
-        type: 'text',
-        text: systemPromptText,
-        cache_control: { type: 'ephemeral' }
-      }
-    ],
-    messages: [{ role: 'user', content: userPrompt }]
-  });
-  
-  return response.content[0].text;
 }
 
 function buildSystemPrompt() {
@@ -582,6 +620,7 @@ VOICE REMINDER: Embody the firm's voice profile throughout. Echo the key phrases
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Pitch Craft server running on port ${PORT}`);
+  console.log(`Model: ${ACTIVE_MODEL} (${CURRENT_MODE} mode)`);
   console.log(`Demo mode: ${MEMO_LIMIT} memo limit`);
 });
 

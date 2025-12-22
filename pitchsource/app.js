@@ -1,9 +1,9 @@
 /**
- * PitchSource - Frontend JavaScript
+ * PitchSource - Frontend JavaScript (Streaming Preview Version)
  */
 
-// API Base URL - use Vercel deployment for API calls
-const API_BASE = 'https://pitchsource.vercel.app';
+// API Base URL - change to localhost:3001 for local testing
+const API_BASE = 'http://localhost:3001';
 
 // Demo Scenarios
 const DEMO_SCENARIOS = {
@@ -57,6 +57,7 @@ const DEMO_SCENARIOS = {
 let firms = [];
 let issues = {};
 let selectedIssues = [];
+let completedMemoText = ''; // Store completed memo for results view
 
 // DOM Elements
 const demoScenario = document.getElementById('demoScenario');
@@ -66,6 +67,7 @@ const issueChips = document.getElementById('issueChips');
 const pitchForm = document.getElementById('pitchForm');
 const generateBtn = document.getElementById('generateBtn');
 const inputSection = document.getElementById('inputSection');
+const streamingSection = document.getElementById('streamingSection');
 const resultsSection = document.getElementById('resultsSection');
 const errorMessage = document.getElementById('errorMessage');
 const errorText = document.getElementById('errorText');
@@ -73,7 +75,17 @@ const memoContent = document.getElementById('memoContent');
 const memoFirm = document.getElementById('memoFirm');
 const memoProspect = document.getElementById('memoProspect');
 const copyBtn = document.getElementById('copyBtn');
+const emailBtn = document.getElementById('emailBtn');
 const newMemoBtn = document.getElementById('newMemoBtn');
+
+// Streaming-specific elements
+const streamingPreview = document.getElementById('streamingPreview');
+const streamingFirm = document.getElementById('streamingFirm');
+const streamingProspect = document.getElementById('streamingProspect');
+const statusDot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+const seeResultsBtn = document.getElementById('seeResultsBtn');
+const streamingHint = document.getElementById('streamingHint');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', init);
@@ -140,7 +152,11 @@ function setupEventListeners() {
   
   // Results actions
   copyBtn.addEventListener('click', handleCopy);
+  emailBtn.addEventListener('click', handleEmail);
   newMemoBtn.addEventListener('click', handleNewMemo);
+  
+  // See Results button
+  seeResultsBtn.addEventListener('click', handleSeeResults);
 }
 
 // Handle demo scenario selection
@@ -228,7 +244,7 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// Handle form submission
+// Handle form submission - STREAMING VERSION
 async function handleSubmit(e) {
   e.preventDefault();
   
@@ -253,9 +269,14 @@ async function handleSubmit(e) {
     additionalContext: document.getElementById('additionalContext').value
   };
   
-  // Show loading state
-  setLoading(true);
+  // Hide input, show streaming preview
   hideError();
+  inputSection.style.display = 'none';
+  resultsSection.style.display = 'none';
+  streamingSection.style.display = 'block';
+  
+  // Reset streaming state
+  resetStreamingState(formData);
   
   try {
     const response = await fetch(`${API_BASE}/api/generate-memo`, {
@@ -264,35 +285,147 @@ async function handleSubmit(e) {
       body: JSON.stringify(formData)
     });
     
-    if (!response.ok) {
+    // Check if response is streaming (SSE) or JSON error
+    const contentType = response.headers.get('content-type');
+    
+    if (contentType && contentType.includes('application/json')) {
+      // Non-streaming response (likely an error)
       const error = await response.json();
       throw new Error(error.error || 'Failed to generate memo');
     }
     
-    const data = await response.json();
-    displayMemo(data);
+    // Handle streaming response
+    await handleStreamingResponse(response, formData);
+    
   } catch (err) {
     console.error('Error generating memo:', err);
     showError(err.message || 'Failed to generate memo. Please try again.');
-  } finally {
-    setLoading(false);
+    // Return to input section on error
+    streamingSection.style.display = 'none';
+    inputSection.style.display = 'block';
   }
 }
 
-// Display generated memo
-function displayMemo(data) {
-  // Update meta
-  memoFirm.textContent = data.firm.name;
-  memoProspect.textContent = data.prospect.name;
+// Reset streaming preview state
+function resetStreamingState(formData) {
+  completedMemoText = '';
+  streamingPreview.innerHTML = '';
+  streamingFirm.textContent = formData.firmName;
+  streamingProspect.textContent = formData.prospectName;
+  statusDot.classList.remove('complete');
+  statusText.textContent = 'Generating...';
+  seeResultsBtn.disabled = true;
+  seeResultsBtn.classList.remove('ready');
+  seeResultsBtn.textContent = 'Generating memo...';
+  streamingHint.textContent = 'Watching your pitch memo take shape';
+}
+
+// Handle streaming SSE response
+async function handleStreamingResponse(response, formData) {
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
   
-  // Render markdown-ish content
-  memoContent.innerHTML = renderMemo(data.memo);
+  let memoText = '';
+  let firmMeta = null;
+  let prospectMeta = null;
+  let buffer = ''; // Buffer for incomplete chunks
   
-  // Show results, hide form
-  inputSection.style.display = 'none';
+  while (true) {
+    const { done, value } = await reader.read();
+    
+    if (done) {
+      // Stream ended - mark complete if we have content
+      if (memoText && !completedMemoText) {
+        completedMemoText = memoText;
+        handleStreamingComplete(formData, firmMeta, prospectMeta, null);
+      }
+      break;
+    }
+    
+    // Add new data to buffer
+    buffer += decoder.decode(value, { stream: true });
+    
+    // Process complete lines from buffer
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || ''; // Keep incomplete line in buffer
+    
+    for (const line of lines) {
+      if (line.startsWith('data: ')) {
+        const dataStr = line.slice(6).trim();
+        if (!dataStr || dataStr === '[DONE]') continue;
+        
+        try {
+          const data = JSON.parse(dataStr);
+          
+          if (data.type === 'meta') {
+            firmMeta = data.firm;
+            prospectMeta = data.prospect;
+            streamingFirm.textContent = firmMeta?.name || formData.firmName;
+            streamingProspect.textContent = prospectMeta?.name || formData.prospectName;
+            console.log(`Generating with model: ${data.model || 'unknown'}`);
+            
+          } else if (data.type === 'text') {
+            memoText += data.content;
+            streamingPreview.innerHTML = renderMemo(memoText) + '<span class="streaming-cursor"></span>';
+            streamingPreview.scrollTop = streamingPreview.scrollHeight;
+            
+          } else if (data.type === 'done') {
+            completedMemoText = memoText;
+            handleStreamingComplete(formData, firmMeta, prospectMeta, data.memosRemaining);
+            
+          } else if (data.type === 'error') {
+            throw new Error(data.message);
+          }
+          
+        } catch (parseErr) {
+          if (parseErr instanceof SyntaxError) {
+            console.warn('Skipping malformed SSE chunk:', dataStr);
+            continue;
+          }
+          throw parseErr;
+        }
+      }
+    }
+  }
+}
+
+// Handle streaming completion
+function handleStreamingComplete(formData, firmMeta, prospectMeta, memosRemaining) {
+  // Remove cursor
+  const cursor = streamingPreview.querySelector('.streaming-cursor');
+  if (cursor) cursor.remove();
+  
+  // Update status
+  statusDot.classList.add('complete');
+  statusText.textContent = 'Complete';
+  
+  // Enable button with animation
+  seeResultsBtn.disabled = false;
+  seeResultsBtn.classList.add('ready');
+  seeResultsBtn.textContent = 'See Full Memo →';
+  
+  // Update hint
+  if (memosRemaining !== null) {
+    streamingHint.textContent = `Memo ready! (${memosRemaining} generations remaining)`;
+  } else {
+    streamingHint.textContent = 'Memo ready!';
+  }
+  
+  // Store meta for results view
+  seeResultsBtn.dataset.firmName = firmMeta?.name || formData.firmName;
+  seeResultsBtn.dataset.prospectName = prospectMeta?.name || formData.prospectName;
+}
+
+// Handle "See Results" button click
+function handleSeeResults() {
+  // Populate results section
+  memoFirm.textContent = seeResultsBtn.dataset.firmName;
+  memoProspect.textContent = seeResultsBtn.dataset.prospectName;
+  memoContent.innerHTML = renderMemo(completedMemoText);
+  
+  // Transition to results
+  streamingSection.style.display = 'none';
   resultsSection.style.display = 'block';
-  
-  // Scroll to top
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -335,19 +468,25 @@ async function handleCopy() {
   }
 }
 
+// Handle email - opens default mail client
+function handleEmail() {
+  const firmName = memoFirm.textContent;
+  const prospectName = memoProspect.textContent;
+  const memoText = memoContent.innerText;
+  
+  const subject = encodeURIComponent(`PitchSource Memo: ${firmName} → ${prospectName}`);
+  const body = encodeURIComponent(memoText);
+  
+  // mailto has ~2000 char limit in some clients, but most modern ones handle more
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
 // Handle new memo
 function handleNewMemo() {
   resultsSection.style.display = 'none';
+  streamingSection.style.display = 'none';
   inputSection.style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Loading state
-function setLoading(loading) {
-  generateBtn.disabled = loading;
-  generateBtn.querySelector('.btn-text').style.display = loading ? 'none' : 'inline';
-  generateBtn.querySelector('.btn-loading').style.display = loading ? 'inline-flex' : 'none';
-  document.getElementById('generateHint').style.display = loading ? 'block' : 'none';
 }
 
 // Error handling

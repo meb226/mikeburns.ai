@@ -5,20 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PitchSource | Strategic Pitch Memo Generator</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    /* Override container padding to match LobbyMatch exactly */
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 48px 32px !important;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
     <!-- Header -->
     <header class="header">
-      <a href="https://mikeburns.ai" class="back-link">← mikeburns.ai</a>
       <div class="logo">
         <span class="logo-pitch">Pitch</span><span class="logo-source">Source</span>
       </div>
@@ -155,13 +146,43 @@
         </form>
       </section>
 
+
+      <!-- Streaming Preview -->
+      <section id="streamingSection">
+        <div class="streaming-container">
+          <div class="streaming-header">
+            <div class="streaming-meta">
+              <strong id="streamingFirm">Firm Name</strong> → <span id="streamingProspect">Prospect Name</span>
+            </div>
+            <div class="streaming-status">
+              <span class="status-dot" id="statusDot"></span>
+              <span id="statusText">Generating...</span>
+            </div>
+          </div>
+          
+          <div class="streaming-preview" id="streamingPreview">
+            <!-- Streamed content appears here -->
+          </div>
+          
+          <div class="streaming-actions">
+            <button type="button" class="btn-see-results" id="seeResultsBtn" disabled>
+              Generating memo...
+            </button>
+            <p class="streaming-hint" id="streamingHint">
+              Watching your pitch memo take shape
+            </p>
+          </div>
+        </div>
+      </section>
+
       <!-- Results Section -->
       <section class="results-section" id="resultsSection" style="display: none;">
         <div class="results-header">
           <h2 class="results-title">Pitch Memo</h2>
           <div class="results-actions">
             <button class="btn-secondary" id="copyBtn">Copy to Clipboard</button>
-            <button class="btn-secondary" id="newMemoBtn">New Memo</button>
+            <button class="btn-secondary" id="emailBtn">E-Mail</button>
+            <button class="btn-secondary-red" id="newMemoBtn">New Memo</button>
           </div>
         </div>
         
