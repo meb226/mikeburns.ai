@@ -1,13 +1,27 @@
 /**
- * PitchSource - Frontend JavaScript (Agentic 3-Stage Workflow with Accordion UI)
+ * PitchSource - Frontend JavaScript (Three-Mode System with Intervention)
+ * 
+ * Modes:
+ * - Draft: Single-stage generation, no streaming
+ * - Standard: Full 4-stage workflow, background processing, no streaming
+ * - Detailed: Full 4-stage workflow with streaming & intervention after Stage 3
+ * 
  * Features:
  * - Accordion panels for each stage that expand/collapse
- * - Buffered streaming for consistent typing speed across all stages
+ * - Buffered streaming for consistent typing speed (Detailed mode)
+ * - Intervention panel for accept/reject revisions (Detailed mode)
  * - Distinct "prospect voice" styling for Stage 2 analysis
  */
 
 // API Base URL - change to localhost:3001 for local testing
 const API_BASE = 'https://pitchsource.vercel.app';
+
+// Mode descriptions for UI
+const MODE_DESCRIPTIONS = {
+  draft: 'Single-stage generation. Fastest and most economical.',
+  standard: 'Full agentic workflow running in background. Results appear when complete.',
+  detailed: 'Watch the process unfold. Review and approve revisions before finalizing.'
+};
 
 // Demo Scenarios
 const DEMO_SCENARIOS = {
@@ -106,6 +120,10 @@ let displayFormData = null;     // Stored for completion handler
 let displayFirmMeta = null;
 let displayProspectMeta = null;
 
+// Intervention state (Detailed mode only)
+let isWaitingForIntervention = false;  // Paused at Stage 3, waiting for user decision
+let interventionDecision = null;       // 'accept' or 'reject'
+
 // Start the display layer
 function startDisplayLayer(formData, firmMeta, prospectMeta) {
   displayStage = 1;
@@ -147,6 +165,9 @@ function displayTick() {
       targetElement.innerHTML = renderMemo(revealedText) + '<span class="streaming-cursor"></span>';
       targetElement.scrollTop = targetElement.scrollHeight;
     }
+    
+    // Update stage progress bar based on displayed chars (not received chars)
+    updateStageProgressBar(displayStage, displayedChars);
     
     // Schedule next tick
     scheduleDisplayTick();
@@ -191,24 +212,26 @@ function finishStageAndAdvance() {
   setAccordionStepComplete(displayStage);
   isLingeringAfterStage = false;
   
+  const mode = displayFormData?.generationMode || 'detailed';
+  
   if (displayStage < 4) {
-    // Advance to next stage
-    displayStage++;
-    displayedChars = 0;
+    if (mode === 'detailed') {
+      // Detailed mode: pause after each stage for user review
+      isDisplaying = false;
+      
+      if (displayStage === 3) {
+        // After Stage 3: show intervention panel (accept/reject revisions)
+        isWaitingForIntervention = true;
+        showInterventionPanel();
+      } else {
+        // After Stages 1 and 2: show continue panel
+        showContinuePanel(displayStage);
+      }
+      return;
+    }
     
-    // Update UI for new stage
-    setAccordionStepActive(displayStage);
-    expandAccordionStep(displayStage);
-    
-    const stageNames = {
-      2: 'Analyzing from prospect perspective...',
-      3: 'Planning revisions...',
-      4: 'Finalizing memo...'
-    };
-    statusText.textContent = stageNames[displayStage] || 'Processing...';
-    
-    // Continue display loop
-    scheduleDisplayTick();
+    // Standard mode falls through (shouldn't reach here as Standard doesn't use display layer)
+    advanceToNextStage();
     
   } else {
     // All 4 stages complete
@@ -216,6 +239,142 @@ function finishStageAndAdvance() {
     completedMemoText = stage4Text || stage3Text || stage1Text;
     handleStreamingComplete(displayFormData, displayFirmMeta, displayProspectMeta, doneEventData?.memosRemaining);
   }
+}
+
+// Advance to the next stage (used by continue handlers)
+function advanceToNextStage() {
+  displayStage++;
+  displayedChars = 0;
+  
+  // Update UI for new stage
+  setAccordionStepActive(displayStage);
+  expandAccordionStep(displayStage);
+  
+  const stageNames = {
+    2: 'Analyzing from prospect perspective...',
+    3: 'Planning revisions...',
+    4: 'Finalizing memo...'
+  };
+  statusText.textContent = stageNames[displayStage] || 'Processing...';
+  
+  // Continue display loop
+  isDisplaying = true;
+  scheduleDisplayTick();
+}
+
+// Show continue panel (Detailed mode - after Stages 1, 2)
+function showContinuePanel(completedStage) {
+  const stageLabels = {
+    1: 'Initial Draft complete',
+    2: 'Prospect Analysis complete'
+  };
+  const stageDescriptions = {
+    1: 'Review the draft above, then continue to prospect analysis.',
+    2: 'Review the feedback above, then continue to revision planning.'
+  };
+  
+  if (continueStageLabel) {
+    continueStageLabel.textContent = stageLabels[completedStage] || `Stage ${completedStage} complete`;
+  }
+  if (continueDescription) {
+    continueDescription.textContent = stageDescriptions[completedStage] || 'Review the output above, then continue.';
+  }
+  if (continuePanel) {
+    // Move panel to appear right after the completed stage's content (inside the accordion-step)
+    const completedStep = document.querySelector(`.accordion-step[data-step="${completedStage}"]`);
+    if (completedStep) {
+      // Insert inside the accordion-step, after the accordion-panel
+      const accordionPanel = completedStep.querySelector('.accordion-panel');
+      if (accordionPanel) {
+        accordionPanel.insertAdjacentElement('afterend', continuePanel);
+      } else {
+        completedStep.appendChild(continuePanel);
+      }
+    }
+    continuePanel.style.display = 'flex';
+    // Scroll gently - only if needed, keep stage header visible
+    continuePanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  statusText.textContent = 'Review and continue...';
+}
+
+// Hide continue panel
+function hideContinuePanel() {
+  if (continuePanel) {
+    continuePanel.style.display = 'none';
+  }
+}
+
+// Handle continue button click
+function handleContinue() {
+  hideContinuePanel();
+  advanceToNextStage();
+}
+
+// Show intervention panel (Detailed mode)
+function showInterventionPanel() {
+  const panel = document.getElementById('interventionPanel');
+  if (panel) {
+    // Move panel to appear right after Stage 3's content (inside the accordion-step)
+    const stage3Step = document.querySelector('.accordion-step[data-step="3"]');
+    if (stage3Step) {
+      const accordionPanel = stage3Step.querySelector('.accordion-panel');
+      if (accordionPanel) {
+        accordionPanel.insertAdjacentElement('afterend', panel);
+      } else {
+        stage3Step.appendChild(panel);
+      }
+    }
+    panel.style.display = 'block';
+    // Scroll gently - only if needed
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  statusText.textContent = 'Review revisions...';
+}
+
+// Hide intervention panel
+function hideInterventionPanel() {
+  const panel = document.getElementById('interventionPanel');
+  if (panel) {
+    panel.style.display = 'none';
+  }
+}
+
+// Handle accept revisions
+function handleAcceptRevisions() {
+  interventionDecision = 'accept';
+  isWaitingForIntervention = false;
+  hideInterventionPanel();
+  
+  // Continue to Stage 4
+  displayStage = 4;
+  displayedChars = 0;
+  isDisplaying = true;
+  
+  setAccordionStepActive(4);
+  expandAccordionStep(4);
+  statusText.textContent = 'Finalizing memo...';
+  
+  scheduleDisplayTick();
+}
+
+// Handle keep original
+function handleKeepOriginal() {
+  interventionDecision = 'reject';
+  isWaitingForIntervention = false;
+  hideInterventionPanel();
+  
+  // Skip Stage 4, use Stage 1 output as final
+  isDisplaying = false;
+  completedMemoText = stage1Text;
+  
+  // Mark Stage 4 as skipped visually
+  const stage4Step = document.querySelector('.accordion-step[data-step="4"]');
+  if (stage4Step) {
+    stage4Step.classList.add('skipped');
+  }
+  
+  handleStreamingComplete(displayFormData, displayFirmMeta, displayProspectMeta, doneEventData?.memosRemaining);
 }
 
 // Stop display (for errors)
@@ -238,6 +397,7 @@ let stage2Text = '';
 let stage3Text = '';
 let stage4Text = '';
 let prospectNameForReview = '';
+let lastGenerationMode = 'detailed';
 
 // DOM Elements
 const demoScenario = document.getElementById('demoScenario');
@@ -257,6 +417,7 @@ const memoProspect = document.getElementById('memoProspect');
 const copyBtn = document.getElementById('copyBtn');
 const emailBtn = document.getElementById('emailBtn');
 const newMemoBtn = document.getElementById('newMemoBtn');
+const downloadReportBtn = document.getElementById('downloadReportBtn');
 
 // Streaming-specific elements
 const streamingPreview = document.getElementById('streamingPreview');
@@ -274,6 +435,27 @@ const stage2Content = document.getElementById('stage2Content');
 const stage3Content = document.getElementById('stage3Content');
 const stage4Content = document.getElementById('stage4Content');
 const prospectReviewName = document.getElementById('prospectReviewName');
+
+// Mode selector elements
+const generationMode = document.getElementById('generationMode');
+const modeDescription = document.getElementById('modeDescription');
+
+// Intervention panel elements
+const interventionPanel = document.getElementById('interventionPanel');
+const interventionSummary = document.getElementById('interventionSummary');
+const acceptRevisionsBtn = document.getElementById('acceptRevisionsBtn');
+const keepOriginalBtn = document.getElementById('keepOriginalBtn');
+
+// Continue panel elements
+const continuePanel = document.getElementById('continuePanel');
+const continueStageLabel = document.getElementById('continueStageLabel');
+const continueDescription = document.getElementById('continueDescription');
+const continueBtn = document.getElementById('continueBtn');
+
+// Progress bar elements
+const progressContainer = document.getElementById('progressContainer');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
 
 // =============================================================================
 // INITIALIZATION
@@ -336,16 +518,53 @@ function setupEventListeners() {
   emailBtn.addEventListener('click', handleEmail);
   newMemoBtn.addEventListener('click', handleNewMemo);
   seeResultsBtn.addEventListener('click', handleSeeResults);
+  
+  // Download Report button
+  if (downloadReportBtn) {
+    downloadReportBtn.addEventListener('click', handleDownloadReport);
+  }
+  
+  // Mode selector
+  if (generationMode) {
+    generationMode.addEventListener('change', handleModeChange);
+  }
+  
+  // Intervention buttons
+  if (acceptRevisionsBtn) {
+    acceptRevisionsBtn.addEventListener('click', handleAcceptRevisions);
+  }
+  if (keepOriginalBtn) {
+    keepOriginalBtn.addEventListener('click', handleKeepOriginal);
+  }
+  
+  // Continue button (Detailed mode)
+  if (continueBtn) {
+    continueBtn.addEventListener('click', handleContinue);
+  }
+}
+
+// Handle mode selector change
+function handleModeChange(e) {
+  const mode = e.target.value;
+  if (modeDescription && MODE_DESCRIPTIONS[mode]) {
+    modeDescription.textContent = MODE_DESCRIPTIONS[mode];
+  }
 }
 
 // Setup accordion click handlers for manual expand/collapse after completion
 function setupAccordionClickHandlers() {
   document.querySelectorAll('.accordion-header').forEach(header => {
     header.addEventListener('click', () => {
-      // Only allow manual toggling after generation is complete
-      if (!statusDot.classList.contains('complete')) return;
-      
       const step = header.closest('.accordion-step');
+      
+      // Allow toggling if:
+      // 1. Generation is fully complete, OR
+      // 2. This specific step is complete (Standard mode - view completed stages mid-generation)
+      const generationComplete = statusDot.classList.contains('complete');
+      const stepComplete = step.classList.contains('complete');
+      
+      if (!generationComplete && !stepComplete) return;
+      
       step.classList.toggle('expanded');
     });
   });
@@ -358,7 +577,7 @@ function setupAccordionClickHandlers() {
 // Reset all accordion steps to initial state
 function resetAccordion() {
   document.querySelectorAll('.accordion-step').forEach(step => {
-    step.classList.remove('active', 'complete', 'expanded');
+    step.classList.remove('active', 'complete', 'expanded', 'skipped', 'background-mode');
   });
   stage1Content.innerHTML = '';
   stage2Content.innerHTML = '';
@@ -368,6 +587,7 @@ function resetAccordion() {
   stage2Text = '';
   stage3Text = '';
   stage4Text = '';
+  resetStageProgressBars();
 }
 
 // Expand a specific accordion step (and collapse others during streaming)
@@ -396,6 +616,8 @@ function setAccordionStepActive(stepNum) {
       step.classList.remove('active', 'complete');
     }
   });
+  // Update progress bar (stage starting)
+  updateProgressBar(stepNum, false);
 }
 
 // Mark accordion step as complete
@@ -404,6 +626,80 @@ function setAccordionStepComplete(stepNum) {
   if (step) {
     step.classList.remove('active');
     step.classList.add('complete');
+  }
+  // Update overall progress bar
+  updateProgressBar(stepNum, true);
+  // Set stage progress bar to 100%
+  const stageProgressBar = document.getElementById(`stageProgress${stepNum}`);
+  if (stageProgressBar) {
+    const fill = stageProgressBar.querySelector('.stage-progress-fill');
+    if (fill) fill.style.width = '100%';
+  }
+}
+
+// Update progress bar
+function updateProgressBar(stage, isComplete = false) {
+  if (!progressContainer || progressContainer.style.display === 'none') return;
+  
+  // Progress: each complete stage = 25%, active stage = partial
+  let percent;
+  if (isComplete) {
+    percent = stage * 25;
+    progressLabel.textContent = stage < 4 ? `Stage ${stage} of 4 complete` : 'Complete';
+  } else {
+    percent = ((stage - 1) * 25) + 5; // 5% into current stage
+    progressLabel.textContent = `Stage ${stage} of 4`;
+  }
+  
+  progressFill.style.width = `${percent}%`;
+}
+
+// Show progress bar (for Standard/Detailed modes)
+function showProgressBar() {
+  if (progressContainer) {
+    progressContainer.style.display = 'block';
+    progressFill.style.width = '0%';
+    progressLabel.textContent = 'Starting...';
+  }
+}
+
+// Hide progress bar (for Draft mode)
+function hideProgressBar() {
+  if (progressContainer) {
+    progressContainer.style.display = 'none';
+  }
+}
+
+// Expected characters per stage (for progress estimation)
+const STAGE_EXPECTED_CHARS = {
+  1: 6000,  // Full memo draft
+  2: 2000,  // Prospect analysis
+  3: 1000,  // Revision plan
+  4: 6000   // Final memo
+};
+
+// Update individual stage progress bar
+function updateStageProgressBar(stage, currentChars) {
+  const progressBar = document.getElementById(`stageProgress${stage}`);
+  if (!progressBar) return;
+  
+  const fill = progressBar.querySelector('.stage-progress-fill');
+  if (!fill) return;
+  
+  const expected = STAGE_EXPECTED_CHARS[stage] || 3000;
+  // Cap at 95% until stage is marked complete
+  const percent = Math.min(95, (currentChars / expected) * 100);
+  fill.style.width = `${percent}%`;
+}
+
+// Reset all stage progress bars
+function resetStageProgressBars() {
+  for (let i = 1; i <= 4; i++) {
+    const progressBar = document.getElementById(`stageProgress${i}`);
+    if (progressBar) {
+      const fill = progressBar.querySelector('.stage-progress-fill');
+      if (fill) fill.style.width = '0%';
+    }
   }
 }
 
@@ -506,6 +802,7 @@ async function handleSubmit(e) {
   }
   
   // Get form data
+  const selectedMode = document.getElementById('generationMode')?.value || 'detailed';
   const formData = {
     firmName: firmSelect.value,
     prospectName: document.getElementById('prospectName').value,
@@ -518,11 +815,16 @@ async function handleSubmit(e) {
     budgetRange: document.getElementById('budgetRange').value,
     currentRepresentation: '',
     additionalContext: document.getElementById('additionalContext').value,
-    agenticMode: document.getElementById('agenticToggle').checked
+    generationMode: selectedMode,
+    // For backend compatibility: agentic = true for standard/detailed, false for draft
+    agenticMode: selectedMode !== 'draft'
   };
   
   // Store prospect name for Stage 2 display
   prospectNameForReview = formData.prospectName;
+  
+  // Store generation mode for report download
+  lastGenerationMode = selectedMode;
   
   // Show loading state
   generateBtn.querySelector('.btn-text').style.display = 'none';
@@ -592,28 +894,52 @@ function resetStreamingState(formData) {
   displayFirmMeta = null;
   displayProspectMeta = null;
   
+  // Reset intervention state
+  isWaitingForIntervention = false;
+  interventionDecision = null;
+  hideInterventionPanel();
+  hideContinuePanel();
+  
   streamingFirm.textContent = formData.firmName;
   streamingProspect.textContent = formData.prospectName;
   statusDot.classList.remove('complete');
-  statusText.textContent = formData.agenticMode ? 'Starting...' : 'Generating...';
   seeResultsBtn.disabled = true;
   seeResultsBtn.classList.remove('ready');
   seeResultsBtn.textContent = 'Generating memo...';
-  streamingHint.textContent = 'Watching your pitch memo take shape';
   
-  // Show/hide appropriate UI based on agentic mode
-  if (formData.agenticMode) {
+  const mode = formData.generationMode || 'detailed';
+  
+  // Mode-specific UI setup
+  if (mode === 'draft') {
+    // Draft: single stage, simple preview, no accordion
+    statusText.textContent = 'Generating draft...';
+    streamingHint.textContent = 'Creating your pitch memo';
+    accordionSteps.style.display = 'none';
+    streamingPreview.style.display = 'block';
+    streamingPreview.innerHTML = '<div class="draft-loading"><span class="spinner"></span> Generating single-stage draft...</div>';
+    hideProgressBar();
+  } else if (mode === 'standard') {
+    // Standard: full workflow, show accordions - content populates when each stage completes
+    statusText.textContent = 'Processing...';
+    streamingHint.textContent = 'Running full analysis. Click stages to review when complete.';
     accordionSteps.style.display = 'flex';
     streamingPreview.style.display = 'none';
     resetAccordion();
-    // Update prospect name in Stage 2 header
+    showProgressBar();
     if (prospectReviewName) {
       prospectReviewName.textContent = formData.prospectName;
     }
   } else {
-    accordionSteps.style.display = 'none';
-    streamingPreview.style.display = 'block';
-    streamingPreview.innerHTML = '';
+    // Detailed: full workflow with streaming and manual continue after each stage
+    statusText.textContent = 'Starting...';
+    streamingHint.textContent = 'Watching your pitch memo take shape';
+    accordionSteps.style.display = 'flex';
+    streamingPreview.style.display = 'none';
+    resetAccordion();
+    showProgressBar();
+    if (prospectReviewName) {
+      prospectReviewName.textContent = formData.prospectName;
+    }
   }
 }
 
@@ -625,7 +951,8 @@ async function handleStreamingResponse(response, formData) {
   let firmMeta = null;
   let prospectMeta = null;
   let sseBuffer = '';
-  const isAgentic = formData.agenticMode;
+  const mode = formData.generationMode || 'detailed';
+  const isAgentic = formData.agenticMode; // true for standard/detailed, false for draft
   
   // Reset data layer
   resetDataLayer();
@@ -670,29 +997,62 @@ async function handleStreamingResponse(response, formData) {
             if (prospectReviewName && prospectMeta?.name) {
               prospectReviewName.textContent = prospectMeta.name;
             }
-            console.log(`Mode: ${data.model || 'unknown'}`);
+            console.log(`Mode: ${data.model || 'unknown'}, Generation Mode: ${mode}`);
             
           } else if (data.type === 'stage' && isAgentic) {
             if (data.status === 'starting') {
               serverStage = data.stage;
               console.log(`[DATA] Stage ${serverStage} starting`);
               
-              // Start display layer on first stage
-              if (serverStage === 1 && displayStage === 0) {
-                startDisplayLayer(formData, firmMeta, prospectMeta);
+              if (mode === 'detailed') {
+                // Detailed mode: start display layer on first stage
+                if (serverStage === 1 && displayStage === 0) {
+                  startDisplayLayer(formData, firmMeta, prospectMeta);
+                }
+              } else if (mode === 'standard') {
+                // Standard mode: update stage indicators without streaming
+                setAccordionStepActive(serverStage);
+                const stageNames = {
+                  1: 'Generating initial draft...',
+                  2: 'Analyzing from prospect perspective...',
+                  3: 'Planning revisions...',
+                  4: 'Finalizing memo...'
+                };
+                statusText.textContent = stageNames[serverStage] || 'Processing...';
               }
               
             } else if (data.status === 'complete') {
               stageComplete[data.stage] = true;
               console.log(`[DATA] Stage ${data.stage} complete (${stageData[data.stage].length} chars)`);
+              
+              if (mode === 'standard') {
+                // Standard mode: render completed content and mark stage complete
+                const targetElement = getStageContentElement(data.stage);
+                if (targetElement && stageData[data.stage]) {
+                  targetElement.innerHTML = renderMemo(stageData[data.stage]);
+                }
+                setAccordionStepComplete(data.stage);
+              }
             }
             
           } else if (data.type === 'text') {
-            if (isAgentic && serverStage > 0) {
-              // Simply append to the appropriate stage bucket
-              stageData[serverStage] += data.content;
+            // Use stage from text event if available, else fall back to serverStage
+            const textStage = data.stage || serverStage;
+            
+            if (isAgentic && textStage > 0) {
+              // Agentic modes: append to stage bucket
+              stageData[textStage] += data.content;
+              
+              // Update stage progress bar (Standard mode only - Detailed uses display layer)
+              if (mode === 'standard') {
+                updateStageProgressBar(textStage, stageData[textStage].length);
+              }
+              
+              // For detailed mode, the display layer handles rendering and progress
+              // For standard mode, we just collect silently
+              
             } else if (!isAgentic) {
-              // Non-agentic mode: direct render (unchanged behavior)
+              // Draft mode: direct render to preview
               stage1Text += data.content;
               streamingPreview.innerHTML = renderMemo(stage1Text) + '<span class="streaming-cursor"></span>';
               streamingPreview.scrollTop = streamingPreview.scrollHeight;
@@ -702,7 +1062,19 @@ async function handleStreamingResponse(response, formData) {
             allDataReceived = true;
             doneEventData = data;
             console.log('[DATA] All data received from server');
-            // Display layer will handle completion when it catches up
+            
+            if (mode === 'draft') {
+              // Draft mode: complete immediately
+              completedMemoText = stage1Text;
+              handleStreamingComplete(formData, firmMeta, prospectMeta, data.memosRemaining);
+            } else if (mode === 'standard') {
+              // Standard mode: complete immediately with Stage 4 output
+              stage1Text = stageData[1];
+              stage4Text = stageData[4];
+              completedMemoText = stage4Text || stageData[3] || stageData[1];
+              handleStreamingComplete(formData, firmMeta, prospectMeta, data.memosRemaining);
+            }
+            // Detailed mode: display layer will handle completion when it catches up
             
           } else if (data.type === 'error') {
             stopDisplayLayer();
@@ -837,6 +1209,93 @@ function handleNewMemo() {
   if (header) header.classList.remove('collapsed');
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Download workflow report
+function handleDownloadReport() {
+  const firmName = memoFirm?.textContent || 'Unknown Firm';
+  const prospectName = memoProspect?.textContent || 'Unknown Prospect';
+  const timestamp = new Date().toLocaleString();
+  const mode = lastGenerationMode || 'unknown';
+  
+  // Build markdown report
+  let report = `# PitchSource Workflow Report
+
+**Generated:** ${timestamp}  
+**Firm:** ${firmName}  
+**Prospect:** ${prospectName}  
+**Generation Mode:** ${mode}
+
+---
+
+`;
+
+  // Check if we have multi-stage data (Standard/Detailed modes)
+  const hasMultiStage = stage2Text || stageData[2];
+  
+  if (hasMultiStage) {
+    // Full agentic workflow report
+    report += `## Stage 1: Initial Draft
+*AI generates strategic pitch memo using firm data and 50 evidence-based advocacy principles*
+
+${stage1Text || stageData[1] || '[No content captured]'}
+
+---
+
+## Stage 2: Prospect Analysis
+*AI critiques the memo from the prospect's perspective, identifying gaps and concerns*
+
+${stage2Text || stageData[2] || '[No content captured]'}
+
+---
+
+## Stage 3: Revision Plan
+*AI plans how to address the prospect's feedback*
+
+${stage3Text || stageData[3] || '[No content captured]'}
+
+---
+
+## Stage 4: Final Memo
+*AI executes the revision plan to produce the refined pitch memo*
+
+${stage4Text || stageData[4] || completedMemoText || '[No content captured]'}
+
+---
+
+`;
+  } else {
+    // Single-stage (Draft mode) report
+    report += `## Generated Memo
+*Single-stage generation without revision process*
+
+${completedMemoText || stage1Text || '[No content captured]'}
+
+---
+
+`;
+  }
+
+  report += `## Report Metadata
+
+- **Tool:** PitchSource by mikeburns.ai
+- **Data Source:** Public LDA filings (Senate Lobbying Disclosure Act)
+- **AI Model:** Claude (Anthropic)
+- **Workflow:** ${hasMultiStage ? '4-stage agentic (Draft → Critique → Plan → Revise)' : 'Single-stage generation'}
+
+*This report is for internal review purposes. The final memo should be reviewed and customized before client use.*
+`;
+
+  // Create and download file
+  const blob = new Blob([report], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `PitchSource-Report-${firmName.replace(/[^a-z0-9]/gi, '-')}-${prospectName.replace(/[^a-z0-9]/gi, '-')}-${Date.now()}.md`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // Error handling

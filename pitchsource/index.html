@@ -5,6 +5,297 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PitchSource | Strategic Pitch Memo Generator</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Mode Selector Styles */
+    .mode-selector {
+      margin-bottom: 24px;
+    }
+    
+    .mode-description {
+      font-size: 14px;
+      font-weight: 500;
+      color: #555;
+      margin-top: 10px;
+      margin-bottom: 0;
+      line-height: 1.5;
+    }
+    
+    /* Tooltip Styles - Option A: Text Link */
+    .tooltip-trigger {
+      position: relative;
+      margin-left: 8px;
+    }
+    
+    .tooltip-link {
+      font-size: 12px;
+      color: #0039A6;
+      text-decoration: none;
+      border-bottom: 1px dotted #0039A6;
+      cursor: help;
+      font-weight: 400;
+    }
+    
+    .tooltip-link:hover {
+      color: #002266;
+      border-bottom-style: solid;
+    }
+    
+    .tooltip-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 8px;
+      width: 340px;
+      padding: 16px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      text-align: left;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #333;
+    }
+    
+    .tooltip-trigger:hover .tooltip-content {
+      display: block;
+    }
+    
+    .tooltip-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: #0039A6;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .tooltip-section {
+      margin-bottom: 12px;
+    }
+    
+    .tooltip-section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .tooltip-section strong {
+      color: #0039A6;
+    }
+    
+    .tooltip-section ol {
+      margin: 6px 0 0 0;
+      padding-left: 20px;
+    }
+    
+    .tooltip-section ol li {
+      margin-bottom: 2px;
+    }
+    
+    /* Progress Bar Styles */
+    .progress-container {
+      margin: 12px 0 16px 0;
+      padding: 0 4px;
+    }
+    
+    .progress-bar {
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: #0039A6;
+      border-radius: 3px;
+      transition: width 0.4s ease-out;
+    }
+    
+    .progress-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 6px;
+      text-align: right;
+    }
+    
+    /* Stage Progress Bar (per-stage, at top of each header) */
+    .stage-progress-bar {
+      height: 3px;
+      background: #e5e7eb;
+      width: 100%;
+      overflow: hidden;
+      transition: opacity 0.2s ease;
+    }
+    
+    .accordion-step.complete .stage-progress-bar {
+      opacity: 0;
+    }
+    
+    .stage-progress-fill {
+      height: 100%;
+      background: #0039A6;
+      width: 0%;
+      transition: width 0.15s ease-out;
+    }
+    
+    .accordion-step.complete .stage-progress-fill {
+      width: 100%;
+    }
+    
+    /* Intervention Panel Styles */
+    .intervention-panel {
+      background-color: #FFFBF0;
+      border: 2px solid #F5A623;
+      border-radius: 4px;
+      padding: 20px 24px;
+      margin: 12px 0 16px 0;
+    }
+    
+    .intervention-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .intervention-icon {
+      font-size: 20px;
+    }
+    
+    .intervention-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .intervention-summary {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.6;
+      margin: 0 0 20px 0;
+    }
+    
+    .intervention-actions {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .btn-accept {
+      flex: 1;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      background-color: #0039A6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .btn-accept:hover {
+      background-color: #002d80;
+    }
+    
+    .btn-reject {
+      flex: 1;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      background-color: white;
+      color: #666;
+      border: 2px solid #E0E0E0;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-reject:hover {
+      border-color: #999;
+      color: #333;
+    }
+    
+    /* Accordion step states */
+    .accordion-step.skipped {
+      opacity: 0.5;
+    }
+    
+    .accordion-step.skipped .step-title::after {
+      content: ' (skipped)';
+      font-weight: normal;
+      color: #999;
+    }
+    
+    /* Draft mode loading */
+    .draft-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 40px 20px;
+      color: #666;
+      font-size: 15px;
+    }
+    
+    /* Continue Panel Styles */
+    .continue-panel {
+      background-color: #F5F8FA;
+      border: 2px solid #0039A6;
+      border-radius: 4px;
+      padding: 16px 24px;
+      margin: 12px 0 16px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    
+    /* Remove negative margin that was pulling panels up too tight */
+    .accordion-panel + .continue-panel,
+    .accordion-panel + .intervention-panel {
+      margin-top: 12px;
+      border-radius: 4px;
+    }
+    
+    .continue-content {
+      flex: 1;
+    }
+    
+    .continue-stage {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0039A6;
+      display: block;
+      margin-bottom: 4px;
+    }
+    
+    .continue-description {
+      font-size: 13px;
+      color: #666;
+      margin: 0;
+      line-height: 1.4;
+    }
+    
+    .btn-continue {
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      background-color: #0039A6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      white-space: nowrap;
+    }
+    
+    .btn-continue:hover {
+      background-color: #002d80;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -133,16 +424,39 @@
             <textarea id="additionalContext" class="form-textarea" rows="2" placeholder="Any other relevant information about the prospect or their situation"></textarea>
           </div>
 
-          <!-- Agentic Toggle -->
-          <div class="agentic-toggle">
-            <label class="toggle-label">
-              <input type="checkbox" id="agenticToggle" checked>
-              <span class="toggle-switch"></span>
-              <span class="toggle-text">
-                <strong>Agentic Review</strong>
-                <span class="toggle-description">3-stage workflow: Draft → Prospect Analysis → Refinement</span>
+          <!-- Generation Mode -->
+          <div class="form-group mode-selector">
+            <label for="generationMode" class="form-label">
+              Generation Mode
+              <span class="tooltip-trigger">
+                <a href="#" class="tooltip-link" onclick="return false;">What's this?</a>
+                <div class="tooltip-content" id="modeTooltip">
+                  <div class="tooltip-title">Understanding Generation Modes</div>
+                  <div class="tooltip-section">
+                    <strong>Draft</strong> — Single API call generates the memo directly. Fastest option (~30 seconds). Best for quick iterations or when you trust the first output.
+                  </div>
+                  <div class="tooltip-section">
+                    <strong>Standard</strong> — Full 4-stage agentic workflow runs in background:
+                    <ol>
+                      <li>Generate initial draft</li>
+                      <li>AI critiques from prospect's perspective</li>
+                      <li>Plan revisions based on feedback</li>
+                      <li>Execute revisions for final memo</li>
+                    </ol>
+                    Results appear when complete (~90 seconds). Higher quality output.
+                  </div>
+                  <div class="tooltip-section">
+                    <strong>Detailed</strong> — Same 4-stage workflow with full visibility. Watch each stage stream in real-time. Pause after each stage to review. Accept or reject AI's suggested revisions. Best for understanding the process or stakeholder demos.
+                  </div>
+                </div>
               </span>
             </label>
+            <select id="generationMode" class="form-select">
+              <option value="draft">Draft — Single-stage, fastest</option>
+              <option value="standard">Standard — Full workflow, background processing</option>
+              <option value="detailed" selected>Detailed — Full workflow with streaming & review</option>
+            </select>
+            <p class="mode-description" id="modeDescription">Watch the process unfold. Review and approve revisions before finalizing.</p>
           </div>
 
           <button type="submit" class="btn-primary" id="generateBtn">
@@ -172,10 +486,19 @@
             </div>
           </div>
           
+          <!-- Progress Bar (Standard/Detailed modes) -->
+          <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">Stage 0 of 4</div>
+          </div>
+          
           <!-- Accordion Progress Steps -->
           <div class="accordion-steps" id="accordionSteps">
             <!-- Stage 1: Initial Draft -->
             <div class="accordion-step" data-step="1">
+              <div class="stage-progress-bar" id="stageProgress1"><div class="stage-progress-fill"></div></div>
               <div class="accordion-header" id="accordionHeader1">
                 <div class="step-indicator">
                   <span class="step-number">1</span>
@@ -198,6 +521,7 @@
 
             <!-- Stage 2: Prospect Analysis -->
             <div class="accordion-step" data-step="2">
+              <div class="stage-progress-bar" id="stageProgress2"><div class="stage-progress-fill"></div></div>
               <div class="accordion-header" id="accordionHeader2">
                 <div class="step-indicator">
                   <span class="step-number">2</span>
@@ -224,6 +548,7 @@
 
             <!-- Stage 3: Planning Revisions -->
             <div class="accordion-step" data-step="3">
+              <div class="stage-progress-bar" id="stageProgress3"><div class="stage-progress-fill"></div></div>
               <div class="accordion-header" id="accordionHeader3">
                 <div class="step-indicator">
                   <span class="step-number">3</span>
@@ -248,8 +573,33 @@
               </div>
             </div>
 
+            <!-- Intervention Panel (Detailed mode - after Stage 3) -->
+            <div class="intervention-panel" id="interventionPanel" style="display: none;">
+              <div class="intervention-header">
+                <span class="intervention-icon">⚡</span>
+                <span class="intervention-title">Review Revisions</span>
+              </div>
+              <p class="intervention-summary" id="interventionSummary">
+                The critic suggested improvements to strengthen the memo. These changes have been drafted and are ready to apply.
+              </p>
+              <div class="intervention-actions">
+                <button type="button" class="btn-accept" id="acceptRevisionsBtn">Accept Revisions</button>
+                <button type="button" class="btn-reject" id="keepOriginalBtn">Keep Original</button>
+              </div>
+            </div>
+
+            <!-- Continue Panel (Detailed mode - after Stages 1, 2) -->
+            <div class="continue-panel" id="continuePanel" style="display: none;">
+              <div class="continue-content">
+                <span class="continue-stage" id="continueStageLabel">Stage 1 complete</span>
+                <p class="continue-description" id="continueDescription">Review the output above, then continue to the next stage.</p>
+              </div>
+              <button type="button" class="btn-continue" id="continueBtn">Continue →</button>
+            </div>
+
             <!-- Stage 4: Final Memo -->
             <div class="accordion-step" data-step="4">
+              <div class="stage-progress-bar" id="stageProgress4"><div class="stage-progress-fill"></div></div>
               <div class="accordion-header" id="accordionHeader4">
                 <div class="step-indicator">
                   <span class="step-number">4</span>
@@ -294,6 +644,7 @@
           <div class="results-actions">
             <button class="btn-secondary" id="copyBtn">Copy to Clipboard</button>
             <button class="btn-secondary" id="emailBtn">E-Mail</button>
+            <button class="btn-secondary" id="downloadReportBtn">Download Report</button>
             <button class="btn-secondary-red" id="newMemoBtn">New Memo</button>
           </div>
         </div>

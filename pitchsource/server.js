@@ -60,10 +60,25 @@ const anthropic = new Anthropic({
 });
 
 // === MODEL CONFIGURATION ===
-const MODEL_CONFIG = {
-  opus: 'claude-opus-4-20250514',    // Stage 1: High quality draft
-  sonnet: 'claude-sonnet-4-20250514'  // Stages 2 & 3: Feedback and revision
+// Toggle: Set to true for cheap testing, false for production quality
+const TEST_MODE = false;  // <-- CHANGE TO false FOR PRODUCTION
+
+const MODEL_CONFIG = TEST_MODE ? {
+  // Test mode: Use Haiku for all stages (fast & cheap)
+  stage1: 'claude-haiku-4-5-20251001',
+  stage2: 'claude-haiku-4-5-20251001',
+  stage3: 'claude-haiku-4-5-20251001',
+  stage4: 'claude-haiku-4-5-20251001'
+} : {
+  // Production mode: Opus for draft, Sonnet for review stages
+  stage1: 'claude-opus-4-20250514',
+  stage2: 'claude-sonnet-4-20250514',
+  stage3: 'claude-sonnet-4-20250514',
+  stage4: 'claude-sonnet-4-20250514'
 };
+
+console.log(`Model mode: ${TEST_MODE ? 'TEST (Haiku)' : 'PRODUCTION (Opus/Sonnet)'}`);
+
 
 // === DEMO RATE LIMITING ===
 let memoCount = 0;
@@ -213,7 +228,7 @@ app.post('/api/generate-memo', async (req, res) => {
     type: 'meta', 
     firm: { name: firmProfile.name },
     prospect: { name: prospectProfile.name },
-    model: agenticMode ? 'agentic-3-stage' : MODEL_CONFIG.opus
+    model: agenticMode ? `agentic-4-stage (${TEST_MODE ? 'Haiku' : 'Opus/Sonnet'})` : MODEL_CONFIG.stage1
   })}\n\n`);
   
   try {
@@ -237,8 +252,9 @@ app.post('/api/generate-memo', async (req, res) => {
           industry: prospectIndustry || 'Not specified',
           issues: prospectIssues,
           memoNumber: memoCount,
-          model: agenticMode ? 'agentic-3-stage' : MODEL_CONFIG.opus,
-          workflow: agenticMode ? 'opus→sonnet→sonnet' : 'opus-only'
+          model: agenticMode ? `agentic-4-stage` : MODEL_CONFIG.stage1,
+          workflow: TEST_MODE ? 'haiku-all-stages' : (agenticMode ? 'opus→sonnet→sonnet→sonnet' : 'opus-only'),
+          testMode: TEST_MODE
         }));
       } catch (logErr) {
         console.error('Failed to log usage:', logErr.message);
@@ -266,10 +282,10 @@ async function generateSingleStageMemo(res, firmProfile, prospectProfile) {
   const systemPromptText = buildSystemPrompt();
   const userPrompt = buildUserPrompt(firmProfile, prospectProfile);
   
-  console.log(`[SINGLE-STAGE] Generating memo with ${MODEL_CONFIG.opus}`);
+  console.log(`[SINGLE-STAGE] Generating memo with ${MODEL_CONFIG.stage1}`);
   
   const stream = await anthropic.messages.stream({
-    model: MODEL_CONFIG.opus,
+    model: MODEL_CONFIG.stage1,
     max_tokens: 4000,
     system: [
       {
@@ -304,7 +320,7 @@ async function generateAgenticMemo(res, firmProfile, prospectProfile) {
   
   let stage1Memo = '';
   const stage1Stream = await anthropic.messages.stream({
-    model: MODEL_CONFIG.opus,
+    model: MODEL_CONFIG.stage1,
     max_tokens: 4000,
     system: [
       {
@@ -340,7 +356,7 @@ What are the 3-5 issues that would most affect my decision to take a meeting wit
   
   let stage2Feedback = '';
   const stage2Stream = await anthropic.messages.stream({
-    model: MODEL_CONFIG.sonnet,
+    model: MODEL_CONFIG.stage2,
     max_tokens: 2000,
     system: stage2SystemPrompt,
     messages: [{ role: 'user', content: stage2UserPrompt }]
@@ -369,7 +385,7 @@ How will you address each piece of feedback while keeping the memo under 1,200 w
   
   let stage3Plan = '';
   const stage3Stream = await anthropic.messages.stream({
-    model: MODEL_CONFIG.sonnet,
+    model: MODEL_CONFIG.stage3,
     max_tokens: 1000,
     system: stage3SystemPrompt,
     messages: [{ role: 'user', content: stage3UserPrompt }]
@@ -405,7 +421,7 @@ ${firmDataSummary}
 Execute the revision plan. Output only the final memo.`;
   
   const stage4Stream = await anthropic.messages.stream({
-    model: MODEL_CONFIG.sonnet,
+    model: MODEL_CONFIG.stage4,
     max_tokens: 4000,
     system: stage4SystemPrompt,
     messages: [{ role: 'user', content: stage4UserPrompt }]
@@ -825,7 +841,7 @@ VOICE REMINDER: Embody the firm's voice profile throughout. Echo the key phrases
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`PitchSource server running on port ${PORT}`);
-  console.log(`Agentic 3-stage workflow: Opus → Sonnet → Sonnet`);
+  console.log(`Agentic 4-stage workflow: ${TEST_MODE ? 'Haiku (all stages)' : 'Opus → Sonnet → Sonnet → Sonnet'}`);
   console.log(`Demo mode: ${MEMO_LIMIT} memo limit`);
 });
 
