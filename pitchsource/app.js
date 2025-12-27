@@ -7,7 +7,7 @@
  */
 
 // API Base URL - change to localhost:3001 for local testing
-const API_BASE = 'http://localhost:3001';
+const API_BASE = 'https://pitchsource.vercel.app';
 
 // Demo Scenarios
 const DEMO_SCENARIOS = {
