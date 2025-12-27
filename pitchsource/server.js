@@ -1,11 +1,11 @@
 /**
- * Pitch Craft - Server (Streaming Version)
+ * PitchSource - Server (Agentic 3-Stage Workflow)
  * 
  * AI-powered pitch memo generator for lobbying firms
  * Reuses LobbyMatch firm data, generates strategic pitch memos
  * 
  * STREAMING: Uses SSE to stream memo as it's generated
- * MODEL: Set to Haiku for testing, change to Opus for production
+ * AGENTIC: 3-stage workflow (Draft → Feedback → Revision)
  */
 
 const express = require('express');
@@ -14,7 +14,7 @@ const path = require('path');
 const fs = require('fs');
 const { Redis } = require('@upstash/redis');
 
-// Initialize Upstash Redis (for usage logging) - DISABLED FOR LOCAL TESTING
+// Initialize Upstash Redis (for usage logging)
 const redis = new Redis({
   url: process.env.KV_REST_API_URL,
   token: process.env.KV_REST_API_TOKEN,
@@ -60,15 +60,10 @@ const anthropic = new Anthropic({
 });
 
 // === MODEL CONFIGURATION ===
-// Switch between models for testing vs production
 const MODEL_CONFIG = {
-  testing: 'claude-3-5-haiku-20241022',  // ~$0.02 per memo
-  production: 'claude-opus-4-20250514'    // ~$0.40 per memo
+  opus: 'claude-opus-4-20250514',    // Stage 1: High quality draft
+  sonnet: 'claude-sonnet-4-20250514'  // Stages 2 & 3: Feedback and revision
 };
-
-// SET THIS TO 'testing' OR 'production'
-const CURRENT_MODE = 'production';
-const ACTIVE_MODEL = MODEL_CONFIG[CURRENT_MODE];
 
 // === DEMO RATE LIMITING ===
 let memoCount = 0;
@@ -103,9 +98,7 @@ app.get('/api/firms', (req, res) => {
     topIssues: (f.topIssues || []).slice(0, 3).map(i => i.label || i.code || i)
   }));
   
-  // Sort alphabetically for dropdown
   firmList.sort((a, b) => a.name.localeCompare(b.name));
-  
   res.json({ firms: firmList });
 });
 
@@ -135,7 +128,7 @@ app.get('/api/usage-logs', async (req, res) => {
   }
   
   try {
-    const logs = await redis.lrange('pitchsource:usage', 0, 99); // Last 100 entries
+    const logs = await redis.lrange('pitchsource:usage', 0, 99);
     const parsed = logs.map(log => {
       try {
         return JSON.parse(log);
@@ -153,7 +146,9 @@ app.get('/api/usage-logs', async (req, res) => {
   }
 });
 
-// Generate pitch memo - STREAMING VERSION
+// =============================================================================
+// MEMO GENERATION - Supports both Agentic (3-stage) and Single-stage modes
+// =============================================================================
 app.post('/api/generate-memo', async (req, res) => {
   // Demo rate limiting
   if (memoCount >= MEMO_LIMIT) {
@@ -175,7 +170,8 @@ app.post('/api/generate-memo', async (req, res) => {
     timeline,
     budgetRange,
     currentRepresentation,
-    additionalContext
+    additionalContext,
+    agenticMode = true // Default to agentic mode
   } = req.body;
   
   // Validate required fields
@@ -191,10 +187,8 @@ app.post('/api/generate-memo', async (req, res) => {
     return res.status(404).json({ error: 'Firm not found' });
   }
   
-  // Build firm profile for prompt
+  // Build profiles
   const firmProfile = buildFirmProfile(firm);
-  
-  // Build prospect profile
   const prospectProfile = {
     name: prospectName,
     industry: prospectIndustry || 'Not specified',
@@ -219,56 +213,37 @@ app.post('/api/generate-memo', async (req, res) => {
     type: 'meta', 
     firm: { name: firmProfile.name },
     prospect: { name: prospectProfile.name },
-    model: ACTIVE_MODEL
+    model: agenticMode ? 'agentic-3-stage' : MODEL_CONFIG.opus
   })}\n\n`);
   
   try {
-    const systemPromptText = buildSystemPrompt();
-    const userPrompt = buildUserPrompt(firmProfile, prospectProfile);
-    
-    console.log(`[${CURRENT_MODE.toUpperCase()}] Streaming memo with ${ACTIVE_MODEL}`);
-    
-    // Use streaming API
-    const stream = await anthropic.messages.stream({
-      model: ACTIVE_MODEL,
-      max_tokens: 4000,
-      system: [
-        {
-          type: 'text',
-          text: systemPromptText,
-          cache_control: { type: 'ephemeral' }
-        }
-      ],
-      messages: [{ role: 'user', content: userPrompt }]
-    });
-    
-    // Stream each chunk to client
-    for await (const event of stream) {
-      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-        res.write(`data: ${JSON.stringify({ type: 'text', content: event.delta.text })}\n\n`);
-      }
+    if (agenticMode) {
+      await generateAgenticMemo(res, firmProfile, prospectProfile);
+    } else {
+      await generateSingleStageMemo(res, firmProfile, prospectProfile);
     }
     
     // Increment count and log after successful generation
     memoCount++;
-    console.log(`Memo ${memoCount}/${MEMO_LIMIT} generated for ${firmName} → ${prospectName}`);
+    console.log(`Memo ${memoCount}/${MEMO_LIMIT} generated (${agenticMode ? 'agentic' : 'single-stage'}) for ${firmName} → ${prospectName}`);
     
     // Log usage to Upstash Redis
-    if(redis) {
-    try {
-      await redis.lpush('pitchsource:usage', JSON.stringify({
-        timestamp: new Date().toISOString(),
-        firm: firmName,
-        prospect: prospectName,
-        industry: prospectIndustry || 'Not specified',
-        issues: prospectIssues,
-        memoNumber: memoCount,
-        model: ACTIVE_MODEL
-      }));
-    } catch (logErr) {
-      console.error('Failed to log usage:', logErr.message);
+    if (redis) {
+      try {
+        await redis.lpush('pitchsource:usage', JSON.stringify({
+          timestamp: new Date().toISOString(),
+          firm: firmName,
+          prospect: prospectName,
+          industry: prospectIndustry || 'Not specified',
+          issues: prospectIssues,
+          memoNumber: memoCount,
+          model: agenticMode ? 'agentic-3-stage' : MODEL_CONFIG.opus,
+          workflow: agenticMode ? 'opus→sonnet→sonnet' : 'opus-only'
+        }));
+      } catch (logErr) {
+        console.error('Failed to log usage:', logErr.message);
+      }
     }
-  }
     
     // Send completion signal
     res.write(`data: ${JSON.stringify({ 
@@ -284,20 +259,180 @@ app.post('/api/generate-memo', async (req, res) => {
   }
 });
 
-// === HELPER FUNCTIONS ===
+// =============================================================================
+// SINGLE-STAGE MEMO GENERATION (Original Opus-only flow)
+// =============================================================================
+async function generateSingleStageMemo(res, firmProfile, prospectProfile) {
+  const systemPromptText = buildSystemPrompt();
+  const userPrompt = buildUserPrompt(firmProfile, prospectProfile);
+  
+  console.log(`[SINGLE-STAGE] Generating memo with ${MODEL_CONFIG.opus}`);
+  
+  const stream = await anthropic.messages.stream({
+    model: MODEL_CONFIG.opus,
+    max_tokens: 4000,
+    system: [
+      {
+        type: 'text',
+        text: systemPromptText,
+        cache_control: { type: 'ephemeral' }
+      }
+    ],
+    messages: [{ role: 'user', content: userPrompt }]
+  });
+  
+  for await (const event of stream) {
+    if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+      res.write(`data: ${JSON.stringify({ type: 'text', content: event.delta.text })}\n\n`);
+    }
+  }
+}
+
+// =============================================================================
+// AGENTIC 3-STAGE MEMO GENERATION
+// =============================================================================
+async function generateAgenticMemo(res, firmProfile, prospectProfile) {
+  const systemPromptText = buildSystemPrompt();
+  const userPrompt = buildUserPrompt(firmProfile, prospectProfile);
+  
+  console.log(`[AGENTIC] Starting 4-stage workflow for ${firmProfile.name} → ${prospectProfile.name}`);
+  
+  // =========================================================================
+  // STAGE 1: Generate Initial Draft (Opus)
+  // =========================================================================
+  res.write(`data: ${JSON.stringify({ type: 'stage', stage: 1, status: 'starting' })}\n\n`);
+  
+  let stage1Memo = '';
+  const stage1Stream = await anthropic.messages.stream({
+    model: MODEL_CONFIG.opus,
+    max_tokens: 4000,
+    system: [
+      {
+        type: 'text',
+        text: systemPromptText,
+        cache_control: { type: 'ephemeral' }
+      }
+    ],
+    messages: [{ role: 'user', content: userPrompt }]
+  });
+  
+  for await (const event of stage1Stream) {
+    if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+      stage1Memo += event.delta.text;
+      res.write(`data: ${JSON.stringify({ type: 'text', stage: 1, content: event.delta.text })}\n\n`);
+    }
+  }
+  
+  res.write(`data: ${JSON.stringify({ type: 'stage', stage: 1, status: 'complete' })}\n\n`);
+  console.log(`[AGENTIC] Stage 1 complete: ${stage1Memo.length} chars`);
+  
+  // =========================================================================
+  // STAGE 2: Prospect Feedback (Sonnet)
+  // =========================================================================
+  res.write(`data: ${JSON.stringify({ type: 'stage', stage: 2, status: 'starting' })}\n\n`);
+  
+  const stage2SystemPrompt = buildStage2SystemPrompt(prospectProfile);
+  const stage2UserPrompt = `I just received this pitch memo from a lobbying firm:
+
+${stage1Memo}
+
+What are the 3-5 issues that would most affect my decision to take a meeting with them?`;
+  
+  let stage2Feedback = '';
+  const stage2Stream = await anthropic.messages.stream({
+    model: MODEL_CONFIG.sonnet,
+    max_tokens: 2000,
+    system: stage2SystemPrompt,
+    messages: [{ role: 'user', content: stage2UserPrompt }]
+  });
+  
+  for await (const event of stage2Stream) {
+    if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+      stage2Feedback += event.delta.text;
+      res.write(`data: ${JSON.stringify({ type: 'text', stage: 2, content: event.delta.text })}\n\n`);
+    }
+  }
+  
+  res.write(`data: ${JSON.stringify({ type: 'stage', stage: 2, status: 'complete' })}\n\n`);
+  console.log(`[AGENTIC] Stage 2 complete: ${stage2Feedback.length} chars feedback`);
+  
+  // =========================================================================
+  // STAGE 3: Planning Revisions (Sonnet)
+  // =========================================================================
+  res.write(`data: ${JSON.stringify({ type: 'stage', stage: 3, status: 'starting' })}\n\n`);
+  
+  const stage3SystemPrompt = buildStage3PlanningPrompt();
+  const stage3UserPrompt = `PROSPECT FEEDBACK:
+${stage2Feedback}
+
+How will you address each piece of feedback while keeping the memo under 1,200 words?`;
+  
+  let stage3Plan = '';
+  const stage3Stream = await anthropic.messages.stream({
+    model: MODEL_CONFIG.sonnet,
+    max_tokens: 1000,
+    system: stage3SystemPrompt,
+    messages: [{ role: 'user', content: stage3UserPrompt }]
+  });
+  
+  for await (const event of stage3Stream) {
+    if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+      stage3Plan += event.delta.text;
+      res.write(`data: ${JSON.stringify({ type: 'text', stage: 3, content: event.delta.text })}\n\n`);
+    }
+  }
+  
+  res.write(`data: ${JSON.stringify({ type: 'stage', stage: 3, status: 'complete' })}\n\n`);
+  console.log(`[AGENTIC] Stage 3 complete: ${stage3Plan.length} chars plan`);
+  
+  // =========================================================================
+  // STAGE 4: Execute Revisions (Sonnet)
+  // =========================================================================
+  res.write(`data: ${JSON.stringify({ type: 'stage', stage: 4, status: 'starting' })}\n\n`);
+  
+  const firmDataSummary = buildFirmDataSummary(firmProfile);
+  
+  const stage4SystemPrompt = buildStage4RevisionPrompt();
+  const stage4UserPrompt = `ORIGINAL MEMO:
+${stage1Memo}
+
+REVISION PLAN:
+${stage3Plan}
+
+FIRM DATA (for reference - DO NOT ALTER FACTS):
+${firmDataSummary}
+
+Execute the revision plan. Output only the final memo.`;
+  
+  const stage4Stream = await anthropic.messages.stream({
+    model: MODEL_CONFIG.sonnet,
+    max_tokens: 4000,
+    system: stage4SystemPrompt,
+    messages: [{ role: 'user', content: stage4UserPrompt }]
+  });
+  
+  for await (const event of stage4Stream) {
+    if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+      res.write(`data: ${JSON.stringify({ type: 'text', stage: 4, content: event.delta.text })}\n\n`);
+    }
+  }
+  
+  res.write(`data: ${JSON.stringify({ type: 'stage', stage: 4, status: 'complete' })}\n\n`);
+  console.log(`[AGENTIC] Stage 4 complete`);
+}
+
+// =============================================================================
+// HELPER FUNCTIONS
+// =============================================================================
 
 function buildFirmProfile(firm) {
-  // Helper to check if covered position is meaningful (not "(none)" or empty)
   const hasMeaningfulPosition = (l) => l.coveredPosition && l.coveredPosition !== '(none)';
   const hasClientExperience = (l) => l.clientExperience && l.clientExperience.length > 0;
   
-  // Include lobbyists with EITHER meaningful covered positions OR client experience
-  // No prioritization by seniority or type - let AI decide based on prospect relevance
   const allLobbyists = (firm.verifiedLobbyists || []).filter(l => 
     hasMeaningfulPosition(l) || hasClientExperience(l)
   );
   
-  // Include all relevant lobbyists (max 25)
   const prioritizedLobbyists = allLobbyists.slice(0, 25);
 
   return {
@@ -311,23 +446,94 @@ function buildFirmProfile(firm) {
     billingRange: firm.billingRange || 'Not available',
     billing: firm.billing,
     coveredOfficialCount: firm.coveredOfficialCount || 0,
-    
-    // Tier 1 enhanced lobbyist data
     verifiedLobbyists: prioritizedLobbyists,
     seniorLobbyistCount: firm.seniorLobbyistCount || 0,
-    
-    // Tier 1 firm-level aggregates
     stats: firm.stats || null,
     aggregateEntities: firm.aggregateEntities || null,
-    
     committeeRelationships: firm.committeeRelationships || { committees: [] },
-    
-    // Voice profile for authentic firm tone
     voiceProfile: firm.voiceProfile || null,
-    
-    // Pre-crafted firm introduction paragraph
     firmIntro: firm.firmIntro || null
   };
+}
+
+// Build concise firm data summary for Stage 3 constraint checking
+function buildFirmDataSummary(firmProfile) {
+  const lobbyistNames = firmProfile.verifiedLobbyists.map(l => l.name).join(', ');
+  const clientNames = firmProfile.recentClients.map(c => c.name).join(', ');
+  const issueAreas = firmProfile.topIssues.map(i => i.label).join(', ');
+  
+  return `Firm: ${firmProfile.name}
+Team Members: ${lobbyistNames}
+Clients: ${clientNames}
+Issue Areas: ${issueAreas}
+Billing Range: ${firmProfile.billingRange}`;
+}
+
+// Stage 2: Prospect feedback system prompt - Decision-maker roleplay (constructive)
+function buildStage2SystemPrompt(prospectProfile) {
+  return `You are ${prospectProfile.name}'s decision-maker evaluating whether to take a first meeting with this lobbying firm. Your time is valuable, but you're approaching this constructively: you want them to earn the meeting.
+
+YOUR CONTEXT:
+- Organization: ${prospectProfile.name}
+- Industry: ${prospectProfile.industry}
+- Primary issues: ${prospectProfile.issues.map(i => ISSUE_CODES[i] || i).join(', ')}
+- Goals: ${prospectProfile.goal}
+- Timeline: ${prospectProfile.timeline}
+- Budget: ${prospectProfile.budget}
+
+YOUR TASK:
+Identify 3-5 opportunities to strengthen this memo. Focus on gaps that would affect your decision to take a meeting:
+- Connections to your specific situation that could be stronger
+- Claims that would be more convincing with a proof point
+- Places where the "so what" for your organization isn't clear
+
+Be constructive, not critical. Acknowledge what's working before noting what could be stronger. Do NOT request elaboration on things already adequately covered.
+
+OUTPUT FORMAT:
+For each issue (3-5 total), provide two paragraphs:
+
+**The gap:** What's missing or unclear and how it affects your confidence. (2-3 sentences)
+
+**Suggestion:** A specific, actionable way to address it. (1-2 sentences)
+
+Keep each item concise. Be direct and constructive.`;
+}
+
+// Stage 3: Planning prompt - Think through how to address feedback
+function buildStage3PlanningPrompt() {
+  return `You are planning how to revise a pitch memo based on prospect feedback. Think through each piece of feedback and explain your approach.
+
+CONSTRAINTS:
+- The final memo must not exceed 1,200 words
+- You cannot add fictional facts, lobbyists, or client examples
+- For every addition, you must identify something to cut or tighten
+
+OUTPUT FORMAT:
+For each piece of prospect feedback, briefly explain:
+1. How you'll address it (1-2 sentences)
+2. What you'll cut or tighten to make room (1 sentence)
+
+If a piece of feedback cannot be addressed within constraints, say so and explain why.
+
+Keep your planning concise: aim for 150-250 words total. Think like an editor, not a writer.`;
+}
+
+// Stage 4: Execution prompt - Produce the final revised memo
+function buildStage4RevisionPrompt() {
+  return `Execute the revision plan to produce the final memo. Your goal is to make the memo more convincing, not longer.
+
+CONSTRAINTS (ABSOLUTE):
+- **STRICT LIMIT: 1,200 words maximum.** Count your words. Do not exceed this.
+- Cannot add fictional facts, lobbyists, or client examples  
+- Cannot alter verifiable firm data or lobbyist credentials
+- Cannot change committee relationship language in ways that create libel risk
+
+FORMATTING RULES:
+- ABSOLUTELY NO EM-DASHES (—): Use colons, semicolons, commas, or periods instead
+- Do NOT reference principles by number, name, or cite academic sources
+- Maintain libel-safe language: "established relationships" not "access to"
+
+Output only the revised memo. No preamble, no explanation, no summary of changes.`;
 }
 
 function buildSystemPrompt() {
@@ -426,7 +632,7 @@ Do NOT use generic closings like "We look forward to hearing from you." Make it 
 
 ## LENGTH GUIDANCE
 
-The memo should be comprehensive and substantive. Aim for approximately 1,200-1,500 words total. Each section should be developed enough that the reader feels the firm has genuinely analyzed their situation, not just filled in a template. Err on the side of more detail rather than less, but ensure every sentence adds value.
+**STRICT LIMIT: 1,200 words maximum.** This is a hard cap, not a target. Busy executives skim; every word must earn its place. Aim for 1,000-1,200 words. Cut ruthlessly: remove filler phrases, combine related points, eliminate repetition. A tight 1,000-word memo beats a padded 1,500-word memo every time.
 
 ## LIBEL-SAFE LANGUAGE RULES
 
@@ -618,8 +824,8 @@ VOICE REMINDER: Embody the firm's voice profile throughout. Echo the key phrases
 // Start server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Pitch Craft server running on port ${PORT}`);
-  console.log(`Model: ${ACTIVE_MODEL} (${CURRENT_MODE} mode)`);
+  console.log(`PitchSource server running on port ${PORT}`);
+  console.log(`Agentic 3-stage workflow: Opus → Sonnet → Sonnet`);
   console.log(`Demo mode: ${MEMO_LIMIT} memo limit`);
 });
 

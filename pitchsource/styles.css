@@ -1,4 +1,4 @@
-/* Active Pursuit - Vignelli-Inspired Design System */
+/* PitchSource - Vignelli-Inspired Design System */
 
 :root {
   /* Brand Colors */
@@ -20,6 +20,10 @@
   --gray-500: #737373;
   --gray-600: #525252;
   --gray-700: #404040;
+  
+  /* Success */
+  --green: #28a745;
+  --green-light: #e8f5e9;
   
   /* Typography */
   --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -117,6 +121,22 @@ body {
 .header-link:hover {
   color: var(--red);
   border-color: var(--red);
+}
+
+/* Header collapsed state during streaming */
+.header.collapsed {
+  padding: var(--space-lg) 0 var(--space-md);
+  margin-bottom: var(--space-md);
+  transition: padding 0.3s ease, margin 0.3s ease;
+}
+
+.header.collapsed .tagline,
+.header.collapsed .header-link {
+  display: none;
+}
+
+.header.collapsed .logo {
+  margin-bottom: 0;
 }
 
 /* ============================================
@@ -384,12 +404,13 @@ body {
 }
 
 .btn-primary:active {
-  transform: scale(0.99);
+  transform: translateY(1px);
 }
 
 .btn-primary:disabled {
   background: var(--gray-400);
   cursor: not-allowed;
+  transform: none;
   box-shadow: none;
 }
 
@@ -400,13 +421,14 @@ body {
   font-weight: 500;
   color: var(--navy);
   background: var(--white);
-  border: 1.5px solid var(--navy);
+  border: 1px solid var(--navy);
   cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s;
+  transition: all 0.15s;
 }
 
 .btn-secondary:hover {
-  background: var(--navy-light);
+  background: var(--navy);
+  color: var(--white);
 }
 
 .btn-secondary-red {
@@ -416,26 +438,27 @@ body {
   font-weight: 500;
   color: var(--red);
   background: var(--white);
-  border: 1.5px solid var(--red);
+  border: 1px solid var(--red);
   cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s;
+  transition: all 0.15s;
 }
 
 .btn-secondary-red:hover {
-  background: #fef2f2;
+  background: var(--red);
+  color: var(--white);
 }
 
-/* Loading State */
+/* Loading state */
 .btn-loading {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
+  gap: 8px;
 }
 
 .spinner {
-  width: 18px;
-  height: 18px;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
@@ -455,6 +478,77 @@ body {
   padding: var(--space-md);
   background: var(--gray-100);
   line-height: 1.5;
+}
+
+/* ============================================
+   AGENTIC TOGGLE
+   ============================================ */
+
+.agentic-toggle {
+  margin-top: var(--space-xl);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 4px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-label input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  background: var(--gray-300);
+  border-radius: 13px;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: var(--white);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.toggle-label input[type="checkbox"]:checked + .toggle-switch {
+  background: var(--navy);
+}
+
+.toggle-label input[type="checkbox"]:checked + .toggle-switch::after {
+  transform: translateX(22px);
+}
+
+.toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toggle-text strong {
+  font-size: 0.9rem;
+  color: var(--gray-700);
+}
+
+.toggle-description {
+  font-size: 0.8rem;
+  color: var(--gray-500);
 }
 
 /* ============================================
@@ -620,7 +714,11 @@ body {
   white-space: nowrap;
   border: 0;
 }
-/* Streaming Preview Section */
+
+/* ============================================
+   STREAMING PREVIEW SECTION
+   ============================================ */
+
 #streamingSection {
   display: none;
   max-width: 800px;
@@ -639,7 +737,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #e0e0e0;
 }
@@ -680,6 +778,394 @@ body {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.5; transform: scale(0.9); }
 }
+
+/* ============================================
+   PROGRESS STEPS (3-Stage Agentic Workflow)
+   ============================================ */
+
+/* Hide old progress steps in favor of accordion */
+.progress-steps {
+  display: none;
+}
+
+/* ============================================
+   ACCORDION STEPS (3-Stage Agentic Workflow)
+   ============================================ */
+
+.accordion-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.accordion-step {
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.accordion-step:last-child {
+  border-bottom: none;
+}
+
+.accordion-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.accordion-header:hover {
+  background-color: var(--gray-100);
+}
+
+.accordion-step.active .accordion-header {
+  background-color: var(--navy-light);
+}
+
+.accordion-step.complete .accordion-header {
+  background-color: var(--green-light);
+}
+
+.accordion-step .step-indicator {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  background: var(--gray-200);
+  color: var(--gray-500);
+  transition: all 0.3s ease;
+}
+
+.accordion-step.active .step-indicator {
+  background: var(--navy);
+  color: var(--white);
+  animation: step-pulse 1.5s infinite;
+}
+
+.accordion-step.complete .step-indicator {
+  background: var(--green);
+  color: var(--white);
+  animation: none;
+}
+
+@keyframes step-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 57, 166, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(0, 57, 166, 0); }
+}
+
+.accordion-step .step-number {
+  display: block;
+}
+
+.accordion-step .step-check {
+  display: none;
+}
+
+.accordion-step.complete .step-number {
+  display: none;
+}
+
+.accordion-step.complete .step-check {
+  display: block;
+}
+
+.accordion-step .step-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.accordion-step .step-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  transition: color 0.3s ease;
+}
+
+.accordion-step.active .step-title {
+  color: var(--navy);
+}
+
+.accordion-step.complete .step-title {
+  color: var(--green);
+}
+
+.accordion-step .step-description {
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  margin-top: 2px;
+  transition: color 0.3s ease;
+}
+
+.accordion-step.active .step-description {
+  color: var(--gray-600);
+}
+
+.accordion-step.complete .step-description {
+  color: var(--gray-500);
+}
+
+/* Accordion Toggle Icon */
+.accordion-toggle {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.toggle-icon {
+  font-size: 0.7rem;
+  color: var(--gray-400);
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.accordion-step.expanded .toggle-icon {
+  transform: rotate(180deg);
+}
+
+.accordion-step.active .toggle-icon,
+.accordion-step.complete .toggle-icon {
+  color: var(--gray-600);
+}
+
+/* Accordion Panel */
+.accordion-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out;
+  background: var(--white);
+}
+
+.accordion-step.expanded .accordion-panel {
+  max-height: 2000px; /* Large enough to fit content */
+  transition: max-height 0.5s ease-in;
+}
+
+.panel-content {
+  padding: 1rem 1.25rem 1.5rem 1.25rem;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--gray-700);
+  border-top: 1px solid var(--gray-200);
+  min-height: 100px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Stage 1 & 3 Content Styling (Normal memo styling) */
+.stage-1-content,
+.stage-3-content {
+  /* Standard memo styling */
+}
+
+.stage-1-content h2,
+.stage-3-content h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.stage-1-content h2:first-child,
+.stage-3-content h2:first-child {
+  margin-top: 0;
+}
+
+.stage-1-content p,
+.stage-3-content p {
+  margin-bottom: 0.75rem;
+}
+
+.stage-1-content strong,
+.stage-3-content strong {
+  font-weight: 600;
+  color: var(--black);
+}
+
+/* Stage 2: Prospect Analysis - Subtle differentiation, same readability */
+.panel-header-prospect {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e8eef5 100%);
+  border-top: 1px solid var(--gray-200);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.prospect-icon {
+  font-size: 1.1rem;
+}
+
+.prospect-label {
+  font-size: 0.85rem;
+  color: var(--gray-600);
+}
+
+.prospect-label strong {
+  color: var(--navy);
+}
+
+.stage-2-content {
+  background: linear-gradient(180deg, #fafbfc 0%, #f5f7f9 100%);
+  border-left: 3px solid var(--sky-blue);
+  /* Same font size as other stages - no italic, fully readable */
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--gray-700);
+}
+
+.stage-2-content p {
+  margin-bottom: 0.75rem;
+}
+
+.stage-2-content strong {
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+/* Stage 3: Planning Revisions - Thinking/planning style */
+.panel-header-planning {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #f5f5f0 0%, #eeeee8 100%);
+  border-top: 1px solid var(--gray-200);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.planning-icon {
+  font-size: 1.1rem;
+}
+
+.planning-label {
+  font-size: 0.85rem;
+  color: var(--gray-600);
+}
+
+.stage-3-content {
+  background: linear-gradient(180deg, #fafaf8 0%, #f5f5f0 100%);
+  border-left: 3px solid var(--gray-400);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--gray-600);
+}
+
+.stage-3-content p {
+  margin-bottom: 0.75rem;
+}
+
+.stage-3-content strong {
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+/* Stage 4: Final Memo - Clean, polished */
+.stage-4-content {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--gray-700);
+}
+
+.stage-4-content h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.stage-4-content h2:first-child {
+  margin-top: 0;
+}
+
+.stage-4-content p {
+  margin-bottom: 0.75rem;
+}
+
+.stage-4-content strong {
+  font-weight: 600;
+  color: var(--black);
+}
+
+/* Streaming Cursor in Panels */
+.panel-content .streaming-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background-color: var(--navy);
+  margin-left: 2px;
+  animation: cursor-blink 1s infinite;
+  vertical-align: text-bottom;
+}
+
+.stage-2-content .streaming-cursor {
+  background-color: var(--sky-blue);
+}
+
+@keyframes cursor-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Responsive Accordion */
+@media (max-width: 480px) {
+  .accordion-header {
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+  }
+  
+  .accordion-step .step-indicator {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+  
+  .accordion-step .step-title {
+    font-size: 0.85rem;
+  }
+  
+  .accordion-step .step-description {
+    font-size: 0.75rem;
+  }
+  
+  .panel-content {
+    padding: 0.75rem 1rem 1rem 1rem;
+    font-size: 0.85rem;
+    max-height: 300px;
+  }
+  
+  .stage-2-content {
+    padding-left: 1.25rem !important;
+  }
+}
+
+/* Old progress-step styles removed - using accordion-step instead */
+
+/* ============================================
+   STREAMING PREVIEW WINDOW
+   ============================================ */
 
 /* Preview Window - Fixed Height */
 .streaming-preview {
@@ -786,7 +1272,7 @@ body {
   background-color: #0039A6;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 0;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
 }
@@ -803,6 +1289,7 @@ body {
 
 .btn-see-results.ready {
   background-color: #DC143C;
+  font-weight: 700;
   animation: ready-pulse 2s infinite;
 }
 

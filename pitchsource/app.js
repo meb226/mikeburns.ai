@@ -1,9 +1,13 @@
 /**
- * PitchSource - Frontend JavaScript (Streaming Preview Version)
+ * PitchSource - Frontend JavaScript (Agentic 3-Stage Workflow with Accordion UI)
+ * Features:
+ * - Accordion panels for each stage that expand/collapse
+ * - Buffered streaming for consistent typing speed across all stages
+ * - Distinct "prospect voice" styling for Stage 2 analysis
  */
 
 // API Base URL - change to localhost:3001 for local testing
-const API_BASE = 'https://pitchsource.vercel.app';
+const API_BASE = 'http://localhost:3001';
 
 // Demo Scenarios
 const DEMO_SCENARIOS = {
@@ -53,11 +57,187 @@ const DEMO_SCENARIOS = {
   }
 };
 
-// State
+// =============================================================================
+// DATA LAYER - Receives SSE events immediately, stores silently
+// =============================================================================
+
+// Stage data buckets - accumulate text as it arrives from server
+const stageData = { 1: '', 2: '', 3: '', 4: '' };
+
+// Stage completion flags - true when server says stage is done generating
+const stageComplete = { 1: false, 2: false, 3: false, 4: false };
+
+// Overall completion
+let allDataReceived = false;
+let doneEventData = null;
+
+// Reset data layer for new generation
+function resetDataLayer() {
+  stageData[1] = '';
+  stageData[2] = '';
+  stageData[3] = '';
+  stageData[4] = '';
+  stageComplete[1] = false;
+  stageComplete[2] = false;
+  stageComplete[3] = false;
+  stageComplete[4] = false;
+  allDataReceived = false;
+  doneEventData = null;
+}
+
+// =============================================================================
+// DISPLAY LAYER - Reveals content on its own schedule
+// =============================================================================
+
+// Display configuration per stage
+const DISPLAY_CONFIG = {
+  1: { charsPerTick: 6,  tickInterval: 50, lingerMs: 800 },   // ~120 chars/sec
+  2: { charsPerTick: 3,  tickInterval: 50, lingerMs: 2500 },  // ~60 chars/sec
+  3: { charsPerTick: 3,  tickInterval: 50, lingerMs: 2500 },  // ~60 chars/sec (same as Stage 2)
+  4: { charsPerTick: 15, tickInterval: 50, lingerMs: 0 },     // ~300 chars/sec (fast finish)
+};
+
+// Display state
+let displayStage = 0;           // Which stage is currently being shown (0 = not started)
+let displayedChars = 0;         // How many chars of current stage have been revealed
+let isDisplaying = false;       // Is the display loop running?
+let isLingeringAfterStage = false;  // Are we in a post-stage linger period?
+let displayFormData = null;     // Stored for completion handler
+let displayFirmMeta = null;
+let displayProspectMeta = null;
+
+// Start the display layer
+function startDisplayLayer(formData, firmMeta, prospectMeta) {
+  displayStage = 1;
+  displayedChars = 0;
+  isDisplaying = true;
+  isLingeringAfterStage = false;
+  displayFormData = formData;
+  displayFirmMeta = firmMeta;
+  displayProspectMeta = prospectMeta;
+  
+  // Initialize Stage 1 UI
+  setAccordionStepActive(1);
+  expandAccordionStep(1);
+  statusText.textContent = 'Generating initial draft...';
+  
+  // Start the display tick loop
+  scheduleDisplayTick();
+}
+
+// The main display tick - runs continuously until all stages are shown
+function displayTick() {
+  if (!isDisplaying || isLingeringAfterStage) return;
+  
+  const config = DISPLAY_CONFIG[displayStage];
+  if (!config) return;
+  
+  const data = stageData[displayStage];
+  const targetElement = getStageContentElement(displayStage);
+  
+  // Check if there's more content to reveal
+  if (displayedChars < data.length) {
+    // Drain some characters
+    const endIndex = Math.min(displayedChars + config.charsPerTick, data.length);
+    displayedChars = endIndex;
+    
+    // Render the revealed portion
+    const revealedText = data.slice(0, displayedChars);
+    if (targetElement) {
+      targetElement.innerHTML = renderMemo(revealedText) + '<span class="streaming-cursor"></span>';
+      targetElement.scrollTop = targetElement.scrollHeight;
+    }
+    
+    // Schedule next tick
+    scheduleDisplayTick();
+    
+  } else if (stageComplete[displayStage]) {
+    // Current stage is fully revealed AND server marked it complete
+    // Remove cursor and save text
+    if (targetElement) {
+      const cursor = targetElement.querySelector('.streaming-cursor');
+      if (cursor) cursor.remove();
+    }
+    
+    // Save to stage text variables
+    if (displayStage === 1) stage1Text = data;
+    if (displayStage === 2) stage2Text = data;
+    if (displayStage === 3) stage3Text = data;
+    if (displayStage === 4) stage4Text = data;
+    
+    // Start linger period
+    isLingeringAfterStage = true;
+    setTimeout(() => {
+      finishStageAndAdvance();
+    }, config.lingerMs);
+    
+  } else {
+    // We've caught up to the data but stage isn't complete yet
+    // Server is still generating - wait and check again
+    scheduleDisplayTick();
+  }
+}
+
+// Schedule the next display tick
+function scheduleDisplayTick() {
+  if (!isDisplaying) return;
+  const config = DISPLAY_CONFIG[displayStage];
+  const interval = config?.tickInterval || 50;
+  setTimeout(displayTick, interval);
+}
+
+// Finish current stage and advance to next
+function finishStageAndAdvance() {
+  setAccordionStepComplete(displayStage);
+  isLingeringAfterStage = false;
+  
+  if (displayStage < 4) {
+    // Advance to next stage
+    displayStage++;
+    displayedChars = 0;
+    
+    // Update UI for new stage
+    setAccordionStepActive(displayStage);
+    expandAccordionStep(displayStage);
+    
+    const stageNames = {
+      2: 'Analyzing from prospect perspective...',
+      3: 'Planning revisions...',
+      4: 'Finalizing memo...'
+    };
+    statusText.textContent = stageNames[displayStage] || 'Processing...';
+    
+    // Continue display loop
+    scheduleDisplayTick();
+    
+  } else {
+    // All 4 stages complete
+    isDisplaying = false;
+    completedMemoText = stage4Text || stage3Text || stage1Text;
+    handleStreamingComplete(displayFormData, displayFirmMeta, displayProspectMeta, doneEventData?.memosRemaining);
+  }
+}
+
+// Stop display (for errors)
+function stopDisplayLayer() {
+  isDisplaying = false;
+  isLingeringAfterStage = false;
+}
+
+// =============================================================================
+// STATE & DOM ELEMENTS
+// =============================================================================
+
 let firms = [];
 let issues = {};
 let selectedIssues = [];
-let completedMemoText = ''; // Store completed memo for results view
+let completedMemoText = '';
+let currentStage = 0;
+let stage1Text = '';
+let stage2Text = '';
+let stage3Text = '';
+let stage4Text = '';
+let prospectNameForReview = '';
 
 // DOM Elements
 const demoScenario = document.getElementById('demoScenario');
@@ -87,13 +267,25 @@ const statusText = document.getElementById('statusText');
 const seeResultsBtn = document.getElementById('seeResultsBtn');
 const streamingHint = document.getElementById('streamingHint');
 
-// Initialize
+// Accordion elements
+const accordionSteps = document.getElementById('accordionSteps');
+const stage1Content = document.getElementById('stage1Content');
+const stage2Content = document.getElementById('stage2Content');
+const stage3Content = document.getElementById('stage3Content');
+const stage4Content = document.getElementById('stage4Content');
+const prospectReviewName = document.getElementById('prospectReviewName');
+
+// =============================================================================
+// INITIALIZATION
+// =============================================================================
+
 document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
   await loadFirms();
   await loadIssues();
   setupEventListeners();
+  setupAccordionClickHandlers();
 }
 
 // Load firms for dropdown
@@ -103,7 +295,6 @@ async function loadFirms() {
     const data = await response.json();
     firms = data.firms;
     
-    // Populate dropdown
     firms.forEach(firm => {
       const option = document.createElement('option');
       option.value = firm.name;
@@ -123,7 +314,6 @@ async function loadIssues() {
     const data = await response.json();
     issues = data.issues;
     
-    // Populate dropdown (sorted alphabetically by label)
     const sortedIssues = Object.entries(issues).sort((a, b) => a[1].localeCompare(b[1]));
     sortedIssues.forEach(([code, label]) => {
       const option = document.createElement('option');
@@ -138,28 +328,100 @@ async function loadIssues() {
 
 // Setup event listeners
 function setupEventListeners() {
-  // Demo scenario selection
   demoScenario.addEventListener('change', handleDemoScenario);
-  
-  // Firm selection
   firmSelect.addEventListener('change', handleFirmSelect);
-  
-  // Issue dropdown
   issueDropdown.addEventListener('change', handleIssueAdd);
-  
-  // Form submission
   pitchForm.addEventListener('submit', handleSubmit);
-  
-  // Results actions
   copyBtn.addEventListener('click', handleCopy);
   emailBtn.addEventListener('click', handleEmail);
   newMemoBtn.addEventListener('click', handleNewMemo);
-  
-  // See Results button
   seeResultsBtn.addEventListener('click', handleSeeResults);
 }
 
-// Handle demo scenario selection
+// Setup accordion click handlers for manual expand/collapse after completion
+function setupAccordionClickHandlers() {
+  document.querySelectorAll('.accordion-header').forEach(header => {
+    header.addEventListener('click', () => {
+      // Only allow manual toggling after generation is complete
+      if (!statusDot.classList.contains('complete')) return;
+      
+      const step = header.closest('.accordion-step');
+      step.classList.toggle('expanded');
+    });
+  });
+}
+
+// =============================================================================
+// ACCORDION MANAGEMENT
+// =============================================================================
+
+// Reset all accordion steps to initial state
+function resetAccordion() {
+  document.querySelectorAll('.accordion-step').forEach(step => {
+    step.classList.remove('active', 'complete', 'expanded');
+  });
+  stage1Content.innerHTML = '';
+  stage2Content.innerHTML = '';
+  stage3Content.innerHTML = '';
+  if (stage4Content) stage4Content.innerHTML = '';
+  stage1Text = '';
+  stage2Text = '';
+  stage3Text = '';
+  stage4Text = '';
+}
+
+// Expand a specific accordion step (and collapse others during streaming)
+function expandAccordionStep(stepNum, collapseOthers = true) {
+  document.querySelectorAll('.accordion-step').forEach((step, index) => {
+    const thisStepNum = index + 1;
+    if (thisStepNum === stepNum) {
+      step.classList.add('expanded');
+    } else if (collapseOthers) {
+      step.classList.remove('expanded');
+    }
+  });
+}
+
+// Mark accordion step as active
+function setAccordionStepActive(stepNum) {
+  document.querySelectorAll('.accordion-step').forEach((step, index) => {
+    const thisStepNum = index + 1;
+    if (thisStepNum === stepNum) {
+      step.classList.add('active');
+      step.classList.remove('complete');
+    } else if (thisStepNum < stepNum) {
+      step.classList.remove('active');
+      step.classList.add('complete');
+    } else {
+      step.classList.remove('active', 'complete');
+    }
+  });
+}
+
+// Mark accordion step as complete
+function setAccordionStepComplete(stepNum) {
+  const step = document.querySelector(`.accordion-step[data-step="${stepNum}"]`);
+  if (step) {
+    step.classList.remove('active');
+    step.classList.add('complete');
+  }
+}
+
+// Get content element for a stage
+function getStageContentElement(stage) {
+  switch (stage) {
+    case 1: return stage1Content;
+    case 2: return stage2Content;
+    case 3: return stage3Content;
+    case 4: return stage4Content;
+    default: return null;
+  }
+}
+
+// =============================================================================
+// DEMO SCENARIO & FORM HANDLING
+// =============================================================================
+
 function handleDemoScenario(e) {
   const scenarioKey = e.target.value;
   if (!scenarioKey) return;
@@ -167,7 +429,6 @@ function handleDemoScenario(e) {
   const scenario = DEMO_SCENARIOS[scenarioKey];
   if (!scenario) return;
   
-  // Populate text fields
   document.getElementById('prospectName').value = scenario.prospectName;
   document.getElementById('prospectIndustry').value = scenario.prospectIndustry;
   document.getElementById('advocacyGoal').value = scenario.advocacyGoal;
@@ -177,7 +438,6 @@ function handleDemoScenario(e) {
   document.getElementById('budgetRange').value = scenario.budgetRange;
   document.getElementById('additionalContext').value = scenario.additionalContext;
   
-  // Clear existing issues and add scenario issues
   selectedIssues = [];
   renderIssueChips();
   
@@ -190,12 +450,10 @@ function handleDemoScenario(e) {
   renderIssueChips();
 }
 
-// Handle firm selection
 function handleFirmSelect(e) {
   // Firm selected - no additional UI updates needed
 }
 
-// Handle issue add from dropdown
 function handleIssueAdd(e) {
   const issueCode = e.target.value;
   
@@ -204,17 +462,14 @@ function handleIssueAdd(e) {
     renderIssueChips();
   }
   
-  // Reset dropdown to placeholder
   e.target.value = '';
 }
 
-// Handle issue removal
 function handleIssueRemove(issueCode) {
   selectedIssues = selectedIssues.filter(code => code !== issueCode);
   renderIssueChips();
 }
 
-// Render issue chips
 function renderIssueChips() {
   issueChips.innerHTML = '';
   
@@ -224,12 +479,11 @@ function renderIssueChips() {
     const chip = document.createElement('span');
     chip.className = 'issue-chip';
     chip.innerHTML = `
-      ${escapeHtml(label)}
-      <button type="button" class="issue-chip-remove" data-code="${code}" aria-label="Remove ${label}">×</button>
+      ${label}
+      <button type="button" class="chip-remove" data-code="${code}">&times;</button>
     `;
     
-    // Add click handler for remove button
-    chip.querySelector('.issue-chip-remove').addEventListener('click', () => {
+    chip.querySelector('.chip-remove').addEventListener('click', () => {
       handleIssueRemove(code);
     });
     
@@ -237,18 +491,15 @@ function renderIssueChips() {
   });
 }
 
-// Escape HTML to prevent XSS
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+// =============================================================================
+// FORM SUBMISSION & STREAMING
+// =============================================================================
 
-// Handle form submission - STREAMING VERSION
 async function handleSubmit(e) {
   e.preventDefault();
+  hideError();
   
-  // Validate issues selected
+  // Validate
   if (selectedIssues.length === 0) {
     showError('Please select at least one issue area.');
     return;
@@ -265,18 +516,30 @@ async function handleSubmit(e) {
     venue: document.getElementById('venue').value,
     timeline: document.getElementById('timeline').value,
     budgetRange: document.getElementById('budgetRange').value,
-    currentRepresentation: '', // Removed from UI but kept for API compatibility
-    additionalContext: document.getElementById('additionalContext').value
+    currentRepresentation: '',
+    additionalContext: document.getElementById('additionalContext').value,
+    agenticMode: document.getElementById('agenticToggle').checked
   };
   
-  // Hide input, show streaming preview
-  hideError();
+  // Store prospect name for Stage 2 display
+  prospectNameForReview = formData.prospectName;
+  
+  // Show loading state
+  generateBtn.querySelector('.btn-text').style.display = 'none';
+  generateBtn.querySelector('.btn-loading').style.display = 'inline-flex';
+  generateBtn.disabled = true;
+  
+  // Reset and show streaming section
+  resetStreamingState(formData);
   inputSection.style.display = 'none';
-  resultsSection.style.display = 'none';
   streamingSection.style.display = 'block';
   
-  // Reset streaming state
-  resetStreamingState(formData);
+  // Collapse header to just logo + red line during streaming
+  const header = document.querySelector('.header');
+  if (header) header.classList.add('collapsed');
+  
+  // Scroll to top smoothly
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   
   try {
     const response = await fetch(`${API_BASE}/api/generate-memo`, {
@@ -285,69 +548,111 @@ async function handleSubmit(e) {
       body: JSON.stringify(formData)
     });
     
-    // Check if response is streaming (SSE) or JSON error
-    const contentType = response.headers.get('content-type');
-    
-    if (contentType && contentType.includes('application/json')) {
-      // Non-streaming response (likely an error)
-      const error = await response.json();
-      throw new Error(error.error || 'Failed to generate memo');
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error || 'Failed to generate memo');
     }
     
-    // Handle streaming response
     await handleStreamingResponse(response, formData);
     
   } catch (err) {
-    console.error('Error generating memo:', err);
-    showError(err.message || 'Failed to generate memo. Please try again.');
-    // Return to input section on error
-    streamingSection.style.display = 'none';
+    console.error('Error:', err);
+    stopDisplayLayer();
+    showError(err.message);
     inputSection.style.display = 'block';
+    streamingSection.style.display = 'none';
+    // Restore header
+    const header = document.querySelector('.header');
+    if (header) header.classList.remove('collapsed');
+  } finally {
+    generateBtn.querySelector('.btn-text').style.display = 'inline';
+    generateBtn.querySelector('.btn-loading').style.display = 'none';
+    generateBtn.disabled = false;
   }
 }
 
 // Reset streaming preview state
 function resetStreamingState(formData) {
   completedMemoText = '';
-  streamingPreview.innerHTML = '';
+  currentStage = 0;
+  stage1Text = '';
+  stage2Text = '';
+  stage3Text = '';
+  stage4Text = '';
+  
+  // Reset data layer
+  resetDataLayer();
+  
+  // Reset display layer
+  displayStage = 0;
+  displayedChars = 0;
+  isDisplaying = false;
+  isLingeringAfterStage = false;
+  displayFormData = null;
+  displayFirmMeta = null;
+  displayProspectMeta = null;
+  
   streamingFirm.textContent = formData.firmName;
   streamingProspect.textContent = formData.prospectName;
   statusDot.classList.remove('complete');
-  statusText.textContent = 'Generating...';
+  statusText.textContent = formData.agenticMode ? 'Starting...' : 'Generating...';
   seeResultsBtn.disabled = true;
   seeResultsBtn.classList.remove('ready');
   seeResultsBtn.textContent = 'Generating memo...';
   streamingHint.textContent = 'Watching your pitch memo take shape';
+  
+  // Show/hide appropriate UI based on agentic mode
+  if (formData.agenticMode) {
+    accordionSteps.style.display = 'flex';
+    streamingPreview.style.display = 'none';
+    resetAccordion();
+    // Update prospect name in Stage 2 header
+    if (prospectReviewName) {
+      prospectReviewName.textContent = formData.prospectName;
+    }
+  } else {
+    accordionSteps.style.display = 'none';
+    streamingPreview.style.display = 'block';
+    streamingPreview.innerHTML = '';
+  }
 }
 
-// Handle streaming SSE response
+// Handle streaming SSE response - Data layer receives, Display layer reveals
 async function handleStreamingResponse(response, formData) {
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   
-  let memoText = '';
   let firmMeta = null;
   let prospectMeta = null;
-  let buffer = ''; // Buffer for incomplete chunks
+  let sseBuffer = '';
+  const isAgentic = formData.agenticMode;
+  
+  // Reset data layer
+  resetDataLayer();
+  
+  // Track which stage server is currently sending (for data layer)
+  let serverStage = 0;
   
   while (true) {
     const { done, value } = await reader.read();
     
     if (done) {
-      // Stream ended - mark complete if we have content
-      if (memoText && !completedMemoText) {
-        completedMemoText = memoText;
-        handleStreamingComplete(formData, firmMeta, prospectMeta, null);
+      // Stream ended unexpectedly - try to recover
+      if (!allDataReceived) {
+        console.warn('Stream ended without done event');
+        allDataReceived = true;
+        // Mark current stage complete if not already
+        if (serverStage > 0 && !stageComplete[serverStage]) {
+          stageComplete[serverStage] = true;
+        }
       }
       break;
     }
     
-    // Add new data to buffer
-    buffer += decoder.decode(value, { stream: true });
+    sseBuffer += decoder.decode(value, { stream: true });
     
-    // Process complete lines from buffer
-    const lines = buffer.split('\n');
-    buffer = lines.pop() || ''; // Keep incomplete line in buffer
+    const lines = sseBuffer.split('\n');
+    sseBuffer = lines.pop() || '';
     
     for (const line of lines) {
       if (line.startsWith('data: ')) {
@@ -362,18 +667,45 @@ async function handleStreamingResponse(response, formData) {
             prospectMeta = data.prospect;
             streamingFirm.textContent = firmMeta?.name || formData.firmName;
             streamingProspect.textContent = prospectMeta?.name || formData.prospectName;
-            console.log(`Generating with model: ${data.model || 'unknown'}`);
+            if (prospectReviewName && prospectMeta?.name) {
+              prospectReviewName.textContent = prospectMeta.name;
+            }
+            console.log(`Mode: ${data.model || 'unknown'}`);
+            
+          } else if (data.type === 'stage' && isAgentic) {
+            if (data.status === 'starting') {
+              serverStage = data.stage;
+              console.log(`[DATA] Stage ${serverStage} starting`);
+              
+              // Start display layer on first stage
+              if (serverStage === 1 && displayStage === 0) {
+                startDisplayLayer(formData, firmMeta, prospectMeta);
+              }
+              
+            } else if (data.status === 'complete') {
+              stageComplete[data.stage] = true;
+              console.log(`[DATA] Stage ${data.stage} complete (${stageData[data.stage].length} chars)`);
+            }
             
           } else if (data.type === 'text') {
-            memoText += data.content;
-            streamingPreview.innerHTML = renderMemo(memoText) + '<span class="streaming-cursor"></span>';
-            streamingPreview.scrollTop = streamingPreview.scrollHeight;
+            if (isAgentic && serverStage > 0) {
+              // Simply append to the appropriate stage bucket
+              stageData[serverStage] += data.content;
+            } else if (!isAgentic) {
+              // Non-agentic mode: direct render (unchanged behavior)
+              stage1Text += data.content;
+              streamingPreview.innerHTML = renderMemo(stage1Text) + '<span class="streaming-cursor"></span>';
+              streamingPreview.scrollTop = streamingPreview.scrollHeight;
+            }
             
           } else if (data.type === 'done') {
-            completedMemoText = memoText;
-            handleStreamingComplete(formData, firmMeta, prospectMeta, data.memosRemaining);
+            allDataReceived = true;
+            doneEventData = data;
+            console.log('[DATA] All data received from server');
+            // Display layer will handle completion when it catches up
             
           } else if (data.type === 'error') {
+            stopDisplayLayer();
             throw new Error(data.message);
           }
           
@@ -391,15 +723,28 @@ async function handleStreamingResponse(response, formData) {
 
 // Handle streaming completion
 function handleStreamingComplete(formData, firmMeta, prospectMeta, memosRemaining) {
-  // Remove cursor
-  const cursor = streamingPreview.querySelector('.streaming-cursor');
-  if (cursor) cursor.remove();
+  // Remove any remaining cursors
+  document.querySelectorAll('.streaming-cursor').forEach(c => c.remove());
+  
+  // Mark all steps complete (agentic mode only)
+  if (formData.agenticMode) {
+    document.querySelectorAll('.accordion-step').forEach(step => {
+      step.classList.remove('active');
+      step.classList.add('complete');
+    });
+    // Expand Stage 4 to show final result
+    expandAccordionStep(4, false);
+  }
+  
+  // Restore header (was collapsed during streaming)
+  const header = document.querySelector('.header');
+  if (header) header.classList.remove('collapsed');
   
   // Update status
   statusDot.classList.add('complete');
   statusText.textContent = 'Complete';
   
-  // Enable button with animation
+  // Enable button
   seeResultsBtn.disabled = false;
   seeResultsBtn.classList.add('ready');
   seeResultsBtn.textContent = 'See Full Memo →';
@@ -411,43 +756,42 @@ function handleStreamingComplete(formData, firmMeta, prospectMeta, memosRemainin
     streamingHint.textContent = 'Memo ready!';
   }
   
-  // Store meta for results view
+  // Store meta
   seeResultsBtn.dataset.firmName = firmMeta?.name || formData.firmName;
   seeResultsBtn.dataset.prospectName = prospectMeta?.name || formData.prospectName;
 }
 
-// Handle "See Results" button click
+// =============================================================================
+// RESULTS HANDLING
+// =============================================================================
+
 function handleSeeResults() {
-  // Populate results section
   memoFirm.textContent = seeResultsBtn.dataset.firmName;
   memoProspect.textContent = seeResultsBtn.dataset.prospectName;
   memoContent.innerHTML = renderMemo(completedMemoText);
   
-  // Transition to results
   streamingSection.style.display = 'none';
   resultsSection.style.display = 'block';
+  
+  // Keep header collapsed on results page
+  const header = document.querySelector('.header');
+  if (header) header.classList.add('collapsed');
+  
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Simple markdown renderer
 function renderMemo(text) {
   return text
-    // ALL CAPS lines as h2 headers (e.g., "EXECUTIVE SUMMARY")
     .replace(/^([A-Z][A-Z\s&\-]+)$/gm, '<h2>$1</h2>')
-    // Markdown headers
     .replace(/^### (.+)$/gm, '<h3>$1</h3>')
     .replace(/^## (.+)$/gm, '<h2>$1</h2>')
     .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    // Bold
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    // Italic
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    // Bullet lists
     .replace(/^- (.+)$/gm, '<li>$1</li>')
     .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-    // Numbered lists
     .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
-    // Paragraphs
     .replace(/\n\n/g, '</p><p>')
     .replace(/^(.+)$/gm, (match) => {
       if (match.startsWith('<')) return match;
@@ -470,7 +814,7 @@ async function handleCopy() {
   }
 }
 
-// Handle email - opens default mail client
+// Handle email
 function handleEmail() {
   const firmName = memoFirm.textContent;
   const prospectName = memoProspect.textContent;
@@ -479,7 +823,6 @@ function handleEmail() {
   const subject = encodeURIComponent(`PitchSource Memo: ${firmName} → ${prospectName}`);
   const body = encodeURIComponent(memoText);
   
-  // mailto has ~2000 char limit in some clients, but most modern ones handle more
   window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
 
@@ -488,6 +831,11 @@ function handleNewMemo() {
   resultsSection.style.display = 'none';
   streamingSection.style.display = 'none';
   inputSection.style.display = 'block';
+  
+  // Restore full header on input page
+  const header = document.querySelector('.header');
+  if (header) header.classList.remove('collapsed');
+  
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 

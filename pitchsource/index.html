@@ -133,6 +133,18 @@
             <textarea id="additionalContext" class="form-textarea" rows="2" placeholder="Any other relevant information about the prospect or their situation"></textarea>
           </div>
 
+          <!-- Agentic Toggle -->
+          <div class="agentic-toggle">
+            <label class="toggle-label">
+              <input type="checkbox" id="agenticToggle" checked>
+              <span class="toggle-switch"></span>
+              <span class="toggle-text">
+                <strong>Agentic Review</strong>
+                <span class="toggle-description">3-stage workflow: Draft → Prospect Analysis → Refinement</span>
+              </span>
+            </label>
+          </div>
+
           <button type="submit" class="btn-primary" id="generateBtn">
             <span class="btn-text">Generate Pitch Memo</span>
             <span class="btn-loading" style="display: none;">
@@ -156,12 +168,112 @@
             </div>
             <div class="streaming-status">
               <span class="status-dot" id="statusDot"></span>
-              <span id="statusText">Generating...</span>
+              <span id="statusText">Starting...</span>
             </div>
           </div>
           
-          <div class="streaming-preview" id="streamingPreview">
-            <!-- Streamed content appears here -->
+          <!-- Accordion Progress Steps -->
+          <div class="accordion-steps" id="accordionSteps">
+            <!-- Stage 1: Initial Draft -->
+            <div class="accordion-step" data-step="1">
+              <div class="accordion-header" id="accordionHeader1">
+                <div class="step-indicator">
+                  <span class="step-number">1</span>
+                  <span class="step-check">✓</span>
+                </div>
+                <div class="step-content">
+                  <div class="step-title">Generating Initial Draft</div>
+                  <div class="step-description">Creating strategic pitch memo with firm data</div>
+                </div>
+                <div class="accordion-toggle">
+                  <span class="toggle-icon">▼</span>
+                </div>
+              </div>
+              <div class="accordion-panel" id="accordionPanel1">
+                <div class="panel-content stage-1-content" id="stage1Content">
+                  <!-- Stage 1 draft streams here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Stage 2: Prospect Analysis -->
+            <div class="accordion-step" data-step="2">
+              <div class="accordion-header" id="accordionHeader2">
+                <div class="step-indicator">
+                  <span class="step-number">2</span>
+                  <span class="step-check">✓</span>
+                </div>
+                <div class="step-content">
+                  <div class="step-title">Prospect Analysis</div>
+                  <div class="step-description">Reviewing from prospect's perspective</div>
+                </div>
+                <div class="accordion-toggle">
+                  <span class="toggle-icon">▼</span>
+                </div>
+              </div>
+              <div class="accordion-panel" id="accordionPanel2">
+                <div class="panel-header-prospect">
+                  <span class="prospect-icon">💭</span>
+                  <span class="prospect-label">Reviewing as: <strong id="prospectReviewName">Prospect</strong> Decision-Maker</span>
+                </div>
+                <div class="panel-content stage-2-content" id="stage2Content">
+                  <!-- Stage 2 feedback streams here with distinct styling -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Stage 3: Planning Revisions -->
+            <div class="accordion-step" data-step="3">
+              <div class="accordion-header" id="accordionHeader3">
+                <div class="step-indicator">
+                  <span class="step-number">3</span>
+                  <span class="step-check">✓</span>
+                </div>
+                <div class="step-content">
+                  <div class="step-title">Planning Revisions</div>
+                  <div class="step-description">Determining how to address feedback</div>
+                </div>
+                <div class="accordion-toggle">
+                  <span class="toggle-icon">▼</span>
+                </div>
+              </div>
+              <div class="accordion-panel" id="accordionPanel3">
+                <div class="panel-header-planning">
+                  <span class="planning-icon">🔧</span>
+                  <span class="planning-label">Addressing prospect feedback</span>
+                </div>
+                <div class="panel-content stage-3-content" id="stage3Content">
+                  <!-- Stage 3 planning streams here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Stage 4: Final Memo -->
+            <div class="accordion-step" data-step="4">
+              <div class="accordion-header" id="accordionHeader4">
+                <div class="step-indicator">
+                  <span class="step-number">4</span>
+                  <span class="step-check">✓</span>
+                </div>
+                <div class="step-content">
+                  <div class="step-title">Finalizing Memo</div>
+                  <div class="step-description">Producing refined pitch memo</div>
+                </div>
+                <div class="accordion-toggle">
+                  <span class="toggle-icon">▼</span>
+                </div>
+              </div>
+              <div class="accordion-panel" id="accordionPanel4">
+                <div class="panel-content stage-4-content" id="stage4Content">
+                  <!-- Stage 4 final memo streams here -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Non-agentic streaming preview (single stage) -->
+          <div class="streaming-preview" id="streamingPreview" style="display: none;">
+            <!-- Streamed content appears here for non-agentic mode -->
           </div>
           
           <div class="streaming-actions">
