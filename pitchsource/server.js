@@ -81,8 +81,7 @@ console.log(`Model mode: ${TEST_MODE ? 'TEST (Haiku)' : 'PRODUCTION (Opus/Sonnet
 
 
 // === DEMO RATE LIMITING ===
-let memoCount = 0;
-const MEMO_LIMIT = 10;
+const MEMO_LIMIT = 5;  // Per user per day
 
 // === ISSUE CODES ===
 const ISSUE_CODES = {
@@ -165,15 +164,28 @@ app.get('/api/usage-logs', async (req, res) => {
 // MEMO GENERATION - Supports both Agentic (3-stage) and Single-stage modes
 // =============================================================================
 app.post('/api/generate-memo', async (req, res) => {
-  // Demo rate limiting
-  if (memoCount >= MEMO_LIMIT) {
-    return res.status(429).json({ 
-      error: `Demo limit reached (${MEMO_LIMIT} memos). Contact Mike for additional access.`,
-      memosUsed: memoCount,
-      limit: MEMO_LIMIT
-    });
-  }
-  
+    // IP-based rate limiting
+    const userIp = req.headers['x-forwarded-for']?.split(',')[0] || req.ip || 'unknown';
+    const userKey = `pitchsource:limit:${userIp}`;
+    
+    try {
+      const count = await redis.incr(userKey);
+      if (count === 1) {
+        await redis.expire(userKey, 86400); // 24 hour window
+      }
+      
+      if (count > MEMO_LIMIT) {
+        return res.status(429).json({ 
+          error: `Demo limit reached (${MEMO_LIMIT} memos per day). Contact Mike for additional access.`,
+          memosUsed: count,
+          limit: MEMO_LIMIT
+        });
+      }
+    } catch (redisErr) {
+      console.error('Redis rate limit error:', redisErr.message);
+      // Continue anyway if Redis fails - don't block the demo
+    }
+
   const {
     firmName,
     prospectName,
