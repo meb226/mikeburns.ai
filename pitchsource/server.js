@@ -82,7 +82,7 @@ console.log(`Model mode: ${TEST_MODE ? 'TEST (Haiku)' : 'PRODUCTION (Opus/Sonnet
 
 // === DEMO RATE LIMITING ===
 let memoCount = 0;
-const MEMO_LIMIT = 20;
+const MEMO_LIMIT = 10;
 
 // === ISSUE CODES ===
 const ISSUE_CODES = {
