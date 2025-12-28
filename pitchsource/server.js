@@ -91,6 +91,7 @@ console.log(`Model mode: ${TEST_MODE ? 'TEST (Haiku)' : 'PRODUCTION (Opus/Sonnet
 
 // === DEMO RATE LIMITING ===
 const MEMO_LIMIT = 5;  // Per user per day
+let memoCount = 0;     // Track memos generated this session
 
 // === ISSUE CODES ===
 const ISSUE_CODES = {
@@ -191,7 +192,7 @@ app.post('/api/research-prospect', async (req, res) => {
     displayName = lookup.canonical;
     if (lookup.isParent && lookup.subsidiaries?.length > 0) {
       // Parent company - search all subsidiaries
-      searchNames = lookup.subsidiaries;
+      searchNames = [lookup.canonical, ...lookup.subsidiaries];
       console.log(`[Research] Parent company: "${lookup.canonical}" with ${searchNames.length} subsidiaries`);
     } else {
       // Regular company
@@ -230,48 +231,66 @@ app.post('/api/research-prospect', async (req, res) => {
 });
 
 // Merge LDA results from multiple subsidiary searches
+// FIXED: Field name mismatches between searchLDAForClient and frontend expectations
 function mergeSubsidiaryResults(results, parentName) {
-  // Filter out null/empty results
-  const validResults = results.filter(r => r && (r.firms?.length > 0 || r.issuesByTopic));
+  // Filter out null/empty results - check currentFirms (not firms) and found flag
+  const validResults = results.filter(r => r && r.found && (r.currentFirms?.length > 0 || Object.keys(r.issuesByTopic || {}).length > 0));
   
   if (validResults.length === 0) {
-    return { name: parentName, firms: [], issuesByTopic: {} };
+    return { found: false, name: parentName, currentFirms: [], issuesByTopic: {}, confidence: 0 };
   }
   
-  // Merge firms (dedupe by name)
+  // Merge firms (dedupe by name) - use currentFirms field
   const firmsMap = new Map();
   validResults.forEach(r => {
-    (r.firms || []).forEach(f => {
+    (r.currentFirms || []).forEach(f => {
       const existing = firmsMap.get(f.name);
       if (existing) {
         // Combine income (take higher)
         existing.income = Math.max(existing.income || 0, f.income || 0);
+        if (f.incomeDisplay && (!existing.incomeDisplay || existing.incomeDisplay === 'Not reported')) {
+          existing.incomeDisplay = f.incomeDisplay;
+        }
       } else {
         firmsMap.set(f.name, { ...f });
       }
     });
   });
   
-  // Merge issues by topic
+  // Merge issues by topic - use specificIssues field (not issues)
   const issuesByTopic = {};
   validResults.forEach(r => {
-    Object.entries(r.issuesByTopic || {}).forEach(([topic, data]) => {
-      if (!issuesByTopic[topic]) {
-        issuesByTopic[topic] = { label: data.label, issues: new Set() };
+    Object.entries(r.issuesByTopic || {}).forEach(([code, data]) => {
+      if (!issuesByTopic[code]) {
+        issuesByTopic[code] = { 
+          code: data.code || code,
+          label: data.label, 
+          specificIssues: new Set() 
+        };
       }
-      (data.issues || []).forEach(issue => issuesByTopic[topic].issues.add(issue));
+      // Handle specificIssues (the correct field name from searchLDAForClient)
+      (data.specificIssues || []).forEach(issue => issuesByTopic[code].specificIssues.add(issue));
     });
   });
   
   // Convert Sets back to arrays
-  Object.values(issuesByTopic).forEach(topic => {
-    topic.issues = Array.from(topic.issues);
+  Object.keys(issuesByTopic).forEach(code => {
+    issuesByTopic[code].specificIssues = Array.from(issuesByTopic[code].specificIssues);
   });
   
+  // Take highest confidence and first quarter found
+  const bestResult = validResults.reduce((best, r) => 
+    (r.confidence || 0) > (best.confidence || 0) ? r : best
+  , validResults[0]);
+  
   return {
-    name: parentName,
-    firms: Array.from(firmsMap.values()).sort((a, b) => a.name.localeCompare(b.name)),
-    issuesByTopic
+    found: true,
+    name: bestResult.name || parentName,
+    currentFirms: Array.from(firmsMap.values()).sort((a, b) => a.name.localeCompare(b.name)),
+    issuesByTopic,
+    quarter: bestResult.quarter,
+    confidence: bestResult.confidence || 75,
+    filingCount: validResults.reduce((sum, r) => sum + (r.filingCount || 0), 0)
   };
 }
 
