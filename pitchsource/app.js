@@ -13,7 +13,7 @@
  * - Distinct "prospect voice" styling for Stage 2 analysis
  */
 
-// API Base URL - change to localhost:3001 for local testing
+// API Base URL - change to localhost:3001 for local testing; https://pitchsource.vercel.app for prod
 const API_BASE = 'https://pitchsource.vercel.app';
 
 // Mode descriptions for UI
@@ -457,6 +457,29 @@ const progressContainer = document.getElementById('progressContainer');
 const progressFill = document.getElementById('progressFill');
 const progressLabel = document.getElementById('progressLabel');
 
+// Research elements
+const researchToggle = document.getElementById('researchToggle');
+const researchSection = document.getElementById('researchSection');
+const researchProspectName = document.getElementById('researchProspectName');
+const researchLoading = document.getElementById('researchLoading');
+const researchResults = document.getElementById('researchResults');
+const researchActions = document.getElementById('researchActions');
+const ldaResultsCard = document.getElementById('ldaResultsCard');
+const noResultsCard = document.getElementById('noResultsCard');
+const ldaCompanyName = document.getElementById('ldaCompanyName');
+const ldaFilingPeriod = document.getElementById('ldaFilingPeriod');
+const ldaFirmsTableBody = document.getElementById('ldaFirmsTableBody');
+const ldaTopicsContainer = document.getElementById('ldaTopicsContainer');
+const researchConfidence = document.getElementById('researchConfidence');
+const selectAllBtn = document.getElementById('selectAllBtn');
+const unselectAllBtn = document.getElementById('unselectAllBtn');
+const inputAndReviewBtn = document.getElementById('inputAndReviewBtn');
+const generateWithResearchBtn = document.getElementById('generateWithResearchBtn');
+
+// Research state
+let researchData = null;
+let selectedResearchItems = new Set();
+
 // =============================================================================
 // INITIALIZATION
 // =============================================================================
@@ -468,6 +491,7 @@ async function init() {
   await loadIssues();
   setupEventListeners();
   setupAccordionClickHandlers();
+  setupAutocomplete();
 }
 
 // Load firms for dropdown
@@ -541,6 +565,25 @@ function setupEventListeners() {
   if (continueBtn) {
     continueBtn.addEventListener('click', handleContinue);
   }
+  
+  // Research buttons
+  if (selectAllBtn) {
+    selectAllBtn.addEventListener('click', handleSelectAll);
+  }
+  if (unselectAllBtn) {
+    unselectAllBtn.addEventListener('click', handleUnselectAll);
+  }
+  if (inputAndReviewBtn) {
+    inputAndReviewBtn.addEventListener('click', handleInputAndReview);
+  }
+  if (generateWithResearchBtn) {
+    generateWithResearchBtn.addEventListener('click', handleGenerateWithResearch);
+  }
+  
+  // Research toggle - show/hide advocacy goal hint
+  if (researchToggle) {
+    researchToggle.addEventListener('change', handleResearchToggleChange);
+  }
 }
 
 // Handle mode selector change
@@ -568,6 +611,138 @@ function setupAccordionClickHandlers() {
       step.classList.toggle('expanded');
     });
   });
+}
+
+// =============================================================================
+// AUTOCOMPLETE
+// =============================================================================
+
+let autocompleteTimeout = null;
+let autocompleteSelectedIndex = -1;
+
+function setupAutocomplete() {
+  const prospectInput = document.getElementById('prospectName');
+  const dropdown = document.getElementById('autocompleteDropdown');
+  
+  if (!prospectInput || !dropdown) return;
+  
+  // Input handler with debounce
+  prospectInput.addEventListener('input', (e) => {
+    clearTimeout(autocompleteTimeout);
+    const query = e.target.value.trim();
+    
+    if (query.length < 2) {
+      hideAutocomplete();
+      return;
+    }
+    
+    autocompleteTimeout = setTimeout(() => {
+      fetchAutocomplete(query);
+    }, 200);
+  });
+  
+  // Keyboard navigation
+  prospectInput.addEventListener('keydown', (e) => {
+    const items = dropdown.querySelectorAll('.autocomplete-item');
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      autocompleteSelectedIndex = Math.min(autocompleteSelectedIndex + 1, items.length - 1);
+      updateAutocompleteSelection(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      autocompleteSelectedIndex = Math.max(autocompleteSelectedIndex - 1, 0);
+      updateAutocompleteSelection(items);
+    } else if (e.key === 'Enter' && autocompleteSelectedIndex >= 0) {
+      e.preventDefault();
+      selectAutocompleteItem(items[autocompleteSelectedIndex]);
+    } else if (e.key === 'Escape') {
+      hideAutocomplete();
+    }
+  });
+  
+  // Hide on blur (with delay to allow click)
+  prospectInput.addEventListener('blur', () => {
+    setTimeout(hideAutocomplete, 200);
+  });
+  
+  // Show on focus if has value
+  prospectInput.addEventListener('focus', (e) => {
+    const query = e.target.value.trim();
+    if (query.length >= 2) {
+      fetchAutocomplete(query);
+    }
+  });
+}
+
+async function fetchAutocomplete(query) {
+  try {
+    const response = await fetch(`${API_BASE}/api/clients?q=${encodeURIComponent(query)}`);
+    const data = await response.json();
+    
+    if (data.results && data.results.length > 0) {
+      renderAutocomplete(data.results);
+    } else {
+      hideAutocomplete();
+    }
+  } catch (err) {
+    console.error('Autocomplete error:', err);
+    hideAutocomplete();
+  }
+}
+
+function renderAutocomplete(results) {
+  const dropdown = document.getElementById('autocompleteDropdown');
+  dropdown.innerHTML = '';
+  autocompleteSelectedIndex = -1;
+  
+  results.forEach((result, index) => {
+    const item = document.createElement('div');
+    item.className = 'autocomplete-item';
+    
+    // Show subsidiary info for parent companies
+    let filingText = `${result.filings} filings`;
+    if (result.isParent && result.subsidiaryCount > 0) {
+      filingText += ` (${result.subsidiaryCount} entities)`;
+    }
+    
+    item.innerHTML = `
+      <span class="autocomplete-item-name">${result.name}</span>
+      <span class="autocomplete-item-filings">${filingText}</span>
+    `;
+    
+    item.addEventListener('click', () => selectAutocompleteItem(item));
+    item.addEventListener('mouseenter', () => {
+      autocompleteSelectedIndex = index;
+      updateAutocompleteSelection(dropdown.querySelectorAll('.autocomplete-item'));
+    });
+    
+    dropdown.appendChild(item);
+  });
+  
+  dropdown.classList.add('active');
+}
+
+function updateAutocompleteSelection(items) {
+  items.forEach((item, index) => {
+    item.classList.toggle('selected', index === autocompleteSelectedIndex);
+  });
+}
+
+function selectAutocompleteItem(item) {
+  const prospectInput = document.getElementById('prospectName');
+  const name = item.querySelector('.autocomplete-item-name').textContent;
+  prospectInput.value = name;
+  hideAutocomplete();
+}
+
+function hideAutocomplete() {
+  const dropdown = document.getElementById('autocompleteDropdown');
+  if (dropdown) {
+    dropdown.classList.remove('active');
+    dropdown.innerHTML = '';
+  }
+  autocompleteSelectedIndex = -1;
 }
 
 // =============================================================================
@@ -788,6 +963,294 @@ function renderIssueChips() {
 }
 
 // =============================================================================
+// RESEARCH FLOW
+// =============================================================================
+
+async function startResearch(prospectName) {
+  // Show research section, hide input
+  inputSection.style.display = 'none';
+  researchSection.style.display = 'block';
+  
+  // Reset state
+  researchData = null;
+  selectedResearchIssues = [];
+  researchProspectName.textContent = prospectName;
+  
+  // Show loading
+  researchLoading.style.display = 'block';
+  researchResults.style.display = 'none';
+  researchActions.style.display = 'none';
+  
+  try {
+    const response = await fetch(`${API_BASE}/api/research-prospect`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prospectName: prospectName,
+        industry: document.getElementById('prospectIndustry').value,
+        issueAreas: selectedIssues.map(code => issues[code])
+      })
+    });
+    
+    const data = await response.json();
+    researchData = data.lda;
+    
+    // Hide loading, show results
+    researchLoading.style.display = 'none';
+    researchResults.style.display = 'block';
+    researchActions.style.display = 'flex';
+    
+    if (researchData && researchData.found) {
+      renderResearchResults();
+    } else {
+      showNoResults();
+    }
+    
+  } catch (err) {
+    console.error('Research error:', err);
+    researchLoading.style.display = 'none';
+    researchResults.style.display = 'block';
+    researchActions.style.display = 'flex';
+    showNoResults();
+  }
+}
+
+function renderResearchResults() {
+  // Show LDA card, hide no results
+  ldaResultsCard.style.display = 'block';
+  noResultsCard.style.display = 'none';
+  
+  // Populate metadata
+  ldaCompanyName.textContent = researchData.name || '—';
+  ldaFilingPeriod.textContent = researchData.quarter || '—';
+  
+  // Confidence badge
+  const conf = researchData.confidence || 0;
+  researchConfidence.textContent = `${conf}% match`;
+  researchConfidence.className = 'research-confidence';
+  if (conf < 50) researchConfidence.classList.add('low');
+  else if (conf < 75) researchConfidence.classList.add('medium');
+  
+  // Render firms table
+  ldaFirmsTableBody.innerHTML = '';
+  if (researchData.currentFirms?.length > 0) {
+    researchData.currentFirms.forEach(firm => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${firm.name}</td>
+        <td>${firm.incomeDisplay || 'Not reported'}</td>
+      `;
+      ldaFirmsTableBody.appendChild(tr);
+    });
+  } else {
+    ldaFirmsTableBody.innerHTML = '<tr><td colspan="2">No representation found</td></tr>';
+  }
+  
+  // Render issues by topic with checkboxes
+  ldaTopicsContainer.innerHTML = '';
+  selectedResearchItems = new Set();
+  
+  const topics = researchData.issuesByTopic || {};
+  const topicKeys = Object.keys(topics);
+  
+  // Sort topics alphabetically by label
+  topicKeys.sort((a, b) => {
+    const labelA = topics[a].label || a;
+    const labelB = topics[b].label || b;
+    return labelA.localeCompare(labelB);
+  });
+  
+  // Calculate total issue count
+  let totalIssueCount = 0;
+  topicKeys.forEach(k => {
+    totalIssueCount += topics[k].specificIssues?.length || 0;
+  });
+  
+  // Update total count display
+  const issuesTotalCount = document.getElementById('issuesTotalCount');
+  if (issuesTotalCount) {
+    issuesTotalCount.textContent = `(${totalIssueCount} items)`;
+  }
+  
+  if (topicKeys.length === 0) {
+    ldaTopicsContainer.innerHTML = '<p style="color: #666; font-size: 0.9rem; padding: 8px;">No specific issues found in filings.</p>';
+    return;
+  }
+  
+  topicKeys.forEach(topicCode => {
+    const topic = topics[topicCode];
+    
+    // Create topic section
+    const topicDiv = document.createElement('div');
+    topicDiv.className = 'research-topic-group';
+    
+    // Topic header
+    const topicHeader = document.createElement('div');
+    topicHeader.className = 'research-topic-header';
+    topicHeader.innerHTML = `<strong>${topic.label}</strong> <span class="topic-count">(${topic.specificIssues.length})</span>`;
+    topicDiv.appendChild(topicHeader);
+    
+    // Topic issues
+    const issuesList = document.createElement('div');
+    issuesList.className = 'research-topic-issues';
+    
+    topic.specificIssues.forEach((issue, idx) => {
+      const itemId = `${topicCode}-${idx}`;
+      selectedResearchItems.add(itemId); // Default to selected
+      
+      const div = document.createElement('div');
+      div.className = 'research-checkbox-item';
+      
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `research-${itemId}`;
+      checkbox.checked = true;
+      checkbox.dataset.topic = topicCode;
+      checkbox.dataset.issue = issue;
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+          selectedResearchItems.add(itemId);
+        } else {
+          selectedResearchItems.delete(itemId);
+        }
+      });
+      
+      const label = document.createElement('label');
+      label.htmlFor = `research-${itemId}`;
+      label.textContent = issue;
+      
+      div.appendChild(checkbox);
+      div.appendChild(label);
+      issuesList.appendChild(div);
+    });
+    
+    topicDiv.appendChild(issuesList);
+    ldaTopicsContainer.appendChild(topicDiv);
+  });
+}
+
+function showNoResults() {
+  ldaResultsCard.style.display = 'none';
+  noResultsCard.style.display = 'block';
+}
+
+function handleSelectAll() {
+  const checkboxes = ldaTopicsContainer.querySelectorAll('input[type="checkbox"]');
+  selectedResearchItems = new Set();
+  checkboxes.forEach(cb => {
+    cb.checked = true;
+    const topicCode = cb.dataset.topic;
+    const idx = cb.id.split('-').pop();
+    selectedResearchItems.add(`${topicCode}-${idx}`);
+  });
+}
+
+function handleUnselectAll() {
+  const checkboxes = ldaTopicsContainer.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(cb => cb.checked = false);
+  selectedResearchItems = new Set();
+}
+
+// Build research context string from selected items
+function buildResearchContext() {
+  let contextParts = [];
+  
+  if (researchData?.name) {
+    contextParts.push(`LDA filings show ${researchData.name} is actively lobbying.`);
+  }
+  
+  // Add current representation with fees
+  if (researchData?.currentFirms?.length > 0) {
+    const firmInfo = researchData.currentFirms
+      .map(f => `${f.name} (${f.incomeDisplay})`)
+      .join(', ');
+    contextParts.push(`Currently represented by: ${firmInfo}.`);
+  }
+  
+  // Add selected issues grouped by topic
+  const selectedByTopic = {};
+  const checkboxes = ldaTopicsContainer.querySelectorAll('input[type="checkbox"]:checked');
+  
+  checkboxes.forEach(cb => {
+    const topic = cb.dataset.topic;
+    const issue = cb.dataset.issue;
+    if (!selectedByTopic[topic]) {
+      const topicData = researchData.issuesByTopic[topic];
+      selectedByTopic[topic] = {
+        label: topicData?.label || topic,
+        issues: []
+      };
+    }
+    selectedByTopic[topic].issues.push(issue);
+  });
+  
+  // Format issues by topic
+  Object.values(selectedByTopic).forEach(topic => {
+    if (topic.issues.length > 0) {
+      contextParts.push(`${topic.label}: ${topic.issues.join('; ')}.`);
+    }
+  });
+  
+  return contextParts.join('\n\n');
+}
+
+// "Input and Review" - go back to form with data populated
+function handleInputAndReview() {
+  const newContext = buildResearchContext();
+  
+  // Append to additional context with header
+  const additionalContext = document.getElementById('additionalContext');
+  const existingContext = additionalContext.value.trim();
+  
+  const formattedContext = `=== SELECTED FROM RESEARCH ===\n\n${newContext}`;
+  
+  if (existingContext) {
+    additionalContext.value = existingContext + '\n\n' + formattedContext;
+  } else {
+    additionalContext.value = formattedContext;
+  }
+  
+  // Return to input form
+  researchSection.style.display = 'none';
+  inputSection.style.display = 'block';
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// "Generate Memo" - proceed directly to generation
+function handleGenerateWithResearch() {
+  const newContext = buildResearchContext();
+  
+  // Append to additional context
+  const additionalContext = document.getElementById('additionalContext');
+  const existingContext = additionalContext.value.trim();
+  
+  if (existingContext) {
+    additionalContext.value = existingContext + '\n\n' + newContext;
+  } else {
+    additionalContext.value = newContext;
+  }
+  
+  // Proceed to generation
+  researchSection.style.display = 'none';
+  proceedToGeneration();
+}
+
+// Handle research toggle change - show/hide advocacy goal hint
+function handleResearchToggleChange() {
+  const hint = document.getElementById('advocacyGoalHint');
+  const label = document.getElementById('advocacyGoalLabel');
+  
+  if (researchToggle.checked) {
+    if (hint) hint.style.display = 'block';
+    if (label) label.classList.remove('required');
+  } else {
+    if (hint) hint.style.display = 'none';
+    if (label) label.classList.add('required');
+  }
+}
+
+// =============================================================================
 // FORM SUBMISSION & STREAMING
 // =============================================================================
 
@@ -801,6 +1264,30 @@ async function handleSubmit(e) {
     return;
   }
   
+  // Advocacy goal is required UNLESS research is toggled on
+  const researchEnabled = researchToggle?.checked || false;
+  const advocacyGoal = document.getElementById('advocacyGoal').value.trim();
+  
+  if (!researchEnabled && !advocacyGoal) {
+    showError('Please enter an advocacy goal, or toggle "Research this prospect" to make it optional.');
+    return;
+  }
+  
+  // Check if research toggle is enabled
+  const prospectName = document.getElementById('prospectName').value;
+  
+  if (researchEnabled && prospectName) {
+    // Start research flow
+    await startResearch(prospectName);
+    return;
+  }
+  
+  // No research - proceed directly to generation
+  proceedToGeneration();
+}
+
+// Proceed to memo generation (called after research or directly)
+async function proceedToGeneration() {
   // Get form data
   const selectedMode = document.getElementById('generationMode')?.value || 'detailed';
   const formData = {
@@ -834,6 +1321,7 @@ async function handleSubmit(e) {
   // Reset and show streaming section
   resetStreamingState(formData);
   inputSection.style.display = 'none';
+  researchSection.style.display = 'none';
   streamingSection.style.display = 'block';
   
   // Collapse header to just logo + red line during streaming

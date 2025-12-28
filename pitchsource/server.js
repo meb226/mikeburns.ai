@@ -45,6 +45,15 @@ try {
   console.error('Error loading firm data:', err.message);
 }
 
+// Load client index (for autocomplete and fuzzy search)
+let clientIndex = { index: {}, autocomplete: [] };
+try {
+  clientIndex = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'client-index.json'), 'utf-8'));
+  console.log(`Loaded client index: ${clientIndex.metadata?.totalClients || 0} clients`);
+} catch (err) {
+  console.warn('Client index not found - autocomplete disabled:', err.message);
+}
+
 // Load 50 principles
 let principles = '';
 try {
@@ -133,6 +142,415 @@ app.get('/api/firms/:id', (req, res) => {
 app.get('/api/issues', (req, res) => {
   res.json({ issues: ISSUE_CODES });
 });
+
+// Client name autocomplete
+app.get('/api/clients', (req, res) => {
+  const query = (req.query.q || '').toLowerCase().trim();
+  
+  if (!query || query.length < 2) {
+    return res.json({ results: [] });
+  }
+  
+  // Search autocomplete list for matches (including searchTerms for parent companies)
+  const matches = clientIndex.autocomplete
+    .filter(c => 
+      c.normalized.includes(query) || 
+      c.display.toLowerCase().includes(query) ||
+      (c.searchTerms && c.searchTerms.some(t => t.includes(query)))
+    )
+    .slice(0, 10)
+    .map(c => ({
+      name: c.display,
+      filings: c.filings,
+      isParent: c.isParent || false,
+      subsidiaryCount: c.subsidiaryCount || 0
+    }));
+  
+  res.json({ results: matches });
+});
+
+// =============================================================================
+// PROSPECT RESEARCH - Real-time LDA API search
+// =============================================================================
+app.post('/api/research-prospect', async (req, res) => {
+  const { prospectName, industry, issueAreas } = req.body;
+  
+  if (!prospectName) {
+    return res.status(400).json({ error: 'Prospect name is required' });
+  }
+  
+  console.log(`[Research] Searching for: ${prospectName}`);
+  
+  // Look up in client index (may return parent with subsidiaries)
+  const lookup = lookupClientName(prospectName);
+  
+  let searchNames = [prospectName]; // Default: search the raw input
+  let displayName = prospectName;
+  
+  if (lookup) {
+    displayName = lookup.canonical;
+    if (lookup.isParent && lookup.subsidiaries?.length > 0) {
+      // Parent company - search all subsidiaries
+      searchNames = lookup.subsidiaries;
+      console.log(`[Research] Parent company: "${lookup.canonical}" with ${searchNames.length} subsidiaries`);
+    } else {
+      // Regular company
+      searchNames = [lookup.canonical];
+      console.log(`[Research] Index match: "${prospectName}" -> "${lookup.canonical}"`);
+    }
+  } else {
+    console.log(`[Research] No index match, searching raw: "${prospectName}"`);
+  }
+  
+  try {
+    // Search LDA API for all relevant names (for parent companies, search all subsidiaries)
+    const allResults = await Promise.all(
+      searchNames.map(name => searchLDAForClient(name))
+    );
+    
+    // Merge results from all subsidiaries
+    const mergedLda = mergeSubsidiaryResults(allResults, displayName);
+    
+    res.json({
+      lda: mergedLda,
+      searchedName: prospectName,
+      matchedName: displayName,
+      isParent: lookup?.isParent || false,
+      subsidiariesSearched: lookup?.isParent ? searchNames : null
+    });
+    
+  } catch (err) {
+    console.error('[Research] Error:', err.message);
+    res.status(500).json({ 
+      error: 'Research failed', 
+      message: err.message,
+      lda: null
+    });
+  }
+});
+
+// Merge LDA results from multiple subsidiary searches
+function mergeSubsidiaryResults(results, parentName) {
+  // Filter out null/empty results
+  const validResults = results.filter(r => r && (r.firms?.length > 0 || r.issuesByTopic));
+  
+  if (validResults.length === 0) {
+    return { name: parentName, firms: [], issuesByTopic: {} };
+  }
+  
+  // Merge firms (dedupe by name)
+  const firmsMap = new Map();
+  validResults.forEach(r => {
+    (r.firms || []).forEach(f => {
+      const existing = firmsMap.get(f.name);
+      if (existing) {
+        // Combine income (take higher)
+        existing.income = Math.max(existing.income || 0, f.income || 0);
+      } else {
+        firmsMap.set(f.name, { ...f });
+      }
+    });
+  });
+  
+  // Merge issues by topic
+  const issuesByTopic = {};
+  validResults.forEach(r => {
+    Object.entries(r.issuesByTopic || {}).forEach(([topic, data]) => {
+      if (!issuesByTopic[topic]) {
+        issuesByTopic[topic] = { label: data.label, issues: new Set() };
+      }
+      (data.issues || []).forEach(issue => issuesByTopic[topic].issues.add(issue));
+    });
+  });
+  
+  // Convert Sets back to arrays
+  Object.values(issuesByTopic).forEach(topic => {
+    topic.issues = Array.from(topic.issues);
+  });
+  
+  return {
+    name: parentName,
+    firms: Array.from(firmsMap.values()).sort((a, b) => a.name.localeCompare(b.name)),
+    issuesByTopic
+  };
+}
+
+// Look up client name in index, return canonical name, parent info, and subsidiaries
+function lookupClientName(input) {
+  if (!clientIndex?.index) return null;
+  
+  const normalized = input
+    .toLowerCase()
+    .trim()
+    .replace(/,?\s*(inc\.?|llc\.?|corp\.?|corporation|company|co\.?|ltd\.?)$/gi, '')
+    .replace(/^the\s+/i, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  
+  // Direct match
+  let entry = clientIndex.index[normalized];
+  
+  // If no direct match, try partial match
+  if (!entry) {
+    const partialMatches = Object.entries(clientIndex.index)
+      .filter(([key, val]) => key.includes(normalized) || normalized.includes(key))
+      .sort((a, b) => b[1].filings - a[1].filings);
+    
+    if (partialMatches.length > 0) {
+      entry = partialMatches[0][1];
+    }
+  }
+  
+  if (!entry) return null;
+  
+  // If this is a subsidiary, redirect to parent
+  if (entry.parentKey && clientIndex.index[entry.parentKey]) {
+    const parent = clientIndex.index[entry.parentKey];
+    return {
+      canonical: parent.canonical,
+      isParent: true,
+      subsidiaries: parent.subsidiaries?.map(subKey => 
+        clientIndex.index[subKey]?.canonical
+      ).filter(Boolean) || [entry.canonical]
+    };
+  }
+  
+  // If this is a parent company
+  if (entry.isParent && entry.subsidiaries) {
+    return {
+      canonical: entry.canonical,
+      isParent: true,
+      subsidiaries: entry.subsidiaries.map(subKey => 
+        clientIndex.index[subKey]?.canonical
+      ).filter(Boolean)
+    };
+  }
+  
+  // Regular company (not parent, not subsidiary)
+  return {
+    canonical: entry.canonical,
+    isParent: false,
+    subsidiaries: null
+  };
+}
+
+// Search Senate LDA API for client filings
+async function searchLDAForClient(prospectName) {
+  const LDA_API_KEY = process.env.LDA_API_KEY;
+  const headers = LDA_API_KEY ? { 'Authorization': `Token ${LDA_API_KEY}` } : {};
+  
+  // Determine which quarter to search based on current date
+  const { quarter, year } = getMostRecentQuarter();
+  
+  const url = `https://lda.senate.gov/api/v1/filings/?filing_type=${quarter}&filing_year=${year}&client_name=${encodeURIComponent(prospectName)}`;
+  
+  console.log(`[Research] Searching ${quarter} ${year} for: "${prospectName}"`);
+  console.log(`[Research] URL: ${url}`);
+  
+  try {
+    const response = await fetch(url, { headers });
+    
+    console.log(`[Research] Response status: ${response.status}`);
+    
+    if (!response.ok) {
+      throw new Error(`LDA API returned ${response.status}`);
+    }
+    
+    const data = await response.json();
+    const filings = data.results || [];
+    
+    console.log(`[Research] Found ${filings.length} filings, count from API: ${data.count}`);
+    
+    if (filings.length === 0) {
+      return {
+        found: false,
+        name: null,
+        currentFirms: [],
+        issuesByTopic: {},
+        confidence: 0
+      };
+    }
+    
+    // Extract client info from first filing
+    const firstFiling = filings[0];
+    const clientName = firstFiling.client?.name || prospectName;
+    
+    // Extract firms with their quarterly fees (income field from LD-2)
+    const firmMap = new Map();
+    filings.forEach(f => {
+      if (f.registrant?.name) {
+        const firmName = f.registrant.name;
+        const income = f.income || null;
+        
+        // If we've seen this firm, keep the higher income (in case of amendments)
+        if (!firmMap.has(firmName) || (income && income > firmMap.get(firmName).income)) {
+          firmMap.set(firmName, {
+            name: firmName,
+            income: income,
+            incomeDisplay: formatIncome(income)
+          });
+        }
+      }
+    });
+    
+    // Extract issues grouped by topic (general issue code)
+    const issuesByTopic = {};
+    
+    // Debug: log first activity structure
+    if (filings[0]?.lobbying_activities?.[0]) {
+      const sampleActivity = filings[0].lobbying_activities[0];
+      console.log(`[Research] Sample activity keys: ${Object.keys(sampleActivity).join(', ')}`);
+      console.log(`[Research] specific_issues value: "${sampleActivity.specific_issues || 'EMPTY'}"`);
+    }
+    
+    filings.forEach(filing => {
+      filing.lobbying_activities?.forEach(activity => {
+        const topicCode = activity.general_issue_code || 'OTHER';
+        const topicLabel = activity.general_issue_code_display || 'Other Issues';
+        
+        if (!issuesByTopic[topicCode]) {
+          issuesByTopic[topicCode] = {
+            code: topicCode,
+            label: topicLabel,
+            specificIssues: new Set()
+          };
+        }
+        
+        // Extract specific issues (Q16) - check multiple possible field names
+        const specificText = activity.specific_issues || activity.description || activity.specific_lobbying_issues || '';
+        
+        if (specificText && specificText.trim()) {
+          // Split on semicolons, newlines, or numbered list patterns
+          const items = specificText
+            .split(/[;\n]|(?=\d+\.\s)/)
+            .map(s => s.replace(/^\d+\.\s*/, '').trim())
+            .filter(s => s.length > 3); // Very low threshold
+          
+          items.forEach(item => {
+            issuesByTopic[topicCode].specificIssues.add(item);
+          });
+        }
+      });
+    });
+    
+    // Debug: log what we found
+    const topicDebug = Object.keys(issuesByTopic).map(k => 
+      `${k}: ${issuesByTopic[k].specificIssues.size} issues`
+    ).join(', ');
+    console.log(`[Research] Topics found: ${topicDebug}`);
+    
+    // Convert Sets to arrays and limit items per topic
+    // Keep all topics even if they have no specific issues (shows general coverage)
+    const issuesByTopicClean = {};
+    Object.keys(issuesByTopic).forEach(code => {
+      const topic = issuesByTopic[code];
+      issuesByTopicClean[code] = {
+        code: topic.code,
+        label: topic.label,
+        specificIssues: [...topic.specificIssues].slice(0, 10)
+      };
+    });
+    
+    // Calculate confidence score
+    const confidence = calculateMatchConfidence(prospectName, clientName, filings.length);
+    
+    // Sort firms alphabetically
+    const sortedFirms = [...firmMap.values()].sort((a, b) => 
+      a.name.localeCompare(b.name)
+    );
+    
+    return {
+      found: true,
+      name: clientName,
+      currentFirms: sortedFirms,
+      issuesByTopic: issuesByTopicClean,
+      filingCount: filings.length,
+      quarter: `${quarter} ${year}`,
+      confidence
+    };
+    
+  } catch (err) {
+    console.error(`[Research] Error fetching ${quarter} ${year}:`, err.message);
+    throw err;
+  }
+}
+
+// Format income amount for display
+function formatIncome(income) {
+  if (!income) return 'Not reported';
+  
+  const num = parseFloat(income);
+  if (isNaN(num)) return 'Not reported';
+  
+  if (num >= 1000000) {
+    return `$${(num / 1000000).toFixed(1)}M`;
+  } else if (num >= 1000) {
+    return `$${(num / 1000).toFixed(0)}K`;
+  } else {
+    return `$${num.toLocaleString()}`;
+  }
+}
+
+// Determine the most recent available quarterly filing based on current date
+// Reports are due ~45 days after quarter end
+function getMostRecentQuarter() {
+  const now = new Date();
+  const month = now.getMonth() + 1; // 1-12
+  const year = now.getFullYear();
+  
+  // Feb-Apr: Q4 of previous year
+  if (month >= 2 && month <= 4) {
+    return { quarter: 'Q4', year: year - 1 };
+  }
+  // May-Jul: Q1 of current year
+  if (month >= 5 && month <= 7) {
+    return { quarter: 'Q1', year };
+  }
+  // Aug-Oct: Q2 of current year
+  if (month >= 8 && month <= 10) {
+    return { quarter: 'Q2', year };
+  }
+  // Nov-Jan: Q3 of current year (Jan uses previous year's Q3)
+  if (month >= 11) {
+    return { quarter: 'Q3', year };
+  }
+  // January
+  return { quarter: 'Q3', year: year - 1 };
+}
+
+// Calculate match confidence based on name similarity and filing count
+function calculateMatchConfidence(searchName, matchedName, filingCount) {
+  let score = 0;
+  
+  const searchLower = searchName.toLowerCase().trim();
+  const matchLower = (matchedName || '').toLowerCase().trim();
+  
+  // Exact match
+  if (matchLower === searchLower) {
+    score += 50;
+  }
+  // Contains match
+  else if (matchLower.includes(searchLower) || searchLower.includes(matchLower)) {
+    score += 30;
+  }
+  // Partial word match
+  else {
+    const searchWords = searchLower.split(/\s+/);
+    const matchWords = matchLower.split(/\s+/);
+    const overlap = searchWords.filter(w => matchWords.some(m => m.includes(w) || w.includes(m)));
+    score += Math.min(overlap.length * 15, 30);
+  }
+  
+  // Filing count bonus
+  if (filingCount >= 4) score += 30;
+  else if (filingCount >= 2) score += 20;
+  else score += 10;
+  
+  // Multiple firms = active lobbying
+  score += 10;
+  
+  return Math.min(score, 100);
+}
 
 // Get usage logs (protected with simple key)
 app.get('/api/usage-logs', async (req, res) => {

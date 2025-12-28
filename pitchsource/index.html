@@ -342,12 +342,26 @@
           <div class="form-row">
             <div class="form-group">
               <label for="prospectName" class="form-label required">Prospect Name</label>
-              <input type="text" id="prospectName" class="form-input" placeholder="e.g., Acme Healthcare Systems" required>
+              <div class="autocomplete-wrapper">
+                <input type="text" id="prospectName" class="form-input" placeholder="Start typing company name..." required autocomplete="off">
+                <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+              </div>
             </div>
             <div class="form-group">
               <label for="prospectIndustry" class="form-label">Industry</label>
               <input type="text" id="prospectIndustry" class="form-input" placeholder="e.g., Healthcare, Technology">
             </div>
+          </div>
+
+          <!-- Research Toggle -->
+          <div class="form-group research-toggle-group">
+            <label class="research-toggle-label">
+              <input type="checkbox" id="researchToggle" class="research-toggle-checkbox">
+              <span class="research-toggle-text">
+                <strong>Research this prospect</strong>
+                <span class="research-toggle-hint">Search LDA filings for current lobbying activity</span>
+              </span>
+            </label>
           </div>
 
           <div class="form-group">
@@ -368,8 +382,9 @@
           </div>
 
           <div class="form-group">
-            <label for="advocacyGoal" class="form-label required">Advocacy Goal</label>
-            <textarea id="advocacyGoal" class="form-textarea" rows="3" placeholder="Describe what the prospect is trying to achieve. Be specific about the policy outcome they want." required></textarea>
+            <label for="advocacyGoal" class="form-label" id="advocacyGoalLabel">Advocacy Goal</label>
+            <textarea id="advocacyGoal" class="form-textarea" rows="3" placeholder="Describe what the prospect is trying to achieve. Be specific about the policy outcome they want."></textarea>
+            <p class="field-hint" id="advocacyGoalHint" style="display: none;">Optional when researching prospect</p>
           </div>
 
           <!-- Strategy Details -->
@@ -470,6 +485,86 @@
             Analyzing firm data and applying evidence-based advocacy principles. This takes 1-2 minutes.
           </p>
         </form>
+      </section>
+
+      <!-- Research Preview Section -->
+      <section class="research-section" id="researchSection" style="display: none;">
+        <div class="research-container">
+          <div class="research-header">
+            <h2 class="research-title">Research Results</h2>
+            <p class="research-subtitle">Searching for: <strong id="researchProspectName">Prospect</strong></p>
+          </div>
+          
+          <!-- Loading State -->
+          <div class="research-loading" id="researchLoading">
+            <div class="research-spinner"></div>
+            <p>Searching LDA filings...</p>
+          </div>
+          
+          <!-- Results State -->
+          <div class="research-results" id="researchResults" style="display: none;">
+            
+            <!-- LDA Results -->
+            <div class="research-card" id="ldaResultsCard">
+              <div class="research-card-header">
+                <span class="research-card-icon">📋</span>
+                <span class="research-card-title">LDA Filings Found</span>
+                <span class="research-confidence" id="researchConfidence">92% match</span>
+              </div>
+              
+              <div class="research-card-body">
+                <div class="research-meta">
+                  <p><strong>Company:</strong> <span id="ldaCompanyName">—</span></p>
+                  <p><strong>Filing Period:</strong> <span id="ldaFilingPeriod">—</span></p>
+                </div>
+                
+                <!-- Current Representation Table -->
+                <div class="research-firms-section">
+                  <p class="research-section-label">Current Representation:</p>
+                  <table class="research-firms-table" id="ldaFirmsTable">
+                    <thead>
+                      <tr>
+                        <th>Firm</th>
+                        <th>Quarterly Fees</th>
+                      </tr>
+                    </thead>
+                    <tbody id="ldaFirmsTableBody">
+                      <!-- Populated by JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+                
+                <!-- Issues by Topic -->
+                <div class="research-issues">
+                  <p class="research-issues-label">Lobbying Issues by Topic: <span class="issues-total-count" id="issuesTotalCount"></span></p>
+                  <div class="research-topics" id="ldaTopicsContainer">
+                    <!-- Checkboxes populated by JavaScript -->
+                  </div>
+                </div>
+                
+                <div class="research-select-buttons">
+                  <button type="button" class="btn-select-all" id="selectAllBtn">Select All</button>
+                  <button type="button" class="btn-unselect-all" id="unselectAllBtn">Unselect All</button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- No Results State -->
+            <div class="research-no-results" id="noResultsCard" style="display: none;">
+              <p class="no-results-icon">🔍</p>
+              <p class="no-results-text">No LDA filings found for this prospect.</p>
+              <p class="no-results-hint">They may not have an active lobbying presence, or the name may be spelled differently in filings.</p>
+            </div>
+            
+          </div>
+          
+          <!-- Actions -->
+          <div class="research-actions" id="researchActions" style="display: none;">
+            <button type="button" class="btn-secondary" id="inputAndReviewBtn">Input and Review</button>
+            <button type="button" class="btn-primary" id="generateWithResearchBtn">Generate Memo</button>
+          </div>
+          
+        </div>
       </section>
 
 
