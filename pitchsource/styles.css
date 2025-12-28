@@ -1669,6 +1669,8 @@ body {
   padding: 14px 24px;
   font-size: 0.95rem;
   font-weight: 600;
+  margin-top: 0;
+  width: auto;
 }
 
 /* Firms Table */
