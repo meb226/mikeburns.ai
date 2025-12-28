@@ -354,33 +354,39 @@ function lookupClientName(input) {
 }
 
 // Search Senate LDA API for client filings
+// FIXED: Paginates through all results and filters out "on behalf of" intermediaries
 async function searchLDAForClient(prospectName) {
   const LDA_API_KEY = process.env.LDA_API_KEY;
   const headers = LDA_API_KEY ? { 'Authorization': `Token ${LDA_API_KEY}` } : {};
   
-  // Determine which quarter to search based on current date
   const { quarter, year } = getMostRecentQuarter();
   
-  const url = `https://lda.senate.gov/api/v1/filings/?filing_type=${quarter}&filing_year=${year}&client_name=${encodeURIComponent(prospectName)}`;
+  // Fetch all pages of results
+  let allFilings = [];
+  let nextUrl = `https://lda.senate.gov/api/v1/filings/?filing_type=${quarter}&filing_year=${year}&client_name=${encodeURIComponent(prospectName)}`;
   
   console.log(`[Research] Searching ${quarter} ${year} for: "${prospectName}"`);
-  console.log(`[Research] URL: ${url}`);
   
   try {
-    const response = await fetch(url, { headers });
-    
-    console.log(`[Research] Response status: ${response.status}`);
-    
-    if (!response.ok) {
-      throw new Error(`LDA API returned ${response.status}`);
+    while (nextUrl) {
+      console.log(`[Research] Fetching: ${nextUrl}`);
+      const response = await fetch(nextUrl, { headers });
+      
+      if (!response.ok) {
+        throw new Error(`LDA API returned ${response.status}`);
+      }
+      
+      const data = await response.json();
+      allFilings = allFilings.concat(data.results || []);
+      nextUrl = data.next; // LDA API returns next page URL
+      
+      // Safety limit: max 5 pages (125 filings)
+      if (allFilings.length > 125) break;
     }
     
-    const data = await response.json();
-    const filings = data.results || [];
+    console.log(`[Research] Total filings fetched: ${allFilings.length}`);
     
-    console.log(`[Research] Found ${filings.length} filings, count from API: ${data.count}`);
-    
-    if (filings.length === 0) {
+    if (allFilings.length === 0) {
       return {
         found: false,
         name: null,
@@ -390,19 +396,37 @@ async function searchLDAForClient(prospectName) {
       };
     }
     
-    // Extract client info from first filing
-    const firstFiling = filings[0];
-    const clientName = firstFiling.client?.name || prospectName;
+    // Filter OUT "on behalf of" filings - we want direct client filings only
+    const directFilings = allFilings.filter(f => {
+      const clientName = (f.client?.name || '').toUpperCase();
+      return !clientName.includes('(ON BEHALF OF');
+    });
     
-    // Extract firms with their quarterly fees (income field from LD-2)
+    // If all filings were "on behalf of", use them but extract the real client name
+    const filingsToUse = directFilings.length > 0 ? directFilings : allFilings;
+    
+    // Extract client name - prefer direct filings
+    let clientName = prospectName;
+    if (directFilings.length > 0) {
+      clientName = directFilings[0].client?.name || prospectName;
+    } else if (allFilings.length > 0) {
+      // Parse "on behalf of" to get actual client
+      const rawName = allFilings[0].client?.name || '';
+      const match = rawName.match(/\(ON BEHALF OF (.+)\)/i);
+      clientName = match ? match[1] : rawName.replace(/\s*\(ON BEHALF OF .+\)/i, '').trim();
+    }
+    
+    console.log(`[Research] Client name resolved: "${clientName}"`);
+    console.log(`[Research] Direct filings: ${directFilings.length}, On-behalf-of filings: ${allFilings.length - directFilings.length}`);
+    
+    // Extract firms with their quarterly fees
     const firmMap = new Map();
-    filings.forEach(f => {
+    filingsToUse.forEach(f => {
       if (f.registrant?.name) {
         const firmName = f.registrant.name;
         const income = f.income || null;
         
-        // If we've seen this firm, keep the higher income (in case of amendments)
-        if (!firmMap.has(firmName) || (income && income > firmMap.get(firmName).income)) {
+        if (!firmMap.has(firmName) || (income && income > (firmMap.get(firmName).income || 0))) {
           firmMap.set(firmName, {
             name: firmName,
             income: income,
@@ -412,17 +436,9 @@ async function searchLDAForClient(prospectName) {
       }
     });
     
-    // Extract issues grouped by topic (general issue code)
+    // Extract issues grouped by topic
     const issuesByTopic = {};
-    
-    // Debug: log first activity structure
-    if (filings[0]?.lobbying_activities?.[0]) {
-      const sampleActivity = filings[0].lobbying_activities[0];
-      console.log(`[Research] Sample activity keys: ${Object.keys(sampleActivity).join(', ')}`);
-      console.log(`[Research] specific_issues value: "${sampleActivity.specific_issues || 'EMPTY'}"`);
-    }
-    
-    filings.forEach(filing => {
+    filingsToUse.forEach(filing => {
       filing.lobbying_activities?.forEach(activity => {
         const topicCode = activity.general_issue_code || 'OTHER';
         const topicLabel = activity.general_issue_code_display || 'Other Issues';
@@ -435,31 +451,18 @@ async function searchLDAForClient(prospectName) {
           };
         }
         
-        // Extract specific issues (Q16) - check multiple possible field names
-        const specificText = activity.specific_issues || activity.description || activity.specific_lobbying_issues || '';
-        
-        if (specificText && specificText.trim()) {
-          // Split on semicolons, newlines, or numbered list patterns
+        const specificText = activity.specific_issues || activity.description || '';
+        if (specificText.trim()) {
           const items = specificText
             .split(/[;\n]|(?=\d+\.\s)/)
             .map(s => s.replace(/^\d+\.\s*/, '').trim())
-            .filter(s => s.length > 3); // Very low threshold
-          
-          items.forEach(item => {
-            issuesByTopic[topicCode].specificIssues.add(item);
-          });
+            .filter(s => s.length > 3);
+          items.forEach(item => issuesByTopic[topicCode].specificIssues.add(item));
         }
       });
     });
     
-    // Debug: log what we found
-    const topicDebug = Object.keys(issuesByTopic).map(k => 
-      `${k}: ${issuesByTopic[k].specificIssues.size} issues`
-    ).join(', ');
-    console.log(`[Research] Topics found: ${topicDebug}`);
-    
-    // Convert Sets to arrays and limit items per topic
-    // Keep all topics even if they have no specific issues (shows general coverage)
+    // Convert Sets to arrays
     const issuesByTopicClean = {};
     Object.keys(issuesByTopic).forEach(code => {
       const topic = issuesByTopic[code];
@@ -470,26 +473,20 @@ async function searchLDAForClient(prospectName) {
       };
     });
     
-    // Calculate confidence score
-    const confidence = calculateMatchConfidence(prospectName, clientName, filings.length);
-    
-    // Sort firms alphabetically
-    const sortedFirms = [...firmMap.values()].sort((a, b) => 
-      a.name.localeCompare(b.name)
-    );
+    const confidence = calculateMatchConfidence(prospectName, clientName, filingsToUse.length);
     
     return {
       found: true,
       name: clientName,
-      currentFirms: sortedFirms,
+      currentFirms: [...firmMap.values()].sort((a, b) => a.name.localeCompare(b.name)),
       issuesByTopic: issuesByTopicClean,
-      filingCount: filings.length,
+      filingCount: filingsToUse.length,
       quarter: `${quarter} ${year}`,
       confidence
     };
     
   } catch (err) {
-    console.error(`[Research] Error fetching ${quarter} ${year}:`, err.message);
+    console.error(`[Research] Error:`, err.message);
     throw err;
   }
 }
