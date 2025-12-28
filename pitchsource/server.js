@@ -173,6 +173,16 @@ app.get('/api/clients', (req, res) => {
 // =============================================================================
 // PROSPECT RESEARCH - Real-time LDA API search
 // =============================================================================
+// Simplify company name for better LDA API fuzzy matching
+// Strips common prefixes (THE) and suffixes (COMPANY, CORP, INC, etc.)
+function simplifyForSearch(name) {
+  return name
+    .toUpperCase()
+    .replace(/^THE\s+/i, '')
+    .replace(/\s+(COMPANY|CORP|CORPORATION|INC|LLC|LLP|LP|CO|L\.P\.|GROUP|HOLDINGS?)\.?$/i, '')
+    .trim();
+}
+
 app.post('/api/research-prospect', async (req, res) => {
   const { prospectName, industry, issueAreas } = req.body;
   
@@ -182,26 +192,29 @@ app.post('/api/research-prospect', async (req, res) => {
   
   console.log(`[Research] Searching for: ${prospectName}`);
   
+  // Simplify name for search (strips THE, COMPANY, INC, etc.)
+  const simplifiedName = simplifyForSearch(prospectName);
+  console.log(`[Research] Simplified for search: "${simplifiedName}"`);
+  
   // Look up in client index (may return parent with subsidiaries)
   const lookup = lookupClientName(prospectName);
   
-  let searchNames = [prospectName]; // Default: search the raw input
+  let searchNames = [simplifiedName]; // Default: search the simplified input
   let displayName = prospectName;
   
   if (lookup) {
     displayName = lookup.canonical;
     if (lookup.isParent && lookup.subsidiaries?.length > 0) {
-      // Parent company - search original input AND all subsidiaries
-      searchNames = [prospectName, ...lookup.subsidiaries];
+      // Parent company - search simplified name AND all subsidiaries (also simplified)
+      searchNames = [simplifiedName, ...lookup.subsidiaries.map(s => simplifyForSearch(s))];
       console.log(`[Research] Parent company: "${lookup.canonical}" with ${lookup.subsidiaries.length} subsidiaries`);
     } else {
-      // Regular company - keep original input for search (LDA API does fuzzy matching)
-      // Using canonical name would miss variations like "BOEING COMPANY" vs "THE BOEING COMPANY"
-      searchNames = [prospectName];
-      console.log(`[Research] Index match: "${prospectName}" -> "${lookup.canonical}" (searching with original for better fuzzy match)`);
+      // Regular company - use simplified name for search
+      searchNames = [simplifiedName];
+      console.log(`[Research] Index match: "${prospectName}" -> "${lookup.canonical}" (searching simplified: "${simplifiedName}")`);
     }
   } else {
-    console.log(`[Research] No index match, searching raw: "${prospectName}"`);
+    console.log(`[Research] No index match, searching simplified: "${simplifiedName}"`);
   }
   
   try {
