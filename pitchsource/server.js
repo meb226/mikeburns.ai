@@ -191,13 +191,14 @@ app.post('/api/research-prospect', async (req, res) => {
   if (lookup) {
     displayName = lookup.canonical;
     if (lookup.isParent && lookup.subsidiaries?.length > 0) {
-      // Parent company - search all subsidiaries
-      searchNames = [lookup.canonical, ...lookup.subsidiaries];
-      console.log(`[Research] Parent company: "${lookup.canonical}" with ${searchNames.length} subsidiaries`);
+      // Parent company - search original input AND all subsidiaries
+      searchNames = [prospectName, ...lookup.subsidiaries];
+      console.log(`[Research] Parent company: "${lookup.canonical}" with ${lookup.subsidiaries.length} subsidiaries`);
     } else {
-      // Regular company
-      searchNames = [lookup.canonical];
-      console.log(`[Research] Index match: "${prospectName}" -> "${lookup.canonical}"`);
+      // Regular company - keep original input for search (LDA API does fuzzy matching)
+      // Using canonical name would miss variations like "BOEING COMPANY" vs "THE BOEING COMPANY"
+      searchNames = [prospectName];
+      console.log(`[Research] Index match: "${prospectName}" -> "${lookup.canonical}" (searching with original for better fuzzy match)`);
     }
   } else {
     console.log(`[Research] No index match, searching raw: "${prospectName}"`);
@@ -402,12 +403,21 @@ async function searchLDAForClient(prospectName) {
       return !clientName.includes('(ON BEHALF OF');
     });
     
-    // If all filings were "on behalf of", use them but extract the real client name
-    const filingsToUse = directFilings.length > 0 ? directFilings : allFilings;
+    // Filter OUT unrelated entities (credit unions, PACs, employee groups, foundations)
+    const relevantFilings = directFilings.filter(f => {
+      const name = (f.client?.name || '').toUpperCase();
+      const excludePatterns = ['CREDIT UNION', 'EMPLOYEES\'', 'EMPLOYEE\'S', 'FOUNDATION', ' PAC', 'POLITICAL ACTION', 'PENSION', 'RETIREMENT'];
+      return !excludePatterns.some(pattern => name.includes(pattern));
+    });
     
-    // Extract client name - prefer direct filings
+    // Use relevant filings if available, otherwise fall back to direct filings
+    const filingsToUse = relevantFilings.length > 0 ? relevantFilings : directFilings;
+    
+    // Extract client name - prefer relevant filings (filtered), then direct, then all
     let clientName = prospectName;
-    if (directFilings.length > 0) {
+    if (relevantFilings.length > 0) {
+      clientName = relevantFilings[0].client?.name || prospectName;
+    } else if (directFilings.length > 0) {
       clientName = directFilings[0].client?.name || prospectName;
     } else if (allFilings.length > 0) {
       // Parse "on behalf of" to get actual client
@@ -417,7 +427,7 @@ async function searchLDAForClient(prospectName) {
     }
     
     console.log(`[Research] Client name resolved: "${clientName}"`);
-    console.log(`[Research] Direct filings: ${directFilings.length}, On-behalf-of filings: ${allFilings.length - directFilings.length}`);
+    console.log(`[Research] Filings - Total: ${allFilings.length}, Direct: ${directFilings.length}, Relevant: ${relevantFilings.length}`);
     
     // Extract firms with their quarterly fees
     const firmMap = new Map();
