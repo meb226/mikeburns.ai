@@ -206,8 +206,8 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            /* #1: Stronger box shadow */
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            /* Stronger box shadow */
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
             /* #4: 3px border radius */
             border-radius: 3px;
             /* #3: Smooth color transition */
@@ -217,7 +217,7 @@
         /* #3: Brightness shift + lift on hover */
         .project-box:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
             filter: brightness(1.05);
         }
 
@@ -330,11 +330,18 @@
             transition: all 150ms ease-out;
         }
 
-        /* #2: Scale + background on hover */
+        /* #2: Scale + background on hover - text becomes card color */
         .project-btn-ghost:hover {
             transform: scale(1.02);
             background: white;
-            color: #000000;
+        }
+
+        .project-box.red .project-btn-ghost:hover {
+            color: #DC143C;
+        }
+
+        .project-box.navy .project-btn-ghost:hover {
+            color: #0039A6;
         }
 
         .project-btn-ghost:active {
@@ -393,7 +400,7 @@
             /* Disable hover effects on mobile/touch devices */
             .project-box:hover {
                 transform: none;
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
                 filter: none;
             }
 
