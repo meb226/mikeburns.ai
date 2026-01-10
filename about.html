@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About - Mike Burns</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,11 +15,13 @@
         }
 
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #FAFAFA;
             color: #000000;
             line-height: 1.6;
-            font-weight: 300;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* Fixed top navigation */
@@ -59,17 +64,30 @@
             text-decoration: none;
             color: #000000;
             font-size: 16px;
-            font-weight: 300;
-            transition: opacity 0.2s;
+            font-weight: 400;
+            position: relative;
+            padding-bottom: 4px;
         }
 
-        nav a:hover {
-            opacity: 0.6;
+        /* Animated underline on nav links */
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #000000;
+            transition: width 150ms ease-out;
+        }
+
+        nav a:hover::after {
+            width: 100%;
         }
 
         /* Quote section */
         .quote-section {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 140px 48px 32px 48px;
         }
@@ -79,7 +97,6 @@
             font-weight: 700;
             letter-spacing: -0.02em;
             text-align: left;
-            max-width: 1000px;
             line-height: 1.2;
         }
 
@@ -92,38 +109,68 @@
 
         /* Q&A content */
         .content {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 32px 48px 80px 48px;
+            padding: 32px 48px 120px 48px;
         }
 
-        /* Q&A Section */
         .qa-item {
+            margin-bottom: 100px;
+            padding-bottom: 100px;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .qa-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .qa-layout {
             display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 40px;
-            margin-bottom: 60px;
+            grid-template-columns: 112px 1fr;
+            gap: 52px;
+            align-items: start;
+        }
+
+        .question-number {
+            font-size: 112px;
+            font-weight: 700;
+            color: #0039A6;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            transition: color 200ms ease;
+            /* Align cap height with question */
+            transform: translateY(-8px);
+        }
+
+        .qa-item:hover .question-number {
+            color: #DC143C;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
         }
 
         .question {
-            font-size: 24px;
+            font-size: 32px;
             font-weight: 700;
-            color: #DC143C;
-            letter-spacing: -0.01em;
-            padding-top: 2px;
+            color: #000000;
+            letter-spacing: -0.02em;
+            margin-bottom: 28px;
+            line-height: 1.2;
         }
 
         .answer {
-            font-size: 20px;
+            font-size: 15px;
             font-weight: 400;
-            color: #000000;
-            letter-spacing: -0.01em;
-            line-height: 1.6;
-            padding-top: 2px;
+            line-height: 1.8;
+            color: #333333;
         }
 
         .answer p {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .answer p:last-child {
@@ -132,25 +179,37 @@
 
         .answer strong {
             font-weight: 700;
+            color: #000000;
         }
 
         .answer a {
             color: #000000;
             text-decoration: none;
-            border-bottom: 1px solid #000000;
+            position: relative;
             padding-bottom: 1px;
-            transition: opacity 0.2s;
         }
 
-        .answer a:hover {
-            opacity: 0.6;
+        /* Animated underline on answer links */
+        .answer a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #000000;
+        }
+
+        .answer a:hover::after {
+            width: 0;
+            transition: width 150ms ease-out;
         }
 
         footer {
             text-align: center;
             padding: 60px 48px;
             font-size: 14px;
-            font-weight: 300;
+            font-weight: 400;
             color: #000000;
         }
 
@@ -171,7 +230,6 @@
 
             .quote-text {
                 font-size: 36px;
-                white-space: normal;
             }
 
             .quote-attribution {
@@ -179,21 +237,31 @@
             }
 
             .content {
-                padding: 24px 24px 60px 24px;
+                padding: 24px 24px 80px 24px;
             }
 
             .qa-item {
-                grid-template-columns: 1fr;
-                gap: 12px;
-                margin-bottom: 40px;
+                margin-bottom: 80px;
+                padding-bottom: 80px;
+            }
+
+            .qa-layout {
+                grid-template-columns: 80px 1fr;
+                gap: 32px;
+            }
+
+            .question-number {
+                font-size: 80px;
+                transform: translateY(-4px);
             }
 
             .question {
-                font-size: 18px;
+                font-size: 24px;
+                margin-bottom: 24px;
             }
 
             .answer {
-                font-size: 16px;
+                font-size: 15px;
             }
         }
     </style>
@@ -214,41 +282,61 @@
 
     <div class="content">
         <div class="qa-item">
-            <div class="question">Who am I?</div>
-            <div class="answer">
-                <p><strong>A compliance attorney turned product builder.</strong> 
-                </p>I spent 15 years translating complex rules into workable processes in banking and public affairs. Lobbying disclosure, insider trading, pay-to-play restrictions, foreign client due diligence. I've filed the forms, built the tracking systems, and explained the rules to people who needed to follow them.</p>
-                <p>Now I'm building the tools I wish I'd had.</p>
+            <div class="qa-layout">
+                <div class="question-number">1</div>
+                <div class="main-content">
+                    <div class="question">Who am I?</div>
+                    <div class="answer">
+                        <p><strong>A compliance attorney turned product builder.</strong></p>
+                        <p>I spent 15 years translating complex rules into workable processes in banking and public affairs. Lobbying disclosure, insider trading, pay-to-play restrictions, foreign client due diligence. I've filed the forms, built the tracking systems, and explained the rules to people who needed to follow them.</p>
+                        <p>Now I'm building the tools I wish I'd had.</p>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="qa-item">
-            <div class="question">What am I building?</div>
-            <div class="answer">
-                <p><strong>Tools that turn public disclosure data and regulatory knowledge into something professionals can actually use.</strong> 
-                <p>Four projects so far: two in compliance, two in political intelligence. Each one started with a problem I've lived.</p>
-                <p>The case studies on the <a href="index.html">Work</a> page explain what I built, what I cut, and what I learned.</p>
+            <div class="qa-layout">
+                <div class="question-number">2</div>
+                <div class="main-content">
+                    <div class="question">What am I building?</div>
+                    <div class="answer">
+                        <p><strong>Tools that turn public disclosure data and regulatory knowledge into something professionals can actually use.</strong></p>
+                        <p>Four projects so far: two in compliance, two in political intelligence. Each one started with a problem I've lived.</p>
+                        <p>The case studies on the <a href="index.html">Work</a> page explain what I built, what I cut, and what I learned.</p>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="qa-item">
-            <div class="question">Why this path?</div>
-            <div class="answer">
-                <p><strong>Domain expertise used to be nice-to-have. Now it's the bottleneck.</strong></p>
-                <p>AI changed what one person can build. The constraint isn't engineering capacity anymore; it's understanding the problem well enough to design the right solution. That's the part that can't be shortcut.</p>
-                <p>I'm not a software engineer. A year ago, that would have stopped me. But the tools I'm building require something harder to acquire than coding skills: 15 years of knowing how compliance workflows actually break, what lobbyists actually need to win pitches, and why the existing tools don't work.</p>
-                <p>The people who understand these problems don't build software. The people who build software don't understand these problems. AI closed that gap for me.</p>
+            <div class="qa-layout">
+                <div class="question-number">3</div>
+                <div class="main-content">
+                    <div class="question">Why this path?</div>
+                    <div class="answer">
+                        <p><strong>Domain expertise used to be nice-to-have. Now it's the bottleneck.</strong></p>
+                        <p>AI changed what one person can build. The constraint isn't engineering capacity anymore; it's understanding the problem well enough to design the right solution. That's the part that can't be shortcut.</p>
+                        <p>I'm not a software engineer. A year ago, that would have stopped me. But the tools I'm building require something harder to acquire than coding skills: 15 years of knowing how compliance workflows actually break, what lobbyists actually need to win pitches, and why the existing tools don't work.</p>
+                        <p>The people who understand these problems don't build software. The people who build software don't understand these problems. AI closed that gap for me.</p>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="qa-item">
-            <div class="question">How do I work?</div>
-            <div class="answer">
-                <p><strong>I build to learn.</strong> Analysis paralysis is real for me, so I'd rather launch something imperfect and iterate than wait for certainty that never comes.</p>
-                <p><strong>I constrain scope deliberately.</strong> <a href="highlands.pdf">A career assessment</a> showed I'm in the 99th percentile for idea productivity, which means new ideas come constantly. That's a strength and a risk. Seven-day build challenges keep me finishing, not just starting.</p>
-                <p><strong>I start with what's different about this user.</strong> My <a href="cliftonstrengths.pdf">top CliftonStrength</a> is Individualization: I naturally focus on what makes one person's situation different from another's. That's why I build tools for specific use cases, not generic platforms.</p>
-                <p><strong>I learn fastest with a real problem in front of me.</strong> That's how I'm picking up JavaScript, Node.js, and the Claude API: by building tools that solve problems I actually understand.</p>
-                <p><strong>I think about UX as wayfinding.</strong> Massimo Vignelli's <a href="https://artsandculture.google.com/story/best-of-design-vignelli-transportation-vignelli-center/lAVRHTuvQppoIQ?hl=en">New York subway</a> map and Lance Wyman's <a href="https://order.design/project/washington-metropolitan-area-transit-authority">DC Metro</a> signage showed that good design (clean Helvetica, purposeful color, no clutter) helps people navigate intuitively. That's the standard I'm trying to meet.</p>
+            <div class="qa-layout">
+                <div class="question-number">4</div>
+                <div class="main-content">
+                    <div class="question">How do I work?</div>
+                    <div class="answer">
+                        <p><strong>I build to learn.</strong> Analysis paralysis is real for me, so I'd rather launch something imperfect and iterate than wait for certainty that never comes.</p>
+                        <p><strong>I constrain scope deliberately.</strong> <a href="highlands.pdf">A career assessment</a> showed I'm in the 99th percentile for idea productivity, which means new ideas come constantly. That's a strength and a risk. Seven-day build challenges keep me finishing, not just starting.</p>
+                        <p><strong>I start with what's different about this user.</strong> My <a href="cliftonstrengths.pdf">top CliftonStrength</a> is Individualization: I naturally focus on what makes one person's situation different from another's. That's why I build tools for specific use cases, not generic platforms.</p>
+                        <p><strong>I learn fastest with a real problem in front of me.</strong> That's how I'm picking up JavaScript, Node.js, and the Claude API: by building tools that solve problems I actually understand.</p>
+                        <p><strong>I think about UX as wayfinding.</strong> Massimo Vignelli's <a href="https://artsandculture.google.com/story/best-of-design-vignelli-transportation-vignelli-center/lAVRHTuvQppoIQ?hl=en">New York subway</a> map and Lance Wyman's <a href="https://order.design/project/washington-metropolitan-area-transit-authority">DC Metro</a> signage showed that good design helps people navigate intuitively. Clean Helvetica, purposeful color, no clutter. That's the standard I'm trying to meet.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

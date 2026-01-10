@@ -6,7 +6,7 @@
     <title>Contact - Mike Burns</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,11 +15,13 @@
         }
 
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #FAFAFA;
             color: #000000;
             line-height: 1.6;
-            font-weight: 300;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* Fixed top navigation */
@@ -62,12 +64,25 @@
             text-decoration: none;
             color: #000000;
             font-size: 16px;
-            font-weight: 300;
-            transition: opacity 0.2s;
+            font-weight: 400;
+            position: relative;
+            padding-bottom: 4px;
         }
 
-        nav a:hover {
-            opacity: 0.6;
+        /* Animated underline on nav links */
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #000000;
+            transition: width 150ms ease-out;
+        }
+
+        nav a:hover::after {
+            width: 100%;
         }
 
         /* Centered content */
@@ -88,7 +103,7 @@
 
         .subtitle {
             font-size: 20px;
-            font-weight: 300;
+            font-weight: 400;
             color: #000000;
             margin-bottom: 48px;
         }
@@ -103,22 +118,33 @@
             background: #DC143C;
             border: 1px solid #DC143C;
             padding: 16px 40px;
-            transition: all 0.2s;
             width: 200px;
             text-align: center;
             margin: 0 auto;
+            /* 3px border radius */
+            border-radius: 3px;
+            /* Button micro-interactions */
+            transition: all 150ms ease-out;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
         }
 
+        /* Scale + stronger shadow on hover */
         .cta-button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
             background: #0039A6;
             border-color: #0039A6;
+        }
+
+        .cta-button:active {
+            transform: scale(0.98);
         }
 
         footer {
             text-align: center;
             padding: 60px 48px;
             font-size: 14px;
-            font-weight: 300;
+            font-weight: 400;
             color: #666666;
         }
 
@@ -149,6 +175,14 @@
                 font-size: 15px;
                 padding: 14px 32px;
             }
+
+            /* Disable hover effects on mobile */
+            .cta-button:hover {
+                transform: none;
+                background: #DC143C;
+                border-color: #DC143C;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            }
         }
     </style>
 </head>
@@ -164,11 +198,8 @@
     <div class="content-wrapper">
         <h1 class="page-title">Contact</h1>
         <p class="subtitle">Let's connect.</p>
-        <a href="mailto:mikeburns226@gmail.com" class="cta-button">Send e-mail</a>
+        <a href="/cdn-cgi/l/email-protection#e08d898b858295928e93d2d2d6a0878d81898cce838f8d" class="cta-button">Send e-mail</a>
     </div>
 
     <footer>
-        <p>© 2025 Mike Burns</p>
-    </footer>
-</body>
-</html>
+        <p>© 2025
