@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/pitchsource",
+      "destination": "https://pitchsource.vercel.app"
+    },
+    {
+      "source": "/pitchsource/:path*",
+      "destination": "https://pitchsource.vercel.app/:path*"
+    }
+  ]
+}
