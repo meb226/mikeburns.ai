@@ -1,0 +1,3 @@
+[submodule "pitchsource"]
+	path = pitchsource
+	url = https://github.com/meb226/pitchsource-basic.git
