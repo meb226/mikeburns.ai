@@ -184,7 +184,18 @@
             line-height: 1.7;
         }
 
-        /* Projects section */
+        /* "AI-powered" highlighted in navy */
+        .ai-accent {
+            color: #0039A6;
+        }
+
+        /* Projects section — full-width directory row */
+        .projects-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 48px 60px;
+        }
+
         .projects-section h3 {
             font-size: 24px;
             font-weight: 700;
@@ -200,9 +211,21 @@
             max-width: 800px;
         }
 
-        .project-box {
+        /* Directory cubes: single horizontal row of squares on desktop */
+        .projects-section > .project-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            max-width: none;
+        }
+
+        .projects-section > .project-grid .project-box {
             aspect-ratio: 1;
-            padding: 32px;
+            min-height: 0;
+        }
+
+        .project-box {
+            min-height: 200px;
+            padding: 28px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -262,6 +285,47 @@
             font-weight: 400;
             color: rgba(255, 255, 255, 0.9);
             line-height: 1.7;
+        }
+
+        /* Four-line directory colors (Vignelli / MTA Graphics Standards) */
+        .project-box.line-blue   { background: #0039A6; border: 1px solid #0039A6; }
+        .project-box.line-orange { background: #FF6319; border: 1px solid #FF6319; }
+        .project-box.line-green  { background: #00933C; border: 1px solid #00933C; }
+        .project-box.line-red    { background: #EE352E; border: 1px solid #EE352E; }
+
+        .project-box.line-blue h4,
+        .project-box.line-orange h4,
+        .project-box.line-green h4,
+        .project-box.line-red h4 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+            color: white;
+        }
+
+        .project-box.line-blue p,
+        .project-box.line-orange p,
+        .project-box.line-green p,
+        .project-box.line-red p {
+            font-size: 16px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        /* Button hover stays within the line palette */
+        .project-box.line-blue .project-btn:hover {
+            background: #FF6319;
+            border-color: #FF6319;
+            color: white;
+        }
+
+        .project-box.line-orange .project-btn:hover {
+            background: #0039A6;
+            border-color: #0039A6;
+            color: white;
         }
 
         /* Button container for dual buttons */
@@ -348,6 +412,146 @@
             transform: scale(0.98);
         }
 
+        /* Button element reusing the link-button style */
+        button.project-btn {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        /* Non-interactive "Soon" tag — ghost button look, no actions */
+        .project-tag {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 400;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 10px 18px;
+            background: transparent;
+            border-radius: 3px;
+            cursor: default;
+            opacity: 0.85;
+        }
+
+        /* 2025 Projects — inline accordion revealing the tools */
+        .tools-section {
+            max-width: none;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 350ms ease, opacity 250ms ease, margin-top 350ms ease;
+        }
+
+        .tools-section.open {
+            max-height: 1600px;
+            opacity: 1;
+            margin-top: 40px;
+        }
+
+        .tools-section h4 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 24px;
+        }
+
+        /* Tools row mirrors the directory row: full-width, same-size squares, silver */
+        .tools-section .project-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            max-width: none;
+        }
+
+        .tools-section .project-box {
+            min-height: 284px;
+        }
+
+        .project-box.silver { background: #808183; border: 1px solid #808183; }
+
+        .project-box.silver h4 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+            color: #FFFFFF;
+        }
+
+        .project-box.silver p {
+            font-size: 15px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .project-box.silver .project-btn:hover {
+            background: #111111;
+            border-color: #111111;
+            color: #FFFFFF;
+        }
+
+        .project-box.silver .project-btn-ghost:hover {
+            background: #FFFFFF;
+            color: #808183;
+        }
+
+        /* 2025 Projects — four-quadrant interchange */
+        .project-box.interchange {
+            position: relative;
+            display: block;
+            padding: 0;
+            overflow: hidden;
+            background: #FAFAFA;
+        }
+
+        .ix-grid {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 8px;
+            background: #FAFAFA;
+        }
+
+        .ix-grid span {
+            padding: 14px;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+            color: #FFFFFF;
+        }
+
+        .ix-grid .ix-navy { background: #808183; }
+        .ix-grid .ix-red  { background: #808183; }
+
+        .ix-foot {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 14px;
+            background: rgba(0, 0, 0, 0.45);
+        }
+
+        .ix-foot h4 {
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin: 0;
+        }
+
+        .ix-foot .project-btn {
+            padding: 8px 14px;
+            font-size: 14px;
+            box-shadow: none;
+        }
+
         footer {
             text-align: center;
             padding: 60px 48px;
@@ -395,6 +599,14 @@
             .project-grid {
                 grid-template-columns: 1fr;
                 max-width: 100%;
+            }
+
+            .projects-section {
+                padding: 0 24px 40px;
+            }
+
+            .projects-section > .project-grid {
+                grid-template-columns: 1fr;
             }
 
             /* Disable hover effects on mobile/touch devices */
@@ -445,80 +657,141 @@
         <!-- Left sidebar - 1/4 -->
         <aside class="sidebar">
             <img src="profile-photo.PNG" alt="Mike Burns" class="sidebar-photo">
-            
-            <div class="sidebar-section">
-                <h3>Connect</h3>
-                <div class="sidebar-links">
-                    <a href="https://www.linkedin.com/in/michaeleburns/" target="_blank">LinkedIn</a>
-                    <a href="https://github.com/meb226" target="_blank">GitHub</a>
-                </div>
-            </div>
         </aside>
 
         <!-- Right main area - 3/4 -->
         <main class="main-area">
             <section class="hero">
-                <h2>Building AI-powered <span style="color: #DC143C;">compliance</span> and <span style="color: #0039A6;">political intelligence</span> tools</h2>
+                <h2>Building <span class="ai-accent">AI-powered</span> compliance and political intelligence tools</h2>
                 <p>Exploring the intersection of regulatory expertise and product development.</p>
-            </section>
-
-            <section class="projects-section">
-                <h3>Projects</h3>
-                <div class="project-grid">
-                    <!-- Top left: Navy - PitchSource -->
-                    <div class="project-box navy">
-                        <div>
-                            <h4>PitchSource</h4>
-                            <p>Build lobbying pitch memos with curated lobbying disclosure data, research-based strategies, and brand positioning.</p>
-                        </div>
-                        <div class="project-buttons">
-                            <a href="pitchsource/index.html" class="project-btn">Open Tool</a>
-                            <a href="pitchsource/case-study.html" class="project-btn-ghost">Case Study</a>
-                        </div>
-                    </div>
-
-                    <!-- Top right: Navy - LobbyMatch -->
-                    <div class="project-box navy">
-                        <div>
-                            <h4>LobbyMatch</h4>
-                            <p>Matches organizations with lobbying firms with AI-powered insights derived from Lobbying Disclosure Act data.</p>
-                        </div>
-                        <div class="project-buttons">
-                            <a href="lobbymatch/index.html" class="project-btn">Open Tool</a>
-                            <a href="lobbymatch/case-study.html" class="project-btn-ghost">Case Study</a>
-                        </div>
-                    </div>
-
-                    <!-- Bottom left: Red - Workflow Insights -->
-                    <div class="project-box red">
-                        <div>
-                            <h4>Workflow Insights</h4>
-                            <p>Analyzes compliance workflows and identifies automation opportunities.</p>
-                        </div>
-                        <div class="project-buttons">
-                            <a href="workflow-insights/index.html" class="project-btn">Open Tool</a>
-                            <a href="workflow-insights/case-study.html" class="project-btn-ghost">Case Study</a>
-                        </div>
-                    </div>
-
-                    <!-- Bottom right: Red - Compliance Lens -->
-                    <div class="project-box red">
-                        <div>
-                            <h4>Compliance Lens</h4>
-                            <p>Conducts gap analysis for regulatory policies with detailed findings and compliance recommendations.</p>
-                        </div>
-                        <div class="project-buttons">
-                            <a href="compliance-lens/index.html" class="project-btn">Open Tool</a>
-                            <a href="compliance-lens/case-study.html" class="project-btn-ghost">Case Study</a>
-                        </div>
-                    </div>
-                </div>
             </section>
         </main>
     </div>
 
+    <section class="projects-section">
+                <h3>Projects</h3>
+                <div class="project-grid">
+                    <!-- Blue line - 2025 Projects (four-quadrant interchange, expands inline) -->
+                    <div class="project-box interchange">
+                        <div class="ix-grid">
+                            <span class="ix-navy">PitchSource</span>
+                            <span class="ix-navy">LobbyMatch</span>
+                            <span class="ix-red">Workflow Insights</span>
+                            <span class="ix-red">Compliance Lens</span>
+                        </div>
+                        <div class="ix-foot">
+                            <h4>2025 Projects</h4>
+                            <button type="button" class="project-btn" id="tools-toggle" aria-expanded="false" aria-controls="tools-section">View</button>
+                        </div>
+                    </div>
+
+                    <!-- Navy - Meridian Logic (links out) -->
+                    <div class="project-box navy">
+                        <div>
+                            <h4>Meridian Logic</h4>
+                            <p>AI tools for decision support. Experience included.</p>
+                        </div>
+                        <div class="project-buttons">
+                            <a href="https://meridianlogic.ai" class="project-btn" target="_blank" rel="noopener">Visit</a>
+                        </div>
+                    </div>
+
+                    <!-- Red - Chunk (not live yet) -->
+                    <div class="project-box red">
+                        <div>
+                            <h4>Chunk</h4>
+                            <p>Hand-built inference rig. Limited VRAM, unlimited heart.</p>
+                        </div>
+                        <div class="project-buttons">
+                            <span class="project-tag">Soon</span>
+                        </div>
+                    </div>
+
+                    <!-- Green line - SCOTUS Tool (not live until MIK-11 ships) -->
+                    <div class="project-box line-green">
+                        <div>
+                            <h4>SCOTUS Tool</h4>
+                            <p>Chat with Supreme Court opinions.</p>
+                        </div>
+                        <div class="project-buttons">
+                            <span class="project-tag">Soon</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 2025 Projects expands inline to the existing tools -->
+                <div class="tools-section" id="tools-section">
+                    <div class="project-grid">
+                        <!-- PitchSource -->
+                        <div class="project-box silver">
+                            <div>
+                                <h4>PitchSource</h4>
+                                <p>Lobbying pitch memos built from disclosure data, research-backed strategy, and brand positioning.</p>
+                            </div>
+                            <div class="project-buttons">
+                                <a href="pitchsource/index.html" class="project-btn">Open Tool</a>
+                                <a href="pitchsource/case-study.html" class="project-btn-ghost">Case Study</a>
+                            </div>
+                        </div>
+
+                        <!-- LobbyMatch -->
+                        <div class="project-box silver">
+                            <div>
+                                <h4>LobbyMatch</h4>
+                                <p>Matches organizations to the right lobbying firms using insights from Lobbying Disclosure Act data.</p>
+                            </div>
+                            <div class="project-buttons">
+                                <a href="lobbymatch/index.html" class="project-btn">Open Tool</a>
+                                <a href="lobbymatch/case-study.html" class="project-btn-ghost">Case Study</a>
+                            </div>
+                        </div>
+
+                        <!-- Workflow Insights -->
+                        <div class="project-box silver">
+                            <div>
+                                <h4>Workflow Insights</h4>
+                                <p>Analyzes compliance workflows and surfaces concrete automation opportunities.</p>
+                            </div>
+                            <div class="project-buttons">
+                                <a href="workflow-insights/index.html" class="project-btn">Open Tool</a>
+                                <a href="workflow-insights/case-study.html" class="project-btn-ghost">Case Study</a>
+                            </div>
+                        </div>
+
+                        <!-- Compliance Lens -->
+                        <div class="project-box silver">
+                            <div>
+                                <h4>Compliance Lens</h4>
+                                <p>Gap analysis for regulatory policies, with detailed findings and compliance recommendations.</p>
+                            </div>
+                            <div class="project-buttons">
+                                <a href="compliance-lens/index.html" class="project-btn">Open Tool</a>
+                                <a href="compliance-lens/case-study.html" class="project-btn-ghost">Case Study</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
     <footer>
         <p>© 2025 Mike Burns</p>
     </footer>
+
+    <script>
+        (function () {
+            var toggle = document.getElementById('tools-toggle');
+            var section = document.getElementById('tools-section');
+            if (!toggle || !section) return;
+            toggle.addEventListener('click', function () {
+                var open = section.classList.toggle('open');
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                toggle.textContent = open ? 'Hide' : 'View';
+                if (open) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
