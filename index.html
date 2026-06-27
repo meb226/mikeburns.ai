@@ -410,8 +410,12 @@
             opacity: 0.85;
         }
 
-        /* 2025 Projects — inline accordion revealing the tools */
+        /* 2025 Projects — inline accordion revealing the tools.
+           Lives inside the directory grid; on desktop it spans the full
+           width and sits on the row below the four cubes (order: 1). */
         .tools-section {
+            grid-column: 1 / -1;
+            order: 1;
             max-width: none;
             overflow: hidden;
             max-height: 0;
@@ -580,6 +584,30 @@
                 grid-template-columns: 1fr;
             }
 
+            /* 2025 Projects tools: stack vertically (one square per row)
+               and sit in DOM order — i.e. directly between the 2025
+               Projects block and Meridian Logic — rather than spanning a
+               full-width row at the bottom. */
+            .tools-section {
+                order: 0;
+                margin-bottom: -16px;
+            }
+
+            .tools-section.open {
+                max-height: 3200px;
+                margin-top: 16px;
+                margin-bottom: 0;
+            }
+
+            .tools-section .project-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .tools-section .project-box {
+                min-height: 200px;
+            }
+
             /* Disable hover effects on mobile/touch devices */
             .project-box:hover {
                 transform: none;
@@ -656,6 +684,62 @@
                         </div>
                     </div>
 
+                    <!-- 2025 Projects expands inline to the tools.
+                         Desktop: full-width row below the cubes (order: 1).
+                         Mobile: drops vertically right here, between the
+                         2025 Projects block and Meridian Logic (order: 0). -->
+                    <div class="tools-section" id="tools-section">
+                        <div class="project-grid">
+                            <!-- PitchSource -->
+                            <div class="project-box silver">
+                                <div>
+                                    <h4>PitchSource</h4>
+                                    <p>Lobbying pitch memos built from disclosure data, research-backed strategy, and brand positioning.</p>
+                                </div>
+                                <div class="project-buttons">
+                                    <a href="pitchsource/index.html" class="project-btn">Open Tool</a>
+                                    <a href="pitchsource/case-study.html" class="project-btn-ghost">Case Study</a>
+                                </div>
+                            </div>
+
+                            <!-- LobbyMatch -->
+                            <div class="project-box silver">
+                                <div>
+                                    <h4>LobbyMatch</h4>
+                                    <p>Matches organizations to the right lobbying firms using insights from Lobbying Disclosure Act data.</p>
+                                </div>
+                                <div class="project-buttons">
+                                    <a href="lobbymatch/index.html" class="project-btn">Open Tool</a>
+                                    <a href="lobbymatch/case-study.html" class="project-btn-ghost">Case Study</a>
+                                </div>
+                            </div>
+
+                            <!-- Workflow Insights -->
+                            <div class="project-box silver">
+                                <div>
+                                    <h4>Workflow Insights</h4>
+                                    <p>Analyzes compliance workflows and surfaces concrete automation opportunities.</p>
+                                </div>
+                                <div class="project-buttons">
+                                    <a href="workflow-insights/index.html" class="project-btn">Open Tool</a>
+                                    <a href="workflow-insights/case-study.html" class="project-btn-ghost">Case Study</a>
+                                </div>
+                            </div>
+
+                            <!-- Compliance Lens -->
+                            <div class="project-box silver">
+                                <div>
+                                    <h4>Compliance Lens</h4>
+                                    <p>Gap analysis for regulatory policies, with detailed findings and compliance recommendations.</p>
+                                </div>
+                                <div class="project-buttons">
+                                    <a href="compliance-lens/index.html" class="project-btn">Open Tool</a>
+                                    <a href="compliance-lens/case-study.html" class="project-btn-ghost">Case Study</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Navy - Meridian Logic (links out) -->
                     <div class="project-box navy">
                         <div>
@@ -689,59 +773,6 @@
                         </div>
                     </div>
 
-                </div>
-
-                <!-- 2025 Projects expands inline to the existing tools -->
-                <div class="tools-section" id="tools-section">
-                    <div class="project-grid">
-                        <!-- PitchSource -->
-                        <div class="project-box silver">
-                            <div>
-                                <h4>PitchSource</h4>
-                                <p>Lobbying pitch memos built from disclosure data, research-backed strategy, and brand positioning.</p>
-                            </div>
-                            <div class="project-buttons">
-                                <a href="pitchsource/index.html" class="project-btn">Open Tool</a>
-                                <a href="pitchsource/case-study.html" class="project-btn-ghost">Case Study</a>
-                            </div>
-                        </div>
-
-                        <!-- LobbyMatch -->
-                        <div class="project-box silver">
-                            <div>
-                                <h4>LobbyMatch</h4>
-                                <p>Matches organizations to the right lobbying firms using insights from Lobbying Disclosure Act data.</p>
-                            </div>
-                            <div class="project-buttons">
-                                <a href="lobbymatch/index.html" class="project-btn">Open Tool</a>
-                                <a href="lobbymatch/case-study.html" class="project-btn-ghost">Case Study</a>
-                            </div>
-                        </div>
-
-                        <!-- Workflow Insights -->
-                        <div class="project-box silver">
-                            <div>
-                                <h4>Workflow Insights</h4>
-                                <p>Analyzes compliance workflows and surfaces concrete automation opportunities.</p>
-                            </div>
-                            <div class="project-buttons">
-                                <a href="workflow-insights/index.html" class="project-btn">Open Tool</a>
-                                <a href="workflow-insights/case-study.html" class="project-btn-ghost">Case Study</a>
-                            </div>
-                        </div>
-
-                        <!-- Compliance Lens -->
-                        <div class="project-box silver">
-                            <div>
-                                <h4>Compliance Lens</h4>
-                                <p>Gap analysis for regulatory policies, with detailed findings and compliance recommendations.</p>
-                            </div>
-                            <div class="project-buttons">
-                                <a href="compliance-lens/index.html" class="project-btn">Open Tool</a>
-                                <a href="compliance-lens/case-study.html" class="project-btn-ghost">Case Study</a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
