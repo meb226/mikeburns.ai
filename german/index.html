@@ -258,11 +258,16 @@
     let ttsOn = true;
     let pendingText = null; // message being retried after password entry
     let germanVoice = null;
+    let germanVoiceIsMale = false;
 
+    // Common male German voice names across iOS/macOS/Windows/Android
+    const MALE_NAMES = ['martin', 'markus', 'viktor', 'conrad', 'stefan', 'klaus', 'reed', 'jonas', 'björn', 'bernd', 'yannick'];
     function pickVoice() {
-        const voices = speechSynthesis.getVoices();
-        germanVoice = voices.find(v => v.lang === 'de-DE') ||
-            voices.find(v => v.lang && v.lang.startsWith('de')) || null;
+        const voices = speechSynthesis.getVoices().filter(v => v.lang && v.lang.toLowerCase().startsWith('de'));
+        const male = voices.find(v => MALE_NAMES.some(n => v.name.toLowerCase().includes(n)) ||
+            v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('männlich'));
+        germanVoice = male || voices.find(v => v.lang === 'de-DE') || voices[0] || null;
+        germanVoiceIsMale = Boolean(male);
     }
     if ('speechSynthesis' in window) {
         pickVoice();
@@ -271,6 +276,21 @@
         ttsToggle.style.display = 'none';
         ttsOn = false;
     }
+
+    // Shared audio element for cloud TTS; play/pause during the first user
+    // gesture so iOS allows later programmatic playback.
+    const audioEl = new Audio();
+    let audioUnlocked = false;
+    function unlockAudio() {
+        if (audioUnlocked) return;
+        audioUnlocked = true;
+        audioEl.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=';
+        audioEl.play().catch(() => {});
+    }
+    document.addEventListener('pointerdown', unlockAudio, { once: true });
+    audioEl.addEventListener('playing', startMouth);
+    audioEl.addEventListener('ended', stopMouth);
+    audioEl.addEventListener('pause', stopMouth);
 
     let mouthTimer = null;
     function startMouth() {
@@ -287,13 +307,47 @@
         talkFrame.style.opacity = '0';
     }
 
-    function speak(text) {
+    function stopSpeaking() {
+        if ('speechSynthesis' in window) speechSynthesis.cancel();
+        audioEl.pause();
+        stopMouth();
+    }
+
+    // Cloud TTS (male German voice) when the server has a key; browser voice otherwise
+    let cloudTts = true;
+    async function speak(text) {
+        if (!ttsOn) return;
+        stopSpeaking();
+        if (cloudTts) {
+            try {
+                const res = await fetch('/api/german-tts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                if (res.status === 404 || res.status === 501) {
+                    cloudTts = false; // not configured — stop trying
+                } else if (res.ok) {
+                    const data = await res.json();
+                    if (!ttsOn) return;
+                    audioEl.src = 'data:audio/mp3;base64,' + data.audio;
+                    audioEl.play().catch(() => browserSpeak(text));
+                    return;
+                }
+            } catch (err) { /* fall through to browser voice */ }
+        }
+        browserSpeak(text);
+    }
+
+    function browserSpeak(text) {
         if (!ttsOn || !('speechSynthesis' in window)) return;
         speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(text);
         u.lang = 'de-DE';
         if (germanVoice) u.voice = germanVoice;
         u.rate = 0.85;
+        // Only a female voice available: lower the pitch toward a male register
+        if (!germanVoiceIsMale) u.pitch = 0.7;
         u.onstart = startMouth;
         u.onend = stopMouth;
         u.onerror = stopMouth;
@@ -372,7 +426,7 @@
     ttsToggle.addEventListener('click', function () {
         ttsOn = !ttsOn;
         ttsToggle.classList.toggle('muted', !ttsOn);
-        if (!ttsOn) { speechSynthesis.cancel(); stopMouth(); }
+        if (!ttsOn) stopSpeaking();
     });
 
     // Mic input: browser speech recognition in German
@@ -414,8 +468,7 @@
         };
         micBtn.addEventListener('click', function () {
             if (listening) { rec.stop(); return; }
-            if ('speechSynthesis' in window) speechSynthesis.cancel();
-            stopMouth();
+            stopSpeaking();
             input.value = '';
             setListening(true);
             try { rec.start(); } catch (err) { setListening(false); }
