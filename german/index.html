@@ -57,10 +57,24 @@
         /* Scene with Hansi */
         .scene {
             flex-shrink: 0;
+            position: relative;
             line-height: 0;
-            background: linear-gradient(#7EC8F5, #B8E2FA);
+            background: #7EC8F5;
         }
-        .scene svg { width: 100%; height: auto; max-height: 34dvh; display: block; }
+        .scene img {
+            width: 100%;
+            height: auto;
+            max-height: 38dvh;
+            object-fit: cover;
+            object-position: 50% 12%;
+            display: block;
+        }
+        #hansiTalking {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
 
         /* Chat */
         .chat {
@@ -185,274 +199,9 @@
         <button id="ttsToggle" title="Toggle voice">🔊 Voice</button>
     </header>
 
-    <div class="scene">
-        <svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustrated man in lederhosen in front of the Alps">
-            <style>
-                .drift-a { animation: driftA 30s ease-in-out infinite alternate; }
-                .drift-b { animation: driftB 40s ease-in-out infinite alternate; }
-                @keyframes driftA { from { transform: translateX(0); } to { transform: translateX(40px); } }
-                @keyframes driftB { from { transform: translateX(0); } to { transform: translateX(-34px); } }
-                #lids { opacity: 0; animation: blink 6s infinite; }
-                @keyframes blink { 0%, 94%, 100% { opacity: 0; } 95.5%, 98% { opacity: 1; } }
-            </style>
-            <defs>
-                <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#3E96DD"/>
-                    <stop offset="0.55" stop-color="#8CC6EF"/>
-                    <stop offset="1" stop-color="#DDEFFA"/>
-                </linearGradient>
-                <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
-                    <stop offset="0" stop-color="#FFF3C0" stop-opacity="0.95"/>
-                    <stop offset="0.55" stop-color="#FFF3C0" stop-opacity="0.35"/>
-                    <stop offset="1" stop-color="#FFF3C0" stop-opacity="0"/>
-                </radialGradient>
-                <linearGradient id="mFar" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#C6D8E6"/>
-                    <stop offset="1" stop-color="#DFEAF3"/>
-                </linearGradient>
-                <linearGradient id="mMid" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#93AFC4"/>
-                    <stop offset="1" stop-color="#B7CBDA"/>
-                </linearGradient>
-                <linearGradient id="meadowG" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#93CC74"/>
-                    <stop offset="1" stop-color="#5E9C4C"/>
-                </linearGradient>
-                <linearGradient id="meadowG2" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#7FBB61"/>
-                    <stop offset="1" stop-color="#52903F"/>
-                </linearGradient>
-                <radialGradient id="skinG" cx="0.5" cy="0.38" r="0.75">
-                    <stop offset="0" stop-color="#FFDDB4"/>
-                    <stop offset="0.75" stop-color="#F7C89A"/>
-                    <stop offset="1" stop-color="#EDB588"/>
-                </radialGradient>
-                <linearGradient id="hatG" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#6CA057"/>
-                    <stop offset="1" stop-color="#4A7A3B"/>
-                </linearGradient>
-                <linearGradient id="shirtG" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#FFFFFF"/>
-                    <stop offset="1" stop-color="#E7E1D3"/>
-                </linearGradient>
-                <linearGradient id="leatherG" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#A07850"/>
-                    <stop offset="1" stop-color="#77553A"/>
-                </linearGradient>
-                <filter id="blur2" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2"/></filter>
-                <filter id="blur4" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter>
-            </defs>
-
-            <!-- sky -->
-            <rect width="640" height="300" fill="url(#skyG)"/>
-            <circle cx="562" cy="54" r="70" fill="url(#sunGlow)"/>
-            <circle cx="562" cy="54" r="22" fill="#FFE27A"/>
-
-            <!-- clouds -->
-            <g class="drift-a" fill="#FFFFFF" opacity="0.85">
-                <path d="M80 52 Q92 38 110 42 Q118 30 136 34 Q152 30 158 44 Q172 46 168 56 Q120 62 80 56 Z"/>
-            </g>
-            <g class="drift-b" fill="#FFFFFF" opacity="0.75">
-                <path d="M420 74 Q430 62 446 66 Q452 56 468 60 Q482 58 486 70 Q494 72 490 80 Q450 84 420 80 Z"/>
-            </g>
-
-            <!-- far range: atmospheric haze -->
-            <g>
-                <path d="M-20 300 L95 118 L210 300 Z" fill="url(#mFar)"/>
-                <path d="M95 118 L64 168 L80 156 L96 174 L114 148 L128 168 Z" fill="#F2F7FB"/>
-                <path d="M420 300 L540 122 L665 300 Z" fill="url(#mFar)"/>
-                <path d="M540 122 L508 172 L526 158 L542 178 L560 150 L576 172 Z" fill="#F2F7FB"/>
-            </g>
-
-            <!-- mid peaks -->
-            <g>
-                <path d="M55 300 L200 74 L355 300 Z" fill="url(#mMid)"/>
-                <path d="M200 74 L355 300 L300 300 L191 106 Z" fill="#7F99AE" opacity="0.6"/>
-                <path d="M200 74 L155 146 L177 132 L197 156 L219 126 L241 148 Z" fill="#FFFFFF"/>
-                <path d="M295 300 L432 92 L578 300 Z" fill="url(#mMid)"/>
-                <path d="M432 92 L578 300 L525 300 L423 122 Z" fill="#8AA2B4" opacity="0.55"/>
-                <path d="M432 92 L392 158 L413 143 L433 166 L453 137 L471 158 Z" fill="#FFFFFF"/>
-            </g>
-
-            <!-- rolling meadows -->
-            <path d="M0 258 Q160 232 330 250 Q500 266 640 240 L640 300 L0 300 Z" fill="url(#meadowG)"/>
-            <path d="M0 284 Q180 262 360 278 Q520 290 640 272 L640 300 L0 300 Z" fill="url(#meadowG2)"/>
-
-            <!-- chalet -->
-            <g>
-                <path d="M486 264 L486 230 L544 230 L544 264 Z" fill="#C99C6B"/>
-                <path d="M486 264 L486 230 L500 230 L500 264 Z" fill="#B0854F" opacity="0.6"/>
-                <path d="M476 232 L515 202 L554 232 L546 236 L515 212 L484 236 Z" fill="#7C5233"/>
-                <path d="M478 231 L515 203 L552 231 L515 207 Z" fill="#8F613C"/>
-                <rect x="494" y="240" width="11" height="11" rx="1.5" fill="#FFE9A8"/>
-                <rect x="523" y="240" width="11" height="11" rx="1.5" fill="#FFE9A8"/>
-                <ellipse cx="515" cy="266" rx="42" ry="5" fill="#3F6B33" opacity="0.3" filter="url(#blur2)"/>
-            </g>
-
-            <!-- pines -->
-            <g>
-                <g transform="translate(48,0)">
-                    <path d="M0 300 L-20 300 L0 218 L20 300 Z" fill="#3B6A33"/>
-                    <path d="M0 218 L20 300 L0 300 Z" fill="#2E5528" opacity="0.7"/>
-                    <path d="M0 236 Q-16 262 -18 284 Q0 276 18 284 Q16 262 0 236 Z" fill="#447840"/>
-                </g>
-                <g transform="translate(592,0)">
-                    <path d="M0 300 L-20 300 L0 218 L20 300 Z" fill="#3B6A33"/>
-                    <path d="M0 218 L20 300 L0 300 Z" fill="#2E5528" opacity="0.7"/>
-                    <path d="M0 236 Q-16 262 -18 284 Q0 276 18 284 Q16 262 0 236 Z" fill="#447840"/>
-                </g>
-            </g>
-
-            <!-- meadow flowers -->
-            <g opacity="0.9">
-                <g transform="translate(150,282)"><circle r="3.4" fill="#FFFFFF"/><circle r="1.4" fill="#F5C518"/></g>
-                <g transform="translate(196,292)"><circle r="2.8" fill="#FFFFFF"/><circle r="1.2" fill="#F5C518"/></g>
-                <g transform="translate(452,288)"><circle r="3.2" fill="#FFFFFF"/><circle r="1.3" fill="#F5C518"/></g>
-                <g transform="translate(560,292)"><circle r="3" fill="#EE8A88"/><circle r="1.2" fill="#F5C518"/></g>
-                <g transform="translate(96,294)"><circle r="3" fill="#EE8A88"/><circle r="1.2" fill="#F5C518"/></g>
-                <g transform="translate(410,296)"><circle r="2.6" fill="#FFFFFF"/><circle r="1.1" fill="#F5C518"/></g>
-            </g>
-
-            <!-- Hansi -->
-            <g id="hansi">
-                <!-- ground contact shadow -->
-                <ellipse cx="320" cy="298" rx="92" ry="9" fill="#2F5527" opacity="0.28" filter="url(#blur4)"/>
-
-                <!-- ears -->
-                <ellipse cx="267" cy="130" rx="7.5" ry="10" fill="#F3BE8F"/>
-                <path d="M265 125 Q262 130 265 135" fill="none" stroke="#D99C6C" stroke-width="1.8" stroke-linecap="round"/>
-                <ellipse cx="373" cy="130" rx="7.5" ry="10" fill="#F3BE8F"/>
-                <path d="M375 125 Q378 130 375 135" fill="none" stroke="#D99C6C" stroke-width="1.8" stroke-linecap="round"/>
-
-                <!-- head and neck: one continuous shape -->
-                <path d="M320 62
-                         C288 62 268 86 268 114
-                         C268 130 272 142 278 152
-                         C286 162 296 169 305 171
-                         C305 173 304 175 304 178
-                         L304 191
-                         Q320 200 336 191
-                         L336 178
-                         C336 175 335 173 335 171
-                         C344 169 354 162 362 152
-                         C368 142 372 130 372 114
-                         C372 86 352 62 320 62 Z"
-                      fill="url(#skinG)"/>
-                <!-- jaw shadow on the neck -->
-                <path d="M305 170 Q320 180 335 170 L335 182 Q320 191 305 182 Z" fill="#DDA173" opacity="0.5" filter="url(#blur2)"/>
-
-                <!-- torso with arms: one silhouette past the waist crop -->
-                <path d="M250 300
-                         C248 272 252 242 262 222
-                         C270 201 284 190 300 185
-                         L340 185
-                         C356 190 370 201 378 222
-                         C388 242 392 272 390 300 Z"
-                      fill="url(#shirtG)"/>
-                <!-- soft arm seams and folds -->
-                <path d="M283 211 C274 240 270 270 269 300" fill="none" stroke="#D9D1C0" stroke-width="5" opacity="0.75" filter="url(#blur2)"/>
-                <path d="M357 211 C366 240 370 270 371 300" fill="none" stroke="#D9D1C0" stroke-width="5" opacity="0.75" filter="url(#blur2)"/>
-                <path d="M312 206 Q309 240 311 272" fill="none" stroke="#E6DFD1" stroke-width="3" opacity="0.7"/>
-                <path d="M328 206 Q331 240 329 272" fill="none" stroke="#E6DFD1" stroke-width="3" opacity="0.7"/>
-                <path d="M362 214 Q382 246 384 300 L372 300 Q370 252 356 224 Z" fill="#D8D0BF" opacity="0.45" filter="url(#blur2)"/>
-
-                <!-- lederhosen -->
-                <path d="M269 274 L371 274 L371 300 L269 300 Z" fill="url(#leatherG)"/>
-                <path d="M269 274 L371 274 L371 279 L269 279 Z" fill="#5F4329" opacity="0.5"/>
-                <path d="M296 238 L294 185 L306 185 L308 238 Z" fill="url(#leatherG)"/>
-                <path d="M344 238 L346 185 L334 185 L332 238 Z" fill="url(#leatherG)"/>
-                <rect x="294" y="236" width="52" height="14" rx="3" fill="#8A6543"/>
-                <path d="M302 250 L303 274 L337 274 L338 250 Z" fill="#8A6543"/>
-                <path d="M309 258 Q320 265 331 258" fill="none" stroke="#DFC08A" stroke-width="1.8" opacity="0.9"/>
-                <circle cx="300" cy="243" r="2.2" fill="#E5C48F"/>
-                <circle cx="340" cy="243" r="2.2" fill="#E5C48F"/>
-                <g transform="translate(320,243)">
-                    <g fill="#FDFDF8">
-                        <ellipse cx="0" cy="-3.8" rx="1.9" ry="3.3"/>
-                        <ellipse cx="3.6" cy="-1.2" rx="1.9" ry="3.3" transform="rotate(72)"/>
-                        <ellipse cx="2.2" cy="3.1" rx="1.9" ry="3.3" transform="rotate(144)"/>
-                        <ellipse cx="-2.2" cy="3.1" rx="1.9" ry="3.3" transform="rotate(216)"/>
-                        <ellipse cx="-3.6" cy="-1.2" rx="1.9" ry="3.3" transform="rotate(288)"/>
-                    </g>
-                    <circle r="1.8" fill="#F5C518"/>
-                </g>
-
-                <!-- collar -->
-                <path d="M304 185 L320 189 L308 198 Q304 192 304 185 Z" fill="#FFFFFF"/>
-                <path d="M336 185 L320 189 L332 198 Q336 192 336 185 Z" fill="#FFFFFF"/>
-                <path d="M308 198 L320 189 L332 198" fill="none" stroke="#DDD5C5" stroke-width="1.6"/>
-
-                <!-- sideburns -->
-                <path d="M271 106 Q269 124 274 140 Q280 136 280 120 Q280 110 271 106 Z" fill="#7C5633"/>
-                <path d="M369 106 Q371 124 366 140 Q360 136 360 120 Q360 110 369 106 Z" fill="#7C5633"/>
-
-                <!-- under-brim shadow on the forehead -->
-                <path d="M276 102 Q320 86 364 102 L364 112 Q320 98 276 112 Z" fill="#C98F62" opacity="0.3" filter="url(#blur2)"/>
-
-                <!-- eyebrows: soft tapered -->
-                <path d="M295 103 Q305 96 315 101 Q305 100 296 105 Z" fill="#7C5633"/>
-                <path d="M345 103 Q335 96 325 101 Q335 100 344 105 Z" fill="#7C5633"/>
-
-                <!-- eyes: sclera, warm iris, catchlight -->
-                <g id="eyes">
-                    <ellipse cx="305" cy="115" rx="7" ry="8" fill="#FFFFFF"/>
-                    <ellipse cx="335" cy="115" rx="7" ry="8" fill="#FFFFFF"/>
-                    <circle cx="305.5" cy="116" r="4.4" fill="#7A5230"/>
-                    <circle cx="335.5" cy="116" r="4.4" fill="#7A5230"/>
-                    <circle cx="305.5" cy="116" r="2" fill="#2E2018"/>
-                    <circle cx="335.5" cy="116" r="2" fill="#2E2018"/>
-                    <circle cx="303.6" cy="113.6" r="1.6" fill="#FFFFFF"/>
-                    <circle cx="333.6" cy="113.6" r="1.6" fill="#FFFFFF"/>
-                    <path d="M298 109 Q305 105 312 109" fill="none" stroke="#4A3320" stroke-width="2.2" stroke-linecap="round"/>
-                    <path d="M328 109 Q335 105 342 109" fill="none" stroke="#4A3320" stroke-width="2.2" stroke-linecap="round"/>
-                    <g id="lids">
-                        <ellipse cx="305" cy="115" rx="8" ry="9.5" fill="#F7C89A"/>
-                        <ellipse cx="335" cy="115" rx="8" ry="9.5" fill="#F7C89A"/>
-                        <path d="M299 117 Q305 122 311 117" fill="none" stroke="#B07C50" stroke-width="2.2" stroke-linecap="round"/>
-                        <path d="M329 117 Q335 122 341 117" fill="none" stroke="#B07C50" stroke-width="2.2" stroke-linecap="round"/>
-                    </g>
-                </g>
-
-                <!-- blush -->
-                <ellipse cx="289" cy="137" rx="9" ry="5.5" fill="#F09B7E" opacity="0.4" filter="url(#blur2)"/>
-                <ellipse cx="351" cy="137" rx="9" ry="5.5" fill="#F09B7E" opacity="0.4" filter="url(#blur2)"/>
-
-                <!-- nose: shaded form, no outline -->
-                <path d="M317 116 Q315 128 312 132 Q316 137 320 136 Q324 137 328 132 Q325 128 323 116 Q320 114 317 116 Z" fill="#F2B588" opacity="0.85"/>
-                <path d="M313 132 Q316 136 320 135.5 Q324 136 327 132" fill="none" stroke="#D99C6C" stroke-width="1.8" stroke-linecap="round"/>
-                <ellipse cx="318" cy="126" rx="2" ry="4" fill="#FFE0BA" opacity="0.8"/>
-
-                <!-- mustache -->
-                <path d="M320 143 C310 137 300 138 296 143 C293 147 296 151 301 151 C308 151 315 147 320 145 C325 147 332 151 339 151 C344 151 347 147 344 143 C340 138 330 137 320 143 Z" fill="#7C5633"/>
-                <path d="M320 143 C313 139 305 139 300 143 C305 141 313 142 320 145 C327 142 335 141 340 143 C335 139 327 139 320 143 Z" fill="#916A41" opacity="0.9"/>
-
-                <!-- mouth: closed + open (toggled while speaking) -->
-                <g id="mouthClosed">
-                    <path d="M308 155 Q320 164 332 155" fill="none" stroke="#A05F48" stroke-width="2.6" stroke-linecap="round"/>
-                    <ellipse cx="320" cy="163" rx="6.5" ry="2.6" fill="#E8A98B" opacity="0.75"/>
-                </g>
-                <g id="mouthOpen" style="display:none">
-                    <path d="M307 154 Q320 156 333 154 Q331 169 320 169 Q309 169 307 154 Z" fill="#5E332B"/>
-                    <path d="M309 155 Q320 157 331 155 L330 158 Q320 160 310 158 Z" fill="#FFF6EC"/>
-                    <ellipse cx="320" cy="165" rx="5.5" ry="2.6" fill="#C96A57"/>
-                </g>
-
-                <!-- alpine hat -->
-                <path d="M282 98 Q282 56 320 50 Q358 56 358 98 Q320 84 282 98 Z" fill="url(#hatG)"/>
-                <path d="M300 55 Q320 49 344 54 Q356 60 358 82 Q340 62 300 55 Z" fill="#7DB268" opacity="0.5"/>
-                <path d="M305 56 Q320 51 335 56" fill="none" stroke="#3F6A32" stroke-width="2" opacity="0.6" stroke-linecap="round"/>
-                <path d="M268 98 Q320 78 372 98 Q372 108 362 109 Q320 92 278 109 Q268 108 268 98 Z" fill="#456F37"/>
-                <path d="M268 98 Q320 78 372 98 Q371 102 366 104 Q320 86 274 104 Q269 102 268 98 Z" fill="#549044" opacity="0.7"/>
-                <path d="M284 94 Q320 80 356 94 Q356 99 352 101 Q320 87 288 101 Q284 99 284 94 Z" fill="#2F4E26"/>
-                <circle cx="295" cy="93" r="3.2" fill="#E5C48F"/>
-                <!-- feather -->
-                <g>
-                    <path d="M346 72 Q358 46 378 32 Q376 54 358 78 Q350 77 346 72 Z" fill="#F3F0E8"/>
-                    <path d="M346 72 Q358 46 378 32 Q370 52 356 74 Q350 74 346 72 Z" fill="#DDD6C6" opacity="0.7"/>
-                    <path d="M350 71 Q362 54 373 40" fill="none" stroke="#C0B8A6" stroke-width="1.6" stroke-linecap="round"/>
-                </g>
-            </g>
-        </svg>
+    <div class="scene" id="scene">
+        <img id="hansiIdle" src="hansi-idle.webp" alt="Hansi, a friendly Bavarian man in lederhosen in front of the Alps">
+        <img id="hansiTalking" src="hansi-talking.webp" alt="" aria-hidden="true">
     </div>
 
     <div class="chat" id="chat"></div>
@@ -484,8 +233,7 @@
     const ttsToggle = document.getElementById('ttsToggle');
     const modal = document.getElementById('modal');
     const pwInput = document.getElementById('pwInput');
-    const mouthOpen = document.getElementById('mouthOpen');
-    const mouthClosed = document.getElementById('mouthClosed');
+    const talkFrame = document.getElementById('hansiTalking');
 
     const messages = []; // {role, content} history sent to the API
     let password = sessionStorage.getItem('hansiPw') || null;
@@ -512,15 +260,13 @@
         let open = false;
         mouthTimer = setInterval(() => {
             open = !open;
-            mouthOpen.style.display = open ? '' : 'none';
-            mouthClosed.style.display = open ? 'none' : '';
-        }, 140);
+            talkFrame.style.opacity = open ? '1' : '0';
+        }, 180);
     }
     function stopMouth() {
         if (mouthTimer) clearInterval(mouthTimer);
         mouthTimer = null;
-        mouthOpen.style.display = 'none';
-        mouthClosed.style.display = '';
+        talkFrame.style.opacity = '0';
     }
 
     function speak(text) {
