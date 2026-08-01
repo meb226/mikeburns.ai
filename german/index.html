@@ -147,6 +147,23 @@
             cursor: pointer;
         }
         .inputbar button:disabled { opacity: 0.4; }
+        .inputbar button.mic {
+            background: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+            font-size: 20px;
+        }
+        .inputbar button.mic.listening {
+            background: #E5484D;
+            color: #fff;
+            border-color: #E5484D;
+            animation: micPulse 1.2s infinite;
+        }
+        @keyframes micPulse {
+            0% { box-shadow: 0 0 0 0 rgba(229,72,77,0.5); }
+            70% { box-shadow: 0 0 0 12px rgba(229,72,77,0); }
+            100% { box-shadow: 0 0 0 0 rgba(229,72,77,0); }
+        }
 
         /* Password modal */
         .modal-backdrop {
@@ -208,6 +225,7 @@
 
     <form class="inputbar" id="form">
         <input id="input" type="text" placeholder="Schreib etwas auf Deutsch…" autocomplete="off" enterkeyhint="send">
+        <button type="button" id="mic" class="mic" aria-label="Speak German">🎤</button>
         <button type="submit" id="send" aria-label="Send">➤</button>
     </form>
 </div>
@@ -356,6 +374,53 @@
         ttsToggle.classList.toggle('muted', !ttsOn);
         if (!ttsOn) { speechSynthesis.cancel(); stopMouth(); }
     });
+
+    // Mic input: browser speech recognition in German
+    const micBtn = document.getElementById('mic');
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let rec = null;
+    let listening = false;
+    function setListening(on) {
+        listening = on;
+        micBtn.classList.toggle('listening', on);
+        input.placeholder = on ? 'Ich höre zu… sprich!' : 'Schreib etwas auf Deutsch…';
+    }
+    if (!SR) {
+        micBtn.style.display = 'none';
+    } else {
+        rec = new SR();
+        rec.lang = 'de-DE';
+        rec.interimResults = true;
+        rec.maxAlternatives = 1;
+        rec.onresult = function (e) {
+            let text = '';
+            for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
+            input.value = text;
+        };
+        rec.onend = function () {
+            setListening(false);
+            const text = input.value.trim();
+            if (text && !send.disabled) {
+                input.value = '';
+                addBubble('user', esc(text));
+                sendMessage(text);
+            }
+        };
+        rec.onerror = function (e) {
+            setListening(false);
+            if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+                addBubble('hansi', esc('Ich kann dich nicht hören! Please allow microphone access in your browser and try again.'));
+            }
+        };
+        micBtn.addEventListener('click', function () {
+            if (listening) { rec.stop(); return; }
+            if ('speechSynthesis' in window) speechSynthesis.cancel();
+            stopMouth();
+            input.value = '';
+            setListening(true);
+            try { rec.start(); } catch (err) { setListening(false); }
+        });
+    }
 
     document.getElementById('pwOk').addEventListener('click', function () {
         password = pwInput.value.trim();
