@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sprich mit Hansi — German Practice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #FAFAFA;
+            color: #000;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            height: 100dvh;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #E0E0E0;
+            background: #FAFAFA;
+        }
+        header a {
+            text-decoration: none;
+            color: #000;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        header .title { font-size: 14px; color: #555; }
+        header button {
+            background: none;
+            border: 1px solid #ccc;
+            border-radius: 16px;
+            padding: 4px 12px;
+            font-size: 13px;
+            font-family: inherit;
+            cursor: pointer;
+            color: #333;
+        }
+        header button.muted { opacity: 0.45; text-decoration: line-through; }
+
+        /* Scene with Hansi */
+        .scene {
+            flex-shrink: 0;
+            line-height: 0;
+            background: linear-gradient(#7EC8F5, #B8E2FA);
+        }
+        .scene svg { width: 100%; height: auto; max-height: 34dvh; display: block; }
+
+        /* Chat */
+        .chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .msg {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.45;
+            white-space: pre-wrap;
+        }
+        .msg.user {
+            align-self: flex-end;
+            background: #000;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+        .msg.hansi {
+            align-self: flex-start;
+            background: #fff;
+            border: 1px solid #E0E0E0;
+            border-bottom-left-radius: 4px;
+        }
+        .msg.correction {
+            align-self: flex-start;
+            background: #FFF7E0;
+            border: 1px solid #F0DFA8;
+            font-size: 13.5px;
+            color: #4a3f14;
+        }
+        .msg.correction .fixed { font-weight: 600; display: block; margin-bottom: 3px; }
+        .msg.thinking { color: #999; font-style: italic; background: #fff; border: 1px solid #eee; align-self: flex-start; }
+
+        /* Input bar */
+        .inputbar {
+            display: flex;
+            gap: 8px;
+            padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+            border-top: 1px solid #E0E0E0;
+            background: #FAFAFA;
+        }
+        .inputbar input {
+            flex: 1;
+            font-family: inherit;
+            font-size: 16px;
+            padding: 12px 16px;
+            border: 1px solid #ccc;
+            border-radius: 24px;
+            outline: none;
+            background: #fff;
+        }
+        .inputbar input:focus { border-color: #000; }
+        .inputbar button {
+            flex-shrink: 0;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: none;
+            background: #000;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .inputbar button:disabled { opacity: 0.4; }
+
+        /* Password modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 100;
+        }
+        .modal-backdrop.open { display: flex; }
+        .modal {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 360px;
+            width: 100%;
+        }
+        .modal h2 { font-size: 17px; margin-bottom: 8px; }
+        .modal p { font-size: 14px; color: #555; margin-bottom: 16px; line-height: 1.5; }
+        .modal input {
+            width: 100%;
+            font-family: inherit;
+            font-size: 16px;
+            padding: 10px 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .modal .row { display: flex; gap: 8px; justify-content: flex-end; }
+        .modal button {
+            font-family: inherit;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background: #fff;
+            cursor: pointer;
+        }
+        .modal button.primary { background: #000; color: #fff; border-color: #000; }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header>
+        <a href="/">Mike Burns</a>
+        <span class="title">Sprich mit Hansi 🇩🇪</span>
+        <button id="ttsToggle" title="Toggle voice">🔊 Voice</button>
+    </header>
+
+    <div class="scene">
+        <svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cartoon man in lederhosen in front of the Alps">
+            <!-- sky -->
+            <rect width="640" height="300" fill="url(#sky)"/>
+            <defs>
+                <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#6FBFF2"/>
+                    <stop offset="1" stop-color="#C8E9FB"/>
+                </linearGradient>
+            </defs>
+            <circle cx="560" cy="52" r="30" fill="#FFE066"/>
+            <!-- clouds -->
+            <g fill="#fff" opacity="0.9">
+                <ellipse cx="120" cy="50" rx="42" ry="15"/>
+                <ellipse cx="150" cy="42" rx="30" ry="12"/>
+                <ellipse cx="420" cy="70" rx="36" ry="13"/>
+            </g>
+            <!-- alps -->
+            <g>
+                <polygon points="-20,300 110,90 240,300" fill="#8FA8B8"/>
+                <polygon points="110,90 66,162 92,148 112,168 138,140 154,162 110,90" fill="#fff"/>
+                <polygon points="180,300 330,60 480,300" fill="#7B95A6"/>
+                <polygon points="330,60 282,150 306,132 330,158 352,128 378,150 330,60" fill="#fff"/>
+                <polygon points="420,300 540,110 680,300" fill="#8FA8B8"/>
+                <polygon points="540,110 500,176 522,160 542,180 564,152 580,176 540,110" fill="#fff"/>
+            </g>
+            <!-- meadow -->
+            <ellipse cx="320" cy="330" rx="420" ry="70" fill="#7FBF6A"/>
+
+            <!-- Hansi (waist up, South Park simple) -->
+            <g id="hansi">
+                <!-- body / shirt -->
+                <path d="M255 300 L255 218 Q255 196 278 192 L362 192 Q385 196 385 218 L385 300 Z" fill="#fff" stroke="#333" stroke-width="3"/>
+                <!-- lederhosen waist -->
+                <rect x="255" y="272" width="130" height="28" fill="#6B4A2B" stroke="#333" stroke-width="3"/>
+                <!-- suspenders -->
+                <rect x="277" y="192" width="16" height="86" fill="#6B4A2B" stroke="#333" stroke-width="2.5"/>
+                <rect x="347" y="192" width="16" height="86" fill="#6B4A2B" stroke="#333" stroke-width="2.5"/>
+                <rect x="293" y="224" width="54" height="12" fill="#6B4A2B" stroke="#333" stroke-width="2.5"/>
+                <circle cx="320" cy="230" r="7" fill="#4E7A3A" stroke="#333" stroke-width="2"/>
+                <!-- arms -->
+                <path d="M255 214 Q228 232 232 268" fill="none" stroke="#333" stroke-width="3"/>
+                <path d="M255 214 Q224 230 228 266 L244 270 Q240 240 262 226 Z" fill="#fff" stroke="#333" stroke-width="3"/>
+                <path d="M385 214 Q416 230 412 266 L396 270 Q400 240 378 226 Z" fill="#fff" stroke="#333" stroke-width="3"/>
+                <circle cx="236" cy="272" r="9" fill="#F2C79B" stroke="#333" stroke-width="2.5"/>
+                <circle cx="404" cy="272" r="9" fill="#F2C79B" stroke="#333" stroke-width="2.5"/>
+                <!-- head -->
+                <circle cx="320" cy="140" r="56" fill="#F2C79B" stroke="#333" stroke-width="3"/>
+                <!-- ears -->
+                <circle cx="266" cy="142" r="9" fill="#F2C79B" stroke="#333" stroke-width="2.5"/>
+                <circle cx="374" cy="142" r="9" fill="#F2C79B" stroke="#333" stroke-width="2.5"/>
+                <!-- eyes -->
+                <g id="eyes">
+                    <ellipse cx="302" cy="132" rx="10" ry="12" fill="#fff" stroke="#333" stroke-width="2"/>
+                    <ellipse cx="338" cy="132" rx="10" ry="12" fill="#fff" stroke="#333" stroke-width="2"/>
+                    <circle cx="304" cy="134" r="3.5" fill="#333"/>
+                    <circle cx="336" cy="134" r="3.5" fill="#333"/>
+                </g>
+                <!-- rosy cheeks -->
+                <circle cx="286" cy="154" r="8" fill="#F1A08A" opacity="0.6"/>
+                <circle cx="354" cy="154" r="8" fill="#F1A08A" opacity="0.6"/>
+                <!-- mustache -->
+                <path d="M298 162 Q310 156 320 162 Q330 156 342 162 Q334 172 320 168 Q306 172 298 162 Z" fill="#8A5B2E" stroke="#333" stroke-width="2"/>
+                <!-- mouth: closed + open (toggled while speaking) -->
+                <path id="mouthClosed" d="M306 176 Q320 184 334 176" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                <ellipse id="mouthOpen" cx="320" cy="178" rx="11" ry="8" fill="#7A3B2E" stroke="#333" stroke-width="2.5" style="display:none"/>
+                <!-- alpine hat -->
+                <path d="M268 112 Q276 66 320 62 Q364 66 372 112 Q320 98 268 112 Z" fill="#4E7A3A" stroke="#333" stroke-width="3"/>
+                <path d="M262 112 Q320 96 378 112 Q320 126 262 112 Z" fill="#3E6230" stroke="#333" stroke-width="3"/>
+                <!-- feather -->
+                <path d="M364 78 Q384 52 396 50 Q390 72 372 86 Z" fill="#E8E8E8" stroke="#333" stroke-width="2"/>
+            </g>
+        </svg>
+    </div>
+
+    <div class="chat" id="chat"></div>
+
+    <form class="inputbar" id="form">
+        <input id="input" type="text" placeholder="Schreib etwas auf Deutsch…" autocomplete="off" enterkeyhint="send">
+        <button type="submit" id="send" aria-label="Send">➤</button>
+    </form>
+</div>
+
+<div class="modal-backdrop" id="modal">
+    <div class="modal">
+        <h2>Daily limit reached</h2>
+        <p>You've hit today's free message limit. Enter the passphrase to keep practicing.</p>
+        <input id="pwInput" type="password" placeholder="Passphrase" autocomplete="off">
+        <div class="row">
+            <button id="pwCancel" type="button">Cancel</button>
+            <button id="pwOk" class="primary" type="button">Unlock</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const chat = document.getElementById('chat');
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const send = document.getElementById('send');
+    const ttsToggle = document.getElementById('ttsToggle');
+    const modal = document.getElementById('modal');
+    const pwInput = document.getElementById('pwInput');
+    const mouthOpen = document.getElementById('mouthOpen');
+    const mouthClosed = document.getElementById('mouthClosed');
+
+    const messages = []; // {role, content} history sent to the API
+    let password = sessionStorage.getItem('hansiPw') || null;
+    let ttsOn = true;
+    let pendingText = null; // message being retried after password entry
+    let germanVoice = null;
+
+    function pickVoice() {
+        const voices = speechSynthesis.getVoices();
+        germanVoice = voices.find(v => v.lang === 'de-DE') ||
+            voices.find(v => v.lang && v.lang.startsWith('de')) || null;
+    }
+    if ('speechSynthesis' in window) {
+        pickVoice();
+        speechSynthesis.onvoiceschanged = pickVoice;
+    } else {
+        ttsToggle.style.display = 'none';
+        ttsOn = false;
+    }
+
+    let mouthTimer = null;
+    function startMouth() {
+        stopMouth();
+        let open = false;
+        mouthTimer = setInterval(() => {
+            open = !open;
+            mouthOpen.style.display = open ? '' : 'none';
+            mouthClosed.style.display = open ? 'none' : '';
+        }, 140);
+    }
+    function stopMouth() {
+        if (mouthTimer) clearInterval(mouthTimer);
+        mouthTimer = null;
+        mouthOpen.style.display = 'none';
+        mouthClosed.style.display = '';
+    }
+
+    function speak(text) {
+        if (!ttsOn || !('speechSynthesis' in window)) return;
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'de-DE';
+        if (germanVoice) u.voice = germanVoice;
+        u.rate = 0.85;
+        u.onstart = startMouth;
+        u.onend = stopMouth;
+        u.onerror = stopMouth;
+        speechSynthesis.speak(u);
+    }
+
+    function addBubble(cls, html) {
+        const div = document.createElement('div');
+        div.className = 'msg ' + cls;
+        div.innerHTML = html;
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
+        return div;
+    }
+    function esc(s) {
+        const d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    async function sendMessage(text) {
+        send.disabled = true;
+        const thinking = addBubble('thinking', 'Hansi denkt nach…');
+        try {
+            const body = { messages: messages.concat([{ role: 'user', content: text }]) };
+            if (password) body.password = password;
+            const res = await fetch('/api/german-chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            thinking.remove();
+
+            if (res.status === 429) {
+                const data = await res.json().catch(() => ({}));
+                if (data.needsPassword) {
+                    pendingText = text;
+                    pwInput.value = '';
+                    modal.classList.add('open');
+                    pwInput.focus();
+                } else {
+                    addBubble('hansi', esc("Puh! Ich brauche eine Pause. Komm morgen wieder! (Daily limit reached — come back tomorrow!)"));
+                }
+                return;
+            }
+            if (!res.ok) throw new Error('Request failed');
+
+            const data = await res.json();
+            messages.push({ role: 'user', content: text });
+            messages.push({ role: 'assistant', content: JSON.stringify(data) });
+
+            if (data.correction) {
+                addBubble('correction',
+                    '<span class="fixed">✏️ ' + esc(data.correction.corrected) + '</span>' +
+                    esc(data.correction.explanation));
+            }
+            addBubble('hansi', esc(data.reply));
+            speak(data.reply);
+        } catch (err) {
+            thinking.remove();
+            addBubble('hansi', esc('Entschuldigung! Something went wrong — try again in a moment.'));
+        } finally {
+            send.disabled = false;
+        }
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const text = input.value.trim();
+        if (!text || send.disabled) return;
+        input.value = '';
+        addBubble('user', esc(text));
+        sendMessage(text);
+    });
+
+    ttsToggle.addEventListener('click', function () {
+        ttsOn = !ttsOn;
+        ttsToggle.classList.toggle('muted', !ttsOn);
+        if (!ttsOn) { speechSynthesis.cancel(); stopMouth(); }
+    });
+
+    document.getElementById('pwOk').addEventListener('click', function () {
+        password = pwInput.value.trim();
+        if (!password) return;
+        sessionStorage.setItem('hansiPw', password);
+        modal.classList.remove('open');
+        if (pendingText) {
+            const t = pendingText;
+            pendingText = null;
+            sendMessage(t);
+        }
+    });
+    document.getElementById('pwCancel').addEventListener('click', function () {
+        modal.classList.remove('open');
+        pendingText = null;
+    });
+
+    // Opening greeting (no API call)
+    const greeting = 'Servus! Ich bin Hansi. Wie geht es dir heute?';
+    addBubble('hansi', esc(greeting) + '<br><span style="color:#888;font-size:13px">(Hi! I\'m Hansi. How are you today? Reply in German — I\'ll gently correct you as we chat.)</span>');
+    messages.push({ role: 'assistant', content: JSON.stringify({ reply: greeting, correction: null }) });
+    // Speak the greeting on first user interaction (browsers block autoplay audio)
+    const speakOnce = () => { speak(greeting); document.removeEventListener('pointerdown', speakOnce); };
+    document.addEventListener('pointerdown', speakOnce, { once: true });
+})();
+</script>
+</body>
+</html>
