@@ -187,75 +187,211 @@
 
     <div class="scene">
         <svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cartoon man in lederhosen in front of the Alps">
-            <!-- sky -->
-            <rect width="640" height="300" fill="url(#sky)"/>
+            <style>
+                .drift-a { animation: driftA 26s ease-in-out infinite alternate; }
+                .drift-b { animation: driftB 34s ease-in-out infinite alternate; }
+                @keyframes driftA { from { transform: translateX(0); } to { transform: translateX(46px); } }
+                @keyframes driftB { from { transform: translateX(0); } to { transform: translateX(-38px); } }
+                #lids { opacity: 0; animation: blink 5.5s infinite; }
+                @keyframes blink { 0%, 94%, 100% { opacity: 0; } 95.5%, 98% { opacity: 1; } }
+            </style>
             <defs>
                 <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#6FBFF2"/>
-                    <stop offset="1" stop-color="#C8E9FB"/>
+                    <stop offset="0" stop-color="#5FB6EF"/>
+                    <stop offset="1" stop-color="#CDEBFB"/>
+                </linearGradient>
+                <linearGradient id="meadow" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#8CCB72"/>
+                    <stop offset="1" stop-color="#6FB35A"/>
                 </linearGradient>
             </defs>
-            <circle cx="560" cy="52" r="30" fill="#FFE066"/>
-            <!-- clouds -->
-            <g fill="#fff" opacity="0.9">
-                <ellipse cx="120" cy="50" rx="42" ry="15"/>
-                <ellipse cx="150" cy="42" rx="30" ry="12"/>
-                <ellipse cx="420" cy="70" rx="36" ry="13"/>
-            </g>
-            <!-- alps -->
-            <g>
-                <polygon points="-20,300 110,90 240,300" fill="#8FA8B8"/>
-                <polygon points="110,90 66,162 92,148 112,168 138,140 154,162 110,90" fill="#fff"/>
-                <polygon points="180,300 330,60 480,300" fill="#7B95A6"/>
-                <polygon points="330,60 282,150 306,132 330,158 352,128 378,150 330,60" fill="#fff"/>
-                <polygon points="420,300 540,110 680,300" fill="#8FA8B8"/>
-                <polygon points="540,110 500,176 522,160 542,180 564,152 580,176 540,110" fill="#fff"/>
-            </g>
-            <!-- meadow -->
-            <ellipse cx="320" cy="330" rx="420" ry="70" fill="#7FBF6A"/>
 
-            <!-- Hansi (waist up, South Park simple) -->
-            <g id="hansi">
-                <!-- body / shirt -->
-                <path d="M255 300 L255 218 Q255 196 278 192 L362 192 Q385 196 385 218 L385 300 Z" fill="#fff" stroke="#333" stroke-width="3"/>
-                <!-- lederhosen waist -->
-                <rect x="255" y="272" width="130" height="28" fill="#6B4A2B" stroke="#333" stroke-width="3"/>
-                <!-- suspenders -->
-                <rect x="277" y="192" width="16" height="86" fill="#6B4A2B" stroke="#333" stroke-width="2.5"/>
-                <rect x="347" y="192" width="16" height="86" fill="#6B4A2B" stroke="#333" stroke-width="2.5"/>
-                <rect x="293" y="224" width="54" height="12" fill="#6B4A2B" stroke="#333" stroke-width="2.5"/>
-                <circle cx="320" cy="230" r="7" fill="#4E7A3A" stroke="#333" stroke-width="2"/>
-                <!-- arms -->
-                <path d="M255 214 Q228 232 232 268" fill="none" stroke="#333" stroke-width="3"/>
-                <path d="M255 214 Q224 230 228 266 L244 270 Q240 240 262 226 Z" fill="#fff" stroke="#333" stroke-width="3"/>
-                <path d="M385 214 Q416 230 412 266 L396 270 Q400 240 378 226 Z" fill="#fff" stroke="#333" stroke-width="3"/>
-                <circle cx="236" cy="272" r="9" fill="#F2C79B" stroke="#333" stroke-width="2.5"/>
-                <circle cx="404" cy="272" r="9" fill="#F2C79B" stroke="#333" stroke-width="2.5"/>
-                <!-- head -->
-                <circle cx="320" cy="140" r="56" fill="#F2C79B" stroke="#333" stroke-width="3"/>
-                <!-- ears -->
-                <circle cx="266" cy="142" r="9" fill="#F2C79B" stroke="#333" stroke-width="2.5"/>
-                <circle cx="374" cy="142" r="9" fill="#F2C79B" stroke="#333" stroke-width="2.5"/>
-                <!-- eyes -->
-                <g id="eyes">
-                    <ellipse cx="302" cy="132" rx="10" ry="12" fill="#fff" stroke="#333" stroke-width="2"/>
-                    <ellipse cx="338" cy="132" rx="10" ry="12" fill="#fff" stroke="#333" stroke-width="2"/>
-                    <circle cx="304" cy="134" r="3.5" fill="#333"/>
-                    <circle cx="336" cy="134" r="3.5" fill="#333"/>
+            <!-- sky -->
+            <rect width="640" height="300" fill="url(#sky)"/>
+
+            <!-- sun -->
+            <g>
+                <circle cx="565" cy="50" r="26" fill="#FFDE59"/>
+                <g stroke="#FFDE59" stroke-width="5" stroke-linecap="round" opacity="0.85">
+                    <line x1="565" y1="8" x2="565" y2="18"/>
+                    <line x1="565" y1="82" x2="565" y2="92"/>
+                    <line x1="523" y1="50" x2="533" y2="50"/>
+                    <line x1="597" y1="50" x2="607" y2="50"/>
+                    <line x1="535" y1="20" x2="542" y2="27"/>
+                    <line x1="588" y1="73" x2="595" y2="80"/>
+                    <line x1="535" y1="80" x2="542" y2="73"/>
+                    <line x1="588" y1="27" x2="595" y2="20"/>
                 </g>
+            </g>
+
+            <!-- clouds -->
+            <g class="drift-a" fill="#fff" opacity="0.95">
+                <ellipse cx="110" cy="52" rx="40" ry="14"/>
+                <ellipse cx="138" cy="42" rx="28" ry="12"/>
+                <ellipse cx="86" cy="44" rx="22" ry="10"/>
+            </g>
+            <g class="drift-b" fill="#fff" opacity="0.9">
+                <ellipse cx="430" cy="74" rx="34" ry="12"/>
+                <ellipse cx="454" cy="66" rx="22" ry="9"/>
+            </g>
+
+            <!-- far mountain range (hazy) -->
+            <g opacity="0.75">
+                <polygon points="-30,300 90,120 210,300" fill="#A9BFCE"/>
+                <polygon points="90,120 58,172 76,160 92,178 112,150 126,170 90,120" fill="#F4F9FC"/>
+                <polygon points="430,300 545,125 665,300" fill="#A9BFCE"/>
+                <polygon points="545,125 512,178 532,164 548,184 566,156 582,178 545,125" fill="#F4F9FC"/>
+            </g>
+
+            <!-- main peaks -->
+            <g>
+                <polygon points="60,300 200,78 350,300" fill="#7E99AC"/>
+                <polygon points="200,78 156,148 178,134 198,158 220,128 242,150 200,78" fill="#FFFFFF"/>
+                <path d="M200 78 L350 300 L320 300 L192 108 Z" fill="#6C8698" opacity="0.55"/>
+                <polygon points="300,300 435,95 575,300" fill="#8AA5B6"/>
+                <polygon points="435,95 396,160 416,146 436,168 456,140 474,160 435,95" fill="#FFFFFF"/>
+                <path d="M435 95 L575 300 L548 300 L428 122 Z" fill="#78929F" opacity="0.5"/>
+            </g>
+
+            <!-- meadow -->
+            <path d="M0 262 Q160 236 320 250 Q480 264 640 244 L640 300 L0 300 Z" fill="url(#meadow)"/>
+
+            <!-- chalet -->
+            <g>
+                <rect x="484" y="228" width="60" height="36" fill="#C89B6C" stroke="#5B4327" stroke-width="2.5"/>
+                <polygon points="476,230 514,204 552,230" fill="#8A5B36" stroke="#5B4327" stroke-width="2.5"/>
+                <rect x="493" y="238" width="12" height="12" fill="#FFF3C4" stroke="#5B4327" stroke-width="2"/>
+                <rect x="522" y="238" width="12" height="12" fill="#FFF3C4" stroke="#5B4327" stroke-width="2"/>
+                <line x1="499" y1="238" x2="499" y2="250" stroke="#5B4327" stroke-width="1.5"/>
+                <line x1="528" y1="238" x2="528" y2="250" stroke="#5B4327" stroke-width="1.5"/>
+            </g>
+
+            <!-- pines -->
+            <g stroke="#274D22" stroke-width="2.5" stroke-linejoin="round">
+                <g fill="#3E6B34">
+                    <polygon points="62,300 34,300 48,258"/>
+                    <polygon points="64,282 32,282 48,240"/>
+                    <polygon points="66,262 30,262 48,220"/>
+                </g>
+                <g fill="#487A3C">
+                    <polygon points="112,300 90,300 101,268"/>
+                    <polygon points="114,286 88,286 101,252"/>
+                </g>
+                <g fill="#3E6B34">
+                    <polygon points="602,300 576,300 589,262"/>
+                    <polygon points="604,284 574,284 589,246"/>
+                    <polygon points="606,266 572,266 589,228"/>
+                </g>
+            </g>
+
+            <!-- meadow flowers -->
+            <g>
+                <g transform="translate(150,278)"><circle r="4" fill="#fff"/><circle r="1.6" fill="#F5C518"/></g>
+                <g transform="translate(196,290)"><circle r="3.4" fill="#fff"/><circle r="1.4" fill="#F5C518"/></g>
+                <g transform="translate(452,286)"><circle r="4" fill="#fff"/><circle r="1.6" fill="#F5C518"/></g>
+                <g transform="translate(494,296)"><circle r="3.2" fill="#fff"/><circle r="1.3" fill="#F5C518"/></g>
+                <g transform="translate(560,290)"><circle r="3.6" fill="#EE7674"/><circle r="1.4" fill="#F5C518"/></g>
+                <g transform="translate(96,294)"><circle r="3.4" fill="#EE7674"/><circle r="1.4" fill="#F5C518"/></g>
+            </g>
+
+            <!-- Hansi (waist up) -->
+            <g id="hansi" stroke-linecap="round" stroke-linejoin="round">
+                <!-- arms (behind torso), hands on hips -->
+                <path d="M262 212 Q222 226 226 262 Q230 282 258 280 L262 262 Q244 262 246 250 Q248 232 272 224 Z" fill="#FFFFFF" stroke="#2B2B2B" stroke-width="3.5"/>
+                <path d="M378 212 Q418 226 414 262 Q410 282 382 280 L378 262 Q396 262 394 250 Q392 232 368 224 Z" fill="#FFFFFF" stroke="#2B2B2B" stroke-width="3.5"/>
+                <ellipse cx="254" cy="272" rx="12" ry="10" fill="#F6CBA1" stroke="#2B2B2B" stroke-width="3"/>
+                <ellipse cx="386" cy="272" rx="12" ry="10" fill="#F6CBA1" stroke="#2B2B2B" stroke-width="3"/>
+
+                <!-- torso: white trachten shirt -->
+                <path d="M260 300 L260 224 Q260 198 288 194 L352 194 Q380 198 380 224 L380 300 Z" fill="#FFFFFF" stroke="#2B2B2B" stroke-width="3.5"/>
+                <!-- collar -->
+                <path d="M304 194 L320 210 L336 194" fill="none" stroke="#2B2B2B" stroke-width="3"/>
+                <circle cx="320" cy="218" r="2.6" fill="#2B2B2B"/>
+
+                <!-- lederhosen waistband + front flap -->
+                <path d="M260 268 L380 268 L380 300 L260 300 Z" fill="#7A5230" stroke="#2B2B2B" stroke-width="3.5"/>
+                <path d="M296 268 L344 268 L344 300 L296 300 Z" fill="#8A6138" stroke="#2B2B2B" stroke-width="3"/>
+                <path d="M306 278 Q320 288 334 278" fill="none" stroke="#4E7A3A" stroke-width="2.5"/>
+                <circle cx="302" cy="274" r="3" fill="#D9B36C" stroke="#2B2B2B" stroke-width="1.8"/>
+                <circle cx="338" cy="274" r="3" fill="#D9B36C" stroke="#2B2B2B" stroke-width="1.8"/>
+
+                <!-- suspenders -->
+                <rect x="282" y="194" width="16" height="80" fill="#7A5230" stroke="#2B2B2B" stroke-width="3"/>
+                <rect x="342" y="194" width="16" height="80" fill="#7A5230" stroke="#2B2B2B" stroke-width="3"/>
+                <line x1="290" y1="198" x2="290" y2="270" stroke="#4E7A3A" stroke-width="2" stroke-dasharray="4 3"/>
+                <line x1="350" y1="198" x2="350" y2="270" stroke="#4E7A3A" stroke-width="2" stroke-dasharray="4 3"/>
+                <!-- crossbar with edelweiss badge -->
+                <rect x="292" y="226" width="56" height="15" fill="#7A5230" stroke="#2B2B2B" stroke-width="3"/>
+                <g transform="translate(320,233.5)">
+                    <g fill="#FFFFFF" stroke="#2B2B2B" stroke-width="1.4">
+                        <ellipse cx="0" cy="-5.2" rx="2.6" ry="4.4"/>
+                        <ellipse cx="5" cy="-1.6" rx="2.6" ry="4.4" transform="rotate(72)"/>
+                        <ellipse cx="3.1" cy="4.2" rx="2.6" ry="4.4" transform="rotate(144)"/>
+                        <ellipse cx="-3.1" cy="4.2" rx="2.6" ry="4.4" transform="rotate(216)"/>
+                        <ellipse cx="-5" cy="-1.6" rx="2.6" ry="4.4" transform="rotate(288)"/>
+                    </g>
+                    <circle r="2.6" fill="#F5C518" stroke="#2B2B2B" stroke-width="1.4"/>
+                </g>
+                <circle cx="290" cy="264" r="3.4" fill="#D9B36C" stroke="#2B2B2B" stroke-width="1.8"/>
+                <circle cx="350" cy="264" r="3.4" fill="#D9B36C" stroke="#2B2B2B" stroke-width="1.8"/>
+
+                <!-- head -->
+                <ellipse cx="320" cy="130" rx="60" ry="54" fill="#F6CBA1" stroke="#2B2B2B" stroke-width="3.5"/>
+                <!-- ears -->
+                <circle cx="259" cy="138" r="10" fill="#F6CBA1" stroke="#2B2B2B" stroke-width="3"/>
+                <circle cx="381" cy="138" r="10" fill="#F6CBA1" stroke="#2B2B2B" stroke-width="3"/>
+                <!-- sideburns -->
+                <path d="M266 116 Q262 136 268 152 Q276 148 278 130 Q278 118 266 116 Z" fill="#8A5B2E" stroke="#2B2B2B" stroke-width="2.5"/>
+                <path d="M374 116 Q378 136 372 152 Q364 148 362 130 Q362 118 374 116 Z" fill="#8A5B2E" stroke="#2B2B2B" stroke-width="2.5"/>
+
+                <!-- eyes (South Park style, touching) -->
+                <g id="eyes">
+                    <ellipse cx="306" cy="122" rx="14" ry="17" fill="#FFFFFF" stroke="#2B2B2B" stroke-width="2.5"/>
+                    <ellipse cx="334" cy="122" rx="14" ry="17" fill="#FFFFFF" stroke="#2B2B2B" stroke-width="2.5"/>
+                    <circle cx="309" cy="127" r="4" fill="#2B2B2B"/>
+                    <circle cx="331" cy="127" r="4" fill="#2B2B2B"/>
+                    <g id="lids" fill="#F6CBA1">
+                        <ellipse cx="306" cy="122" rx="14.5" ry="17.5"/>
+                        <ellipse cx="334" cy="122" rx="14.5" ry="17.5"/>
+                        <path d="M292 122 Q306 130 320 122" fill="none" stroke="#2B2B2B" stroke-width="2"/>
+                        <path d="M320 122 Q334 130 348 122" fill="none" stroke="#2B2B2B" stroke-width="2"/>
+                    </g>
+                </g>
+                <!-- eyebrows -->
+                <path d="M292 100 Q306 94 318 100" fill="none" stroke="#8A5B2E" stroke-width="5.5"/>
+                <path d="M322 100 Q334 94 348 100" fill="none" stroke="#8A5B2E" stroke-width="5.5"/>
+
                 <!-- rosy cheeks -->
-                <circle cx="286" cy="154" r="8" fill="#F1A08A" opacity="0.6"/>
-                <circle cx="354" cy="154" r="8" fill="#F1A08A" opacity="0.6"/>
-                <!-- mustache -->
-                <path d="M298 162 Q310 156 320 162 Q330 156 342 162 Q334 172 320 168 Q306 172 298 162 Z" fill="#8A5B2E" stroke="#333" stroke-width="2"/>
+                <circle cx="280" cy="152" r="9" fill="#F1A08A" opacity="0.55"/>
+                <circle cx="360" cy="152" r="9" fill="#F1A08A" opacity="0.55"/>
+
+                <!-- nose -->
+                <ellipse cx="320" cy="145" rx="9" ry="7" fill="#EFB183" stroke="#2B2B2B" stroke-width="2.5"/>
+
+                <!-- bushy mustache with curled ends -->
+                <path d="M320 156 C306 149 293 150 285 157 C279 162 281 169 288 170 C282 174 284 180 290 179 C300 178 311 170 320 164 C329 170 340 178 350 179 C356 180 358 174 352 170 C359 169 361 162 355 157 C347 150 334 149 320 156 Z" fill="#8A5B2E" stroke="#2B2B2B" stroke-width="2.5"/>
+
                 <!-- mouth: closed + open (toggled while speaking) -->
-                <path id="mouthClosed" d="M306 176 Q320 184 334 176" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
-                <ellipse id="mouthOpen" cx="320" cy="178" rx="11" ry="8" fill="#7A3B2E" stroke="#333" stroke-width="2.5" style="display:none"/>
+                <path id="mouthClosed" d="M306 180 Q320 189 334 180" fill="none" stroke="#2B2B2B" stroke-width="3.2"/>
+                <g id="mouthOpen" style="display:none">
+                    <ellipse cx="320" cy="182" rx="12" ry="9" fill="#6E2F26" stroke="#2B2B2B" stroke-width="2.8"/>
+                    <ellipse cx="320" cy="187" rx="7" ry="4" fill="#D96A5B"/>
+                </g>
+
                 <!-- alpine hat -->
-                <path d="M268 112 Q276 66 320 62 Q364 66 372 112 Q320 98 268 112 Z" fill="#4E7A3A" stroke="#333" stroke-width="3"/>
-                <path d="M262 112 Q320 96 378 112 Q320 126 262 112 Z" fill="#3E6230" stroke="#333" stroke-width="3"/>
+                <path d="M270 100 Q268 56 302 46 Q320 41 338 46 Q372 56 370 100 Q320 84 270 100 Z" fill="#4E7A3A" stroke="#2B2B2B" stroke-width="3.5"/>
+                <path d="M302 50 Q320 44 338 50" fill="none" stroke="#2B2B2B" stroke-width="2" opacity="0.5"/>
+                <!-- brim -->
+                <path d="M256 102 Q320 80 384 102 Q384 114 372 115 Q320 96 268 115 Q256 114 256 102 Z" fill="#3E6230" stroke="#2B2B2B" stroke-width="3.5"/>
+                <!-- hat band + cord -->
+                <path d="M272 96 Q320 81 368 96 Q368 102 364 104 Q320 88 276 104 Q272 102 272 96 Z" fill="#2E4A24" stroke="#2B2B2B" stroke-width="2.5"/>
+                <circle cx="286" cy="96" r="4.6" fill="#D9B36C" stroke="#2B2B2B" stroke-width="2"/>
                 <!-- feather -->
-                <path d="M364 78 Q384 52 396 50 Q390 72 372 86 Z" fill="#E8E8E8" stroke="#333" stroke-width="2"/>
+                <g>
+                    <path d="M356 74 Q372 44 398 28 Q396 56 372 84 Q362 82 356 74 Z" fill="#EDEDED" stroke="#2B2B2B" stroke-width="2.8"/>
+                    <path d="M362 74 Q378 52 392 36" fill="none" stroke="#B9B9B9" stroke-width="2.2"/>
+                    <path d="M370 66 L378 66 M366 72 L375 73 M376 56 L384 58" stroke="#B9B9B9" stroke-width="1.8"/>
+                </g>
             </g>
         </svg>
     </div>
