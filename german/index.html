@@ -61,7 +61,7 @@
             line-height: 0;
             background: #7EC8F5;
         }
-        .scene img {
+        .scene img, .scene video {
             width: 100%;
             height: auto;
             max-height: 38dvh;
@@ -83,7 +83,7 @@
             50% { transform: scale(1.014) translateX(1.5px); }
         }
         @media (prefers-reduced-motion: reduce) {
-            .scene img { animation: none; }
+            .scene img, .scene video { animation: none; }
         }
 
         /* Chat */
@@ -228,7 +228,10 @@
 
     <div class="scene" id="scene">
         <img id="hansiIdle" src="/german/hansi-idle.webp" alt="Hansi, a friendly Bavarian man in lederhosen in front of the Alps">
-        <img id="hansiTalking" src="/german/hansi-talking.webp" alt="" aria-hidden="true">
+        <video id="hansiTalking" muted loop playsinline preload="auto" aria-hidden="true">
+            <source src="/german/hansi-talking.mp4" type="video/mp4">
+            <source src="/german/hansi-talking.webm" type="video/webm">
+        </video>
     </div>
 
     <div class="chat" id="chat"></div>
@@ -302,23 +305,18 @@
     audioEl.addEventListener('ended', stopMouth);
     audioEl.addEventListener('pause', stopMouth);
 
-    let mouthTimer = null;
+    let mouthFadeTimer = null;
     function startMouth() {
-        stopMouth();
-        let open = false;
-        const tick = () => {
-            open = !open;
-            talkFrame.style.opacity = open ? '1' : '0';
-            // Hold each pose an organic, varied beat; linger longer on talking
-            const hold = open ? 340 + Math.random() * 420 : 200 + Math.random() * 260;
-            mouthTimer = setTimeout(tick, hold);
-        };
-        tick();
+        if (mouthFadeTimer) clearTimeout(mouthFadeTimer);
+        mouthFadeTimer = null;
+        try { talkFrame.currentTime = 0; } catch (err) {}
+        talkFrame.play().catch(() => {});
+        talkFrame.style.opacity = '1';
     }
     function stopMouth() {
-        if (mouthTimer) clearTimeout(mouthTimer);
-        mouthTimer = null;
         talkFrame.style.opacity = '0';
+        if (mouthFadeTimer) clearTimeout(mouthFadeTimer);
+        mouthFadeTimer = setTimeout(() => { talkFrame.pause(); }, 260);
     }
 
     function stopSpeaking() {
