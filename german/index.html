@@ -68,12 +68,22 @@
             object-fit: cover;
             object-position: 50% 12%;
             display: block;
+            transform-origin: 50% 62%;
+            animation: breathe 6.5s ease-in-out infinite;
         }
         #hansiTalking {
             position: absolute;
             top: 0;
             left: 0;
             opacity: 0;
+            transition: opacity 0.22s ease;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1) translateX(0); }
+            50% { transform: scale(1.014) translateX(1.5px); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .scene img { animation: none; }
         }
 
         /* Chat */
@@ -296,13 +306,17 @@
     function startMouth() {
         stopMouth();
         let open = false;
-        mouthTimer = setInterval(() => {
+        const tick = () => {
             open = !open;
             talkFrame.style.opacity = open ? '1' : '0';
-        }, 180);
+            // Hold each pose an organic, varied beat; linger longer on talking
+            const hold = open ? 340 + Math.random() * 420 : 200 + Math.random() * 260;
+            mouthTimer = setTimeout(tick, hold);
+        };
+        tick();
     }
     function stopMouth() {
-        if (mouthTimer) clearInterval(mouthTimer);
+        if (mouthTimer) clearTimeout(mouthTimer);
         mouthTimer = null;
         talkFrame.style.opacity = '0';
     }
